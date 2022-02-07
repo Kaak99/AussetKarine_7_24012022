@@ -6,21 +6,28 @@ const express = require('express');
 //const helmet = require("helmet");//helmet pour protéger de différentes attaques
 //const path = require('path');//pour acces au chemin des fichiers
 const dotenv = require("dotenv").config();//import variables d'environnement
-// const dotenv = require("dotenv");
-// const result = dotenv.config();
+const mysql = require('mysql2');
 //const morgan = require('morgan');//log requetes
 
-const userRoutes = require('./routes/user');//routes user
-const sauceRoutes = require('./routes/sauce');//routes sauce (ex stuffRoutes)
+// const userRoutes = require('./routes/user');//routes user
+// const sauceRoutes = require('./routes/sauce');//routes sauce (ex stuffRoutes)
 
 
 //bdd
-const mongoose = require('mongoose');
-mongoose.connect(`mongodb+srv://${process.env.DB_USERPASS}@${process.env.DB_CLUSTER}.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+const db = mysql.createConnection({
+  host: 'localhost',
+  user : 'root',
+  password : process.env.DB_MDP,
+  database : process.env.DB_NAME
+  //database : `${process.env.DB_NAME}` 
+});
+
+db.connect( err => {
+  if (err) {
+    throw err;
+  }
+  console.log('connected to mysql foodly');
+});
 
 
 
@@ -28,7 +35,19 @@ const app = express();
 
 //app.use(helmet());//lance helmet
 
+db.query(
+  'SELECT `marque`,`nom` FROM aliment;',
+  function(err, results) {
+  console.log(results);
+  }
+  );
 
+db.query(
+'SELECT * FROM `aliment` WHERE `marque` = "monoprix" AND `id` > 1',
+function(err, results) {
+console.log(results);
+}
+);
 // -----------route générale : ---------------//
 
 //MORGAN (module qui log req et res)
@@ -52,7 +71,7 @@ const app = express();
 //app.use(express.static('images'));
 
 // routes //
-app.use('/api/sauces', sauceRoutes);//(ex stuffRoutes)
-app.use('/api/auth', userRoutes);
+//app.use('/api/sauces', sauceRoutes);//(ex stuffRoutes)
+//app.use('/api/auth', userRoutes);
 
 module.exports = app;
