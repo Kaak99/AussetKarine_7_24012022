@@ -8,32 +8,38 @@ const express = require('express');
 const dotenv = require("dotenv").config();//import variables d'environnement
 const mysql = require('mysql2');
 //const morgan = require('morgan');//log requetes
+const db = require('./db/db');
 
-const userRoutes = require('./routes/user');//routes user
-const postRoutes = require('./routes/post');//routes post (ex stuffRoutes)
+//const usersRoutes = require('./routes/users');//routes user
+const postsRoutes = require('./routes/posts');//routes post (ex stuffRoutes)
 
 
-//bdd
-const db = mysql.createConnection({
-  host: 'localhost',
-  user : 'root',
-  password : process.env.DB_MDP,
-  database : process.env.DB_NAME
-  //database : `${process.env.DB_NAME}` 
-});
+// //bdd
+// const db = mysql.createConnection({
+//   host: 'localhost',
+//   user : 'root',
+//   password : process.env.DB_MDP,
+//   database : process.env.DB_NAME
+//   //database : `${process.env.DB_NAME}` 
+// });
 
-db.connect( err => {
-  if (err) {
-    throw err;
-  }
-  console.log('connected to mysql foodly');
-});
+
 
 
 
 const app = express(); 
 
 //app.use(helmet());//lance helmet
+
+
+// db.query(
+//   'SELECT * FROM groupomania.posts_table;',
+//   function(err, results) {
+//   console.log(results);
+//   }
+//   );
+
+
 
 // db.query(
 //   'SELECT * FROM groupomania.users_table;',
@@ -72,7 +78,7 @@ const app = express();
 //app.use(express.static('images'));
 
 // routes //
-app.use('/api/sauces', postRoutes);//(ex stuffRoutes)
-app.use('/api/auth', userRoutes);
+//app.use('/api/posts', postsRoutes);//(ex stuffRoutes)
+//app.use('/api/users', usersRoutes);
 
 module.exports = app;
