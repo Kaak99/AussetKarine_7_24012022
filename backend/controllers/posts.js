@@ -13,26 +13,53 @@ const db = require('../db/db');
 //!__ renvoie : tableau de toutes les posts  __//
 
 exports.getAllPosts = (req, res, next) => {
-  // Sauce.find()
-  // .then((sauce) => { 
-  //   res.status(200).json(sauce);
+
+
+  /*db.query(
+    'SELECT * FROM groupomania.posts_table;',
+    function(err, results) {
+      res.status(200).json(results);
+    //console.log(results);
+    }
+  )
+  */
+
+  db.promise().query('SELECT * FROM groupomania.posts_table;')
+  .then( ([results]) => {
+    console.log(results);
+    res.status(200).json(results);
+  })
+  .catch((error) => {
+    res.status(400).json(error);
+    })
+  .then( () => db.end());
+
+
+/*
+db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', [1])
+.then( ([results]) => {
+  console.log(results);
+  res.status(200).json(results);
+})
+.catch((error) => {
+  res.status(400).json({ error: error });
+  })
+.then( () => db.end());
+*/
+
+};
+
+
+
+
+
+  //   .then((results) => { 
+  //   res.status(200).json(results);
   // })
   // .catch((error) => {
   //   res.status(400).json({ error: error });
   // });
-  db.query(
-    'SELECT * FROM groupomania.posts_table;',
-    function(err, results) {
-    console.log(results);
-    }
-  )
-    .then((results) => { 
-    res.status(200).json(results);
-  })
-  .catch((error) => {
-    res.status(400).json({ error: error });
-  });
-};
+
 
 
 

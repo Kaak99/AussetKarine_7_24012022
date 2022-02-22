@@ -78,7 +78,7 @@ const app = express();
 //app.use(express.static('images'));
 
 // routes //
-//app.use('/api/posts', postsRoutes);//(ex stuffRoutes)
+app.use('/api/posts', postsRoutes);//(ex stuffRoutes)
 //app.use('/api/users', usersRoutes);
 
 module.exports = app;
