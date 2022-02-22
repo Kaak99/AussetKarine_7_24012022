@@ -9,8 +9,8 @@ const dotenv = require("dotenv").config();//import variables d'environnement
 const mysql = require('mysql2');
 //const morgan = require('morgan');//log requetes
 
-// const userRoutes = require('./routes/user');//routes user
-// const sauceRoutes = require('./routes/sauce');//routes sauce (ex stuffRoutes)
+const userRoutes = require('./routes/user');//routes user
+const postRoutes = require('./routes/post');//routes post (ex stuffRoutes)
 
 
 //bdd
@@ -35,19 +35,20 @@ const app = express();
 
 //app.use(helmet());//lance helmet
 
-db.query(
-  'SELECT `marque`,`nom` FROM aliment;',
-  function(err, results) {
-  console.log(results);
-  }
-  );
+// db.query(
+//   'SELECT * FROM groupomania.users_table;',
+//   function(err, results) {
+//   console.log(results);
+//   }
+//   );
 
-db.query(
-'SELECT * FROM `aliment` WHERE `marque` = "monoprix" AND `id` > 1',
-function(err, results) {
-console.log(results);
-}
-);
+// db.query(
+// 'SELECT * FROM `posts_table` WHERE `userid` = 6',
+// function(err, results) {
+// console.log(results);
+// }
+// );
+
 // -----------route générale : ---------------//
 
 //MORGAN (module qui log req et res)
@@ -71,7 +72,7 @@ console.log(results);
 //app.use(express.static('images'));
 
 // routes //
-//app.use('/api/sauces', sauceRoutes);//(ex stuffRoutes)
-//app.use('/api/auth', userRoutes);
+app.use('/api/sauces', postRoutes);//(ex stuffRoutes)
+app.use('/api/auth', userRoutes);
 
 module.exports = app;
