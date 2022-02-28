@@ -8,9 +8,18 @@ const db = require('../db/db');
 
 
 
-//!__          GET ALL post (GET)            __//
+//!__          GET ALL post s(GET)            __//
 //!__ recoit : -                              __//
 //!__ renvoie : tableau de toutes les posts  __//
+// exports.getAllSauces = (req, res, next) => {
+//   Sauce.find()
+//   .then((sauce) => { 
+//     res.status(200).json(sauce);
+//   })
+//   .catch((error) => {
+//     res.status(400).json({ error: error });
+//   });
+// };
 
 exports.getAllPosts = (req, res, next) => {
   /*db.query(
@@ -111,6 +120,75 @@ exports.deletePosts = (req, res, next) => {
 
 
 
+//!__        CREATE SAUCE (POST)              __//
+//!__ recoit : { sauce: String, image: File } __//
+//!__ renvoie : { message: String }           __//
+
+
+exports.createPosts = (req, res, next) => {
+  //console.log(req);
+  console.log(req.body.titre);
+  console.log(req.body.contenu);
+  console.log(req.body.image);
+  console.log(req.body.userid);
+  let post = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, userid: req.body.userid };
+  console.log(post);
+
+  // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
+  db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', post)
+
+.then( ([results]) => {
+  console.log(results);
+  res.status(200).json(results);
+})
+.catch((error) => {
+  res.status(400).json({ error: error });
+  })
+//.then( () => db.end());
+
+};
+
+
+
+// exports.createSauce = (req, res, next) => {
+//   const sauceObject = JSON.parse(req.body.sauce);
+//   console.log("userId de demande");
+//   console.log(sauceObject.userId);
+//   console.log("idToken");
+//   console.log(req.token.userId);
+  
+//   const sauce = new Sauce({
+//     userId : sauceObject.userId,
+//     name : sauceObject.name,
+//     manufacturer : sauceObject.manufacturer,
+//     description : sauceObject.description,
+//     mainPepper : sauceObject.mainPepper,
+//     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+//     heat : sauceObject.heat,
+//     likes : 0,
+//     dislikes : 0,
+//     usersLiked : [],
+//     usersDisliked : []
+//   });
+//   console.log(sauce);
+//   if (sauce.userId === req.token.userId){
+//     sauce.save()
+//     .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
+//     .catch(error => res.status(400).json(error.message));
+//     //.catch(error => res.status(400).json({error}));
+//     //.catch(error => res.status(400).json(sauce));
+//   }
+//   else{
+//     res.status(403).json({ error: "userId usurpé : impossible de créer" });
+//   }
+  
+// };
+
+
+
+
+
+
 // //!__         MODIFY SAUCE  (PUT+id sauce)                    __//
 // //!__ recoit : Sauce as JSON OR { sauce:String,image: File }  __//
 // //!__ renvoie : { message: String }                           __//
@@ -179,22 +257,6 @@ exports.deletePosts = (req, res, next) => {
 
 
 
-
-
-
-// //!__          GET ALL SAUCE (GET)            __//
-// //!__ recoit : -                              __//
-// //!__ renvoie : tableau de toutes les sauces  __//
-
-// exports.getAllSauces = (req, res, next) => {
-//   Sauce.find()
-//   .then((sauce) => { 
-//     res.status(200).json(sauce);
-//   })
-//   .catch((error) => {
-//     res.status(400).json({ error: error });
-//   });
-// };
 
 
 // //!__    LIKES&DISLIKES SAUCE (POST+id sauce)    __//
