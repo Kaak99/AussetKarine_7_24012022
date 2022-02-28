@@ -13,8 +13,6 @@ const db = require('../db/db');
 //!__ renvoie : tableau de toutes les posts  __//
 
 exports.getAllPosts = (req, res, next) => {
-
-
   /*db.query(
     'SELECT * FROM groupomania.posts_table;',
     function(err, results) {
@@ -34,9 +32,23 @@ exports.getAllPosts = (req, res, next) => {
     })
   .then( () => db.end());
 
+};
 
-/*
-db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', [1])
+
+  // //!__     GET ONE POSTS (GET+id posts)      __//
+// //!__ recoit : -                            __//
+// //!__ renvoie : le posts avec l’_id fourni  __//
+
+// exports.getOneSauce = (req, res, next) => {
+//   //Sauce.findOne({_id: req.params.id})
+//   console.log("Sauce choisie : "+req.params.id);
+//   Sauce.findById(req.params.id)
+//   .then((sauce) => { res.status(200).json(sauce)})
+//   .catch((error) => {res.status(404).json({error: error})});
+// };
+
+exports.getOnePosts = (req, res, next) => {
+db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', [req.params.id])
 .then( ([results]) => {
   console.log(results);
   res.status(200).json(results);
@@ -44,8 +56,8 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', 
 .catch((error) => {
   res.status(400).json({ error: error });
   })
-.then( () => db.end());
-*/
+//.then( () => db.end());
+
 
 };
 
@@ -133,17 +145,7 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', 
 // };
 
 
-// //!__     GET ONE SAUCE (GET+id sauce)      __//
-// //!__ recoit : -                            __//
-// //!__ renvoie : la sauce avec l’_id fourni  __//
 
-// exports.getOneSauce = (req, res, next) => {
-//   //Sauce.findOne({_id: req.params.id})
-//   console.log("Sauce choisie : "+req.params.id);
-//   Sauce.findById(req.params.id)
-//   .then((sauce) => { res.status(200).json(sauce)})
-//   .catch((error) => {res.status(404).json({error: error})});
-// };
 
 
 // //!__   DELETE SAUCE (DELETE+ id sauce)   __//
