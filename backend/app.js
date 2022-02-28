@@ -7,7 +7,7 @@ const express = require('express');
 //const path = require('path');//pour acces au chemin des fichiers
 const dotenv = require("dotenv").config();//import variables d'environnement
 const mysql = require('mysql2');
-//const morgan = require('morgan');//log requetes
+const morgan = require('morgan');//log requetes
 const db = require('./db/db');
 
 //const usersRoutes = require('./routes/users');//routes user
@@ -58,20 +58,20 @@ const app = express();
 // -----------route générale : ---------------//
 
 //MORGAN (module qui log req et res)
-//app.use(morgan("dev"));
+app.use(morgan("dev"));
 
 //CORS
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-//   next();
-// });
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  next();
+});
 
 
 // bodyparser //
-//app.use(express.urlencoded({extended: true}));
-//app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
 // appel pour multer(chemin images) //
 //app.use('/images' , express.static(path.join(__dirname, 'images')));
