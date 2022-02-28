@@ -35,9 +35,9 @@ exports.getAllPosts = (req, res, next) => {
 };
 
 
-  // //!__     GET ONE POSTS (GET+id posts)      __//
-// //!__ recoit : -                            __//
-// //!__ renvoie : le posts avec l’_id fourni  __//
+//!__     GET ONE POSTS (GET+id posts)      __//
+//!__ recoit : -                            __//
+//!__ renvoie : le posts avec l’_id fourni  __//
 
 // exports.getOneSauce = (req, res, next) => {
 //   //Sauce.findOne({_id: req.params.id})
@@ -58,13 +58,7 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', 
   })
 //.then( () => db.end());
 
-
 };
-
-
-
-
-
   //   .then((results) => { 
   //   res.status(200).json(results);
   // })
@@ -75,7 +69,45 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', 
 
 
 
+//!__   DELETE SAUCE (DELETE+ id sauce)   __//
+//!__ recoit : -                          __//
+//!__ renvoie { message: String }         __//
 
+
+exports.deletePosts = (req, res, next) => {
+  db.promise().query(' DELETE FROM groupomania.posts_table WHERE `post-id`=? ;', [req.params.id])
+.then( ([results]) => {
+  console.log(results);
+  res.status(200).json(results);
+})
+.catch((error) => {
+  res.status(400).json({ error: error });
+  })
+//.then( () => db.end());
+
+};
+
+
+
+// exports.deleteSauce = (req, res, next) => {
+//   // console.log("idToken");
+//   // console.log(req.token.userId);
+//   Sauce.findOne({ _id: req.params.id })
+//     .then(sauce => {
+//       if (sauce.userId === req.token.userId){
+//       const filename = sauce.imageUrl.split('/images/')[1];
+//       fs.unlink(`images/${filename}`, () => {
+//         Sauce.deleteOne({ _id: req.params.id })
+//           .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
+//           .catch(error => res.status(400).json({ error }));
+//       });
+//       }
+//       else{
+//         res.status(403).json({message : "vous n'etes pas autorisé à effacer cette sauce"});//car la sauce d'un autre!
+//       }
+//     })
+//     .catch(error => res.status(500).json(error.message));
+// };
 
 
 
@@ -146,32 +178,6 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', 
 
 
 
-
-
-// //!__   DELETE SAUCE (DELETE+ id sauce)   __//
-// //!__ recoit : -                          __//
-// //!__ renvoie { message: String }         __//
-
-
-// exports.deleteSauce = (req, res, next) => {
-//   // console.log("idToken");
-//   // console.log(req.token.userId);
-//   Sauce.findOne({ _id: req.params.id })
-//     .then(sauce => {
-//       if (sauce.userId === req.token.userId){
-//       const filename = sauce.imageUrl.split('/images/')[1];
-//       fs.unlink(`images/${filename}`, () => {
-//         Sauce.deleteOne({ _id: req.params.id })
-//           .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
-//           .catch(error => res.status(400).json({ error }));
-//       });
-//       }
-//       else{
-//         res.status(403).json({message : "vous n'etes pas autorisé à effacer cette sauce"});//car la sauce d'un autre!
-//       }
-//     })
-//     .catch(error => res.status(500).json(error.message));
-// };
 
 
 
