@@ -8,7 +8,7 @@ const db = require('../db/db');
 
 
 
-//!__          GET ALL post s(GET)            __//
+//!__          GET ALL POSTS (GET)            __//
 //!__ recoit : -                              __//
 //!__ renvoie : tableau de toutes les posts  __//
 // exports.getAllSauces = (req, res, next) => {
@@ -78,7 +78,7 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', 
 
 
 
-//!__   DELETE SAUCE (DELETE+ id sauce)   __//
+//!__   DELETE POSTS (DELETE+ id sauce)   __//
 //!__ recoit : -                          __//
 //!__ renvoie { message: String }         __//
 
@@ -120,8 +120,8 @@ exports.deletePosts = (req, res, next) => {
 
 
 
-//!__        CREATE SAUCE (POST)              __//
-//!__ recoit : { sauce: String, image: File } __//
+//!__        CREATE POSTS (POST)              __//
+//!__ recoit : as JSON OR { sauce: String, image: File } ?  __//
 //!__ renvoie : { message: String }           __//
 
 
@@ -131,12 +131,12 @@ exports.createPosts = (req, res, next) => {
   console.log(req.body.contenu);
   console.log(req.body.image);
   console.log(req.body.userid);
-  let post = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, userid: req.body.userid };
-  console.log(post);
+  let newPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, userid: req.body.userid };
+  console.log(newPost);
 
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
-  db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', post)
-
+   db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', newPost) 
+   
 .then( ([results]) => {
   console.log(results);
   res.status(200).json(results);
@@ -189,9 +189,9 @@ exports.createPosts = (req, res, next) => {
 
 
 
-// //!__         MODIFY SAUCE  (PUT+id sauce)                    __//
-// //!__ recoit : Sauce as JSON OR { sauce:String,image: File }  __//
-// //!__ renvoie : { message: String }                           __//
+//!__         MODIFY POSTS  (PUT+id post)                    __//
+//!__ recoit : Sauce as JSON OR { sauce:String,image: File }  __//
+//!__ renvoie : { message: String }                           __//
 
 // exports.modifySauce = (req, res, next) => {
 //   Sauce.findOne({ _id: req.params.id })
@@ -214,48 +214,27 @@ exports.createPosts = (req, res, next) => {
 //   .catch(error => res.status(400).json(error.message));
 // }
 
+exports.modifyPosts = (req, res, next) => {
+  //console.log(req);
 
+  let changedPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, userid: req.body.userid };
+  console.log(changedPost);
 
-// //!__        CREATE SAUCE (POST)              __//
-// //!__ recoit : { sauce: String, image: File } __//
-// //!__ renvoie : { message: String }           __//
+  // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
+  //db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', changedPost)
+  db.promise().query(' UPDATE `groupomania`.`posts_table` SET ? WHERE ', changedPost)
+  // db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? WHERE `post-id`=? ', [newPost, req.params.id])
 
-// exports.createSauce = (req, res, next) => {
-//   const sauceObject = JSON.parse(req.body.sauce);
-//   console.log("userId de demande");
-//   console.log(sauceObject.userId);
-//   console.log("idToken");
-//   console.log(req.token.userId);
-  
-//   const sauce = new Sauce({
-//     userId : sauceObject.userId,
-//     name : sauceObject.name,
-//     manufacturer : sauceObject.manufacturer,
-//     description : sauceObject.description,
-//     mainPepper : sauceObject.mainPepper,
-//     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-//     heat : sauceObject.heat,
-//     likes : 0,
-//     dislikes : 0,
-//     usersLiked : [],
-//     usersDisliked : []
-//   });
-//   console.log(sauce);
-//   if (sauce.userId === req.token.userId){
-//     sauce.save()
-//     .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
-//     .catch(error => res.status(400).json(error.message));
-//     //.catch(error => res.status(400).json({error}));
-//     //.catch(error => res.status(400).json(sauce));
-//   }
-//   else{
-//     res.status(403).json({ error: "userId usurpé : impossible de créer" });
-//   }
-  
-// };
+.then( ([results]) => {
+  console.log(results);
+  res.status(200).json(results);
+})
+.catch((error) => {
+  res.status(400).json({ error: error });
+  })
+//.then( () => db.end());
 
-
-
+};
 
 
 

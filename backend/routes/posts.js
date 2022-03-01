@@ -13,7 +13,7 @@ const postsController = require('../controllers/posts');
 router.get('/', postsController.getAllPosts);
 router.post('/', postsController.createPosts);//multer ici
 router.get('/:id', postsController.getOnePosts);
-// router.put('/:id', postsController.modifyPosts);//multer ici
+//router.put('/:id', postsController.modifyPosts);//multer ici
 router.delete('/:id', postsController.deletePosts);
 
 // router.posts('/:id/thumb', postsController.thumbPosts);
