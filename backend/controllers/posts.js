@@ -136,7 +136,7 @@ exports.createPosts = (req, res, next) => {
 
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
    db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', newPost) 
-   
+
 .then( ([results]) => {
   console.log(results);
   res.status(200).json(results);
@@ -145,10 +145,7 @@ exports.createPosts = (req, res, next) => {
   res.status(400).json({ error: error });
   })
 //.then( () => db.end());
-
 };
-
-
 
 // exports.createSauce = (req, res, next) => {
 //   const sauceObject = JSON.parse(req.body.sauce);
@@ -181,7 +178,6 @@ exports.createPosts = (req, res, next) => {
 //   else{
 //     res.status(403).json({ error: "userId usurpé : impossible de créer" });
 //   }
-  
 // };
 
 
@@ -222,8 +218,8 @@ exports.modifyPosts = (req, res, next) => {
 
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
   //db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', changedPost)
-  db.promise().query(' UPDATE `groupomania`.`posts_table` SET ? WHERE ', changedPost)
-  // db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? WHERE `post-id`=? ', [newPost, req.params.id])
+  //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ? WHERE ', changedPost)
+  db.promise().query(' UPDATE `groupomania`.`posts_table` SET ? WHERE `post-id`=? ', [changedPost, req.params.id])
 
 .then( ([results]) => {
   console.log(results);
