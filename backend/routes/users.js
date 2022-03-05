@@ -8,6 +8,9 @@ const router = express.Router();
 const usersController = require('../controllers/users');
 
 router.get('/', usersController.getAllUsers);
+router.put('/:id', usersController.changeUserActivity);
+
+
 router.post('/signup', usersController.signup);
 //router.post('/login', userController.login);
 

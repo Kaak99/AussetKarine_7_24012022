@@ -15,16 +15,7 @@ const db = require('../db/db');
 //-----exports-----//
 
 
-exports.getAllUsers = (req, res, next) => {
-  /*db.query(
-    'SELECT * FROM groupomania.posts_table;',
-    function(err, results) {
-      res.status(200).json(results);
-    //console.log(results);
-    }
-  )
-  */
-
+exports.getAllUsers = (req, res, next) => {//pour admin
   db.promise().query('SELECT * FROM groupomania.users_table;')
   .then( ([results]) => {
     console.log(results);
@@ -38,7 +29,20 @@ exports.getAllUsers = (req, res, next) => {
 };
 
 
+exports.changeUserActivity = (req, res, next) => {
+  // let userTochangeActivity = { pseudo: req.body.pseudo, password: req.body.password, avatar: req.body.avatar, email: req.body.email, bio: req.body.bio, admin: req.body.admin, active: req.body.active };
+  // console.log(userTochangeActivity);
+  db.promise().query(' UPDATE `groupomania`.`users_table` SET active=? WHERE `idUsers`=? ', [req.body.active, req.params.id])
+  //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [changedPost, req.params.id])
 
+.then( ([results]) => {
+  console.log(results);
+  res.status(200).json(results);
+})
+.catch((error) => {
+  res.status(400).json({ error: error });
+  })
+};
 
 
 exports.signup = (req, res, next) => {
