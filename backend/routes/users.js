@@ -8,6 +8,7 @@ const router = express.Router();
 const usersController = require('../controllers/users');
 
 router.get('/', usersController.getAllUsers);
+router.get('/:id', usersController.getOneUsers);
 router.put('/:id', usersController.changeUserActivity);
 
 

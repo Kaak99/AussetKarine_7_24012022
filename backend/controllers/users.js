@@ -24,9 +24,21 @@ exports.getAllUsers = (req, res, next) => {//pour admin
   .catch((error) => {
     res.status(400).json(error);
     })
-  //.then( () => db.end());
-
 };
+
+
+exports.getOneUsers = (req, res, next) => {
+  db.promise().query(' SELECT * FROM groupomania.users_table WHERE `idUsers`=? ', [req.params.id])
+  .then( ([results]) => {
+    console.log(results);
+    res.status(200).json(results);
+  })
+  .catch((error) => {
+    res.status(400).json({ error: error });
+    })
+  //.then( () => db.end());
+  
+  };
 
 
 exports.changeUserActivity = (req, res, next) => {
@@ -43,6 +55,9 @@ exports.changeUserActivity = (req, res, next) => {
   res.status(400).json({ error: error });
   })
 };
+
+
+
 
 
 exports.signup = (req, res, next) => {
