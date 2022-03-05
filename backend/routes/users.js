@@ -13,6 +13,6 @@ router.put('/:id', usersController.changeUserActivity);
 
 
 router.post('/signup', usersController.signup);
-//router.post('/login', userController.login);
+router.post('/login', usersController.login);
 
 module.exports = router;

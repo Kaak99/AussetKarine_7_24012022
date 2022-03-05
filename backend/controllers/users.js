@@ -65,11 +65,8 @@ exports.signup = (req, res, next) => {
   console.log(req.body.password);
   let newUser = { pseudo: req.body.pseudo, password: req.body.password, avatar: req.body.avatar, email: req.body.email, bio: req.body.bio, admin: req.body.admin, active: req.body.active };
   console.log(newUser);
-
   // INSERT INTO `groupomania`.`users_table` (`pseudo`, `password`, `avatar`, `email`, `bio`, `admin`, `active`) VALUES ('u3', 'mdp', 'https://upload.wikimedia.org/wikipedia/commons/9/98/OOjs_UI_icon_userAvatar.svg', 'u3@mail.fr', 'inconnu!', '0', '1');
   db.promise().query(' INSERT INTO `groupomania`.`users_table` SET ? ', newUser)
-
-
 
   .then( ([results]) => {
     console.log(results);
@@ -81,7 +78,22 @@ exports.signup = (req, res, next) => {
 }
 
 
+exports.login = (req, res, next) => {
+  db.promise().query(' SELECT * FROM groupomania.users_table WHERE `pseudo`=? ', [req.body.pseudo])
+  // INSERT INTO `groupomania`.`users_table` (`pseudo`, `password`, `avatar`, `email`, `bio`, `admin`, `active`) VALUES ('u3', 'mdp', 'https://upload.wikimedia.org/wikipedia/commons/9/98/OOjs_UI_icon_userAvatar.svg', 'u3@mail.fr', 'inconnu!', '0', '1');
+  //db.promise().query(' INSERT INTO `groupomania`.`users_table` SET ? ', newUser)
 
+  .then( ([results]) => {
+    console.log(results);
+    console.log("le pseudo " + req.body.pseudo +" existe bien !");
+
+    res.status(200).json(results);
+  })
+  .catch((error) => {
+    console.log("echec login : user inconnu !");
+    res.status(400).json({ error: error });
+    })
+}
 
 /*
 
