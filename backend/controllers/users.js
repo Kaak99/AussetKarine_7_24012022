@@ -9,8 +9,37 @@ const cryptojs = require('crypto-js');//(chiffrage pour emails)
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv").config();//import variables d'environnement
 
+const db = require('../db/db');
+
 
 //-----exports-----//
+
+
+exports.getAllUsers = (req, res, next) => {
+  /*db.query(
+    'SELECT * FROM groupomania.posts_table;',
+    function(err, results) {
+      res.status(200).json(results);
+    //console.log(results);
+    }
+  )
+  */
+
+  db.promise().query('SELECT * FROM groupomania.users_table;')
+  .then( ([results]) => {
+    console.log(results);
+    res.status(200).json(results);
+  })
+  .catch((error) => {
+    res.status(400).json(error);
+    })
+  //.then( () => db.end());
+
+};
+
+
+
+
 
 exports.signup = (req, res, next) => {
   console.log(req.body.pseudo);

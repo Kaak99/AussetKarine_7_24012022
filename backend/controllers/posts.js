@@ -57,7 +57,7 @@ exports.getAllPosts = (req, res, next) => {
 // };
 
 exports.getOnePosts = (req, res, next) => {
-db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', [req.params.id])
+db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ', [req.params.id])
 .then( ([results]) => {
   console.log(results);
   res.status(200).json(results);
@@ -84,7 +84,7 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `post-id`=? ', 
 
 
 exports.deletePosts = (req, res, next) => {
-  db.promise().query(' DELETE FROM groupomania.posts_table WHERE `post-id`=? ;', [req.params.id])
+  db.promise().query(' DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;', [req.params.id])
 .then( ([results]) => {
   console.log(results);
   res.status(200).json(results);
@@ -222,9 +222,9 @@ exports.modifyPosts = (req, res, next) => {
   //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ? WHERE ', changedPost)
 
 
-  // db.promise().query(' UPDATE `groupomania`.`posts_table` SET titre=?, contenu=?, image=? WHERE `post-id`=? ', [req.body.titre, req.body.contenu,req.body.image, req.params.id])
+  // db.promise().query(' UPDATE `groupomania`.`posts_table` SET titre=?, contenu=?, image=? WHERE `idPosts`=? ', [req.body.titre, req.body.contenu,req.body.image, req.params.id])
 
-  db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `post-id`=? ', [changedPost, req.params.id])
+  db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [changedPost, req.params.id])
 
 .then( ([results]) => {
   console.log(results);

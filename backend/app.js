@@ -79,6 +79,6 @@ app.use(express.json());
 
 // routes //
 app.use('/api/posts', postsRoutes);//(ex stuffRoutes)
-//app.use('/api/users', usersRoutes);
+app.use('/api/users', usersRoutes);
 
 module.exports = app;
