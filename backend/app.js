@@ -10,7 +10,7 @@ const mysql = require('mysql2');
 const morgan = require('morgan');//log requetes
 const db = require('./db/db');
 
-//const usersRoutes = require('./routes/users');//routes users
+const usersRoutes = require('./routes/users');//routes users
 const postsRoutes = require('./routes/posts');//routes post (ex stuffRoutes)
 
 
