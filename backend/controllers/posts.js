@@ -39,7 +39,7 @@ exports.getAllPosts = (req, res, next) => {
   .catch((error) => {
     res.status(400).json(error);
     })
-  .then( () => db.end());
+  //.then( () => db.end());
 
 };
 
@@ -213,13 +213,18 @@ exports.createPosts = (req, res, next) => {
 exports.modifyPosts = (req, res, next) => {
   //console.log(req);
 
-  let changedPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, userid: req.body.userid };
+  // let changedPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, userid:req.body.userid };
+  let changedPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image};
   console.log(changedPost);
 
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
   //db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', changedPost)
   //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ? WHERE ', changedPost)
-  db.promise().query(' UPDATE `groupomania`.`posts_table` SET ? WHERE `post-id`=? ', [changedPost, req.params.id])
+
+
+  // db.promise().query(' UPDATE `groupomania`.`posts_table` SET titre=?, contenu=?, image=? WHERE `post-id`=? ', [req.body.titre, req.body.contenu,req.body.image, req.params.id])
+
+  db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `post-id`=? ', [changedPost, req.params.id])
 
 .then( ([results]) => {
   console.log(results);
