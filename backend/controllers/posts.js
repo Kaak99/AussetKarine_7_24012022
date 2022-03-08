@@ -3,7 +3,7 @@ console.log(` --------> posts-ctrl`);
 
 //const Sauce = require('../models/Sauce');
 const db = require('../db/db');
-//const fs = require('fs');//package fs de node
+const fs = require('fs');//package fs de node
 
 
 
@@ -127,11 +127,18 @@ exports.deletePosts = (req, res, next) => {
 
 exports.createPosts = (req, res, next) => {
   //console.log(req);
-  console.log(req.body.titre);
-  console.log(req.body.contenu);
-  console.log(req.body.image);
-  console.log(req.body.id_Users);
-  let newPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, id_Users: req.body.id_Users };
+  // console.log(req.body.titre);
+  // console.log(req.body.contenu);
+  // console.log(req.body.image);
+  // console.log(req.body.id_Users);
+
+  const postObject = JSON.parse(req.body.post);
+  console.log("postObject");
+  console.log(postObject);
+  console.log("userId de demande");
+  console.log(postObject.id_Users);
+  
+  let newPost = { titre: postObject.titre, contenu: postObject.contenu, image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`, id_Users: postObject.id_Users };
   console.log(newPost);
 
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
