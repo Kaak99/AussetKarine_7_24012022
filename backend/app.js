@@ -4,7 +4,7 @@ console.log(` --------> app.js`);
 
 const express = require('express');
 //const helmet = require("helmet");//helmet pour protéger de différentes attaques
-//const path = require('path');//pour acces au chemin des fichiers
+const path = require('path');//pour acces au chemin des fichiers
 const dotenv = require("dotenv").config();//import variables d'environnement
 const mysql = require('mysql2');
 const morgan = require('morgan');//log requetes
@@ -74,8 +74,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 // appel pour multer(chemin images) //
-//app.use('/images' , express.static(path.join(__dirname, 'images')));
-//app.use(express.static('images'));
+app.use('/images' , express.static(path.join(__dirname, 'images')));
+app.use(express.static('images'));
 
 // routes //
 app.use('/api/posts', postsRoutes);//(ex stuffRoutes)

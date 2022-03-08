@@ -130,8 +130,8 @@ exports.createPosts = (req, res, next) => {
   console.log(req.body.titre);
   console.log(req.body.contenu);
   console.log(req.body.image);
-  console.log(req.body.userid);
-  let newPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, userid: req.body.userid };
+  console.log(req.body.id_Users);
+  let newPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, id_Users: req.body.id_Users };
   console.log(newPost);
 
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
