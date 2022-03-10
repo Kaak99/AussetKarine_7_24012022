@@ -103,6 +103,7 @@ exports.deletePosts = (req, res, next) => {
         .catch((error) => {
             console.log("---catch---");
             res.status(400).json({ error: error });
+            //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
       })
     })}
     else{
@@ -233,43 +234,50 @@ exports.createPosts = (req, res, next) => {
 //!__ recoit : Post as JSON OR { post:String,image: File }  __//
 //!__ renvoie : { message: String }                           __//
 
-// exports.modifySauce = (req, res, next) => {
-//   Sauce.findOne({ _id: req.params.id })
-//   .then(sauce => {
-//       const sauceObject = req.file ? {
-//       ...JSON.parse(req.body.sauce),
-//       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-//     } : { ...req.body };
-    
-//     if (sauce.userId === req.token.userId){
-//       Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-//       .then(() => res.status(200).json({ message: 'Objet modifié !'}))
-//       //.catch(error => res.status(400).json({ error }));
-//       .catch(error => res.status(400).json(error.message));
-//     }
-//     else{
-//       res.status(403).json({message : "vous n'etes pas autorisé à modifier cette sauce"});//car la sauce d'un autre!
-//     }
-//   })  
-//   .catch(error => res.status(400).json(error.message));
-// }
 
 exports.modifyPosts = (req, res, next) => {
-  //console.log(req);
 
+  db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ', [req.params.id])
+  .then( ([results]) => {
+    console.log("---then-find---");
+    //console.log(req);     
+    console.log(results);
+    console.log(results[0].image);
+
+   
+      const postObject = req.file ? 
+      {...JSON.parse(req.body.post),
+      image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      } : { ...req.body };
+      console.log(postObject);
+      db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [postObject, req.params.id])
+        .then( ([results]) => {
+            console.log("---then1-modify---");
+
+            res.status(200).json(results);
+          })
+        .catch((error) => {
+            console.log("---catch---");
+            res.status(400).json({ error: error });
+            //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
+      })
+
+  });
+
+
+};
+
+/*modify(sans fichier)--------------
+exports.modifyPosts = (req, res, next) => {
+  //console.log(req);
   // let changedPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, userid:req.body.userid };
   let changedPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image};
   console.log(changedPost);
-
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
   //db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', changedPost)
   //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ? WHERE ', changedPost)
-
-
   // db.promise().query(' UPDATE `groupomania`.`posts_table` SET titre=?, contenu=?, image=? WHERE `idPosts`=? ', [req.body.titre, req.body.contenu,req.body.image, req.params.id])
-
   db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [changedPost, req.params.id])
-
 .then( ([results]) => {
   console.log(results);
   res.status(200).json(results);
@@ -277,9 +285,32 @@ exports.modifyPosts = (req, res, next) => {
 .catch((error) => {
   res.status(400).json({ error: error });
   })
-//.then( () => db.end());
-
 };
+//-------------------------------------*/
+
+/*
+exports.modifySauce = (req, res, next) => {
+  Sauce.findOne({ _id: req.params.id })
+  .then(sauce => {
+      const sauceObject = req.file ? {
+      ...JSON.parse(req.body.sauce),
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    } : { ...req.body };
+    
+    if (sauce.userId === req.token.userId){
+      Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+      .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+      //.catch(error => res.status(400).json({ error }));
+      .catch(error => res.status(400).json(error.message));
+    }
+    else{
+      res.status(403).json({message : "vous n'etes pas autorisé à modifier cette sauce"});//car la sauce d'un autre!
+    }
+  })  
+  .catch(error => res.status(400).json(error.message));
+}
+
+*/
 
 
 
