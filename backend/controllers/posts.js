@@ -60,6 +60,8 @@ exports.getOnePosts = (req, res, next) => {
 db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ', [req.params.id])
 .then( ([results]) => {
   console.log(results);
+  console.log(results[0].idPosts);
+  console.log(results[0].idPosts);
   res.status(200).json(results);
 })
 .catch((error) => {
@@ -68,35 +70,55 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ', 
 //.then( () => db.end());
 
 };
-  //   .then((results) => { 
-  //   res.status(200).json(results);
-  // })
-  // .catch((error) => {
-  //   res.status(400).json({ error: error });
-  // });
 
 
 
 
-//!__   DELETE POSTS (DELETE+ id sauce)   __//
+
+//!__   DELETE POSTS (DELETE+ id post)   __//
 //!__ recoit : -                          __//
 //!__ renvoie { message: String }         __//
 
 
 exports.deletePosts = (req, res, next) => {
-  db.promise().query(' DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;', [req.params.id])
-.then( ([results]) => {
-  console.log(results);
-  res.status(200).json(results);
-})
-.catch((error) => {
-  res.status(400).json({ error: error });
-  })
-//.then( () => db.end());
+  //if (sauce.userId === req.token.userId){
+  //   if
+  // const filename = sauce.imageUrl.split('/images/')[1];
+  // fs.unlink(`images/${filename}`, () => {
+  db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ', [req.params.id])
+  .then( ([results]) => {
+    console.log("---then-find---");
+    //console.log(req);     
+    console.log(results);
+    console.log(results[0].image);
+    if (results[0].image) {
+      const filename = results[0].image.split('/images/')[1];
+      fs.unlink(`images/${filename}`, () => {
+        db.promise().query(' DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;', [req.params.id])
+        .then( ([results]) => {
+            console.log("---then1-efface---");
 
-};
+            res.status(200).json(results);
+          })
+        .catch((error) => {
+            console.log("---catch---");
+            res.status(400).json({ error: error });
+      })
+    })}
+    else{
+      db.promise().query(' DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;', [req.params.id])
+        .then( ([results]) => {
+            console.log("---then2-efface---");
 
+            res.status(200).json(results);
+          })
+        .catch((error) => {
+            console.log("---catch---");
+            res.status(400).json({ error: error });
+    })}
+  });
 
+}
 
 // exports.deleteSauce = (req, res, next) => {
 //   // console.log("idToken");
@@ -121,7 +143,7 @@ exports.deletePosts = (req, res, next) => {
 
 
 //!__        CREATE POSTS (POST)              __//
-//!__ recoit : as JSON OR { sauce: String, image: File } ?  __//
+//!__ recoit : as JSON OR { post: String, image: File } ?  __//
 //!__ renvoie : { message: String }           __//
 
 
@@ -131,21 +153,36 @@ exports.createPosts = (req, res, next) => {
   // console.log(req.body.contenu);
   // console.log(req.body.image);
   // console.log(req.body.id_Users);
-
+    
   const postObject = JSON.parse(req.body.post);
   console.log("postObject");
   console.log(postObject);
   console.log("userId de demande");
   console.log(postObject.id_Users);
-  
-  let newPost = { titre: postObject.titre, contenu: postObject.contenu, image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`, id_Users: postObject.id_Users };
-  console.log(newPost);
+  let newPost ={};
+  if(!postObject.image){//cas ou pas d'image
+    newPost = { titre: postObject.titre, contenu: postObject.contenu, image: ``, id_Users: postObject.id_Users };
+    console.log(newPost);
 
+  }
+  else{ //sinon (image présente)   
+    newPost = { titre: postObject.titre, contenu: postObject.contenu, image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`, id_Users: postObject.id_Users };
+    console.log(newPost);
+  }
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
    db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', newPost) 
 
 .then( ([results]) => {
   console.log(results);
+  //console.log(req.body);
+  console.log(req.body.post);
+  console.log(JSON.parse(req.body.post));
+  console.log(req.protocol);
+  console.log(req.get('host'));
+  console.log(req.file.filename);
+  console.log(req.protocol +"://"+ req.get('host') +"/images/"+ req.file.filename);
+  console.log(results.insertId);
+  
   res.status(200).json(results);
 })
 .catch((error) => {
@@ -193,7 +230,7 @@ exports.createPosts = (req, res, next) => {
 
 
 //!__         MODIFY POSTS  (PUT+id post)                    __//
-//!__ recoit : Sauce as JSON OR { sauce:String,image: File }  __//
+//!__ recoit : Post as JSON OR { post:String,image: File }  __//
 //!__ renvoie : { message: String }                           __//
 
 // exports.modifySauce = (req, res, next) => {
