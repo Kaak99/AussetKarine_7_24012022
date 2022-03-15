@@ -106,17 +106,23 @@ exports.login = (req, res, next) => {
 
   .then( ([results]) => {
     console.log({results});
-    if(results===[]){
-      //if(!results) crée erreur et va dans catch500
+    console.log(req.body.pseudo);
+    if(results.length===0){
+      //if(!results)if(results==[])if(results===[])
+      // = pas reconnu(passe dans else) et fini dans catch500(car utilise var inexistantes sans doute?)
+      console.log("dans le if");
       console.log("utilisateur " + req.body.pseudo +" inconnu !");
+      return res.status(401).json({ erreur: 'utilisateur inconnu !' });
     }
     else{
+      console.log("dans le else");
+      //àvirerreturn res.status(400).json({ error: 'utilisateur inconnu !' });
       console.log(req.body.password);
       console.log(results[0].password);
       bcrypt.compare(req.body.password, results[0].password)
         .then(valid => {
           if (!valid) {//si mdp pas valide
-            return res.status(401).json({ error: 'Mot de passe incorrect !' });
+            return res.status(401).json({ erreur: 'Mot de passe incorrect !' });
           }
           else{
             console.log("welcome back user "+ results[0].pseudo +" !");
@@ -146,6 +152,11 @@ exports.login = (req, res, next) => {
 
 
 
+
+
+
+
+/* ---------------fin-----------------*/
 
 
 // //! 1.signup : on va enregistrer l'utilisateur dans la bdd
