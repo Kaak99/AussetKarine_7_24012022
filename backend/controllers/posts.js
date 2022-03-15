@@ -231,7 +231,7 @@ exports.createPosts = (req, res, next) => {
 
 
 //!__         MODIFY POSTS  (PUT+id post)                    __//
-//!__ recoit : Post as JSON OR { post:String,image: File }  __//
+//!__ recoit : Post as raw-JSON(sans img) OR form-data { post:String,image: File }  __//
 //!__ renvoie : { message: String }                           __//
 
 
@@ -253,18 +253,13 @@ exports.modifyPosts = (req, res, next) => {
       db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [postObject, req.params.id])
         .then( ([results]) => {
             console.log("---then1-modify---");
-
             res.status(200).json(results);
           })
         .catch((error) => {
             console.log("---catch---");
             res.status(400).json({ error: error });
-            //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
       })
-
   });
-
-
 };
 
 /*modify(sans fichier)--------------
