@@ -57,27 +57,46 @@ exports.changeUserActivity = (req, res, next) => {
 };
 
 
-
-
-
+// ! -------------------- ! //
+// ! SIGNUP (inscription) ! //
+// ! ---------------------! //
 exports.signup = (req, res, next) => {
   console.log(req.body.pseudo);
   console.log(req.body.password);
   let newUser = { pseudo: req.body.pseudo, password: req.body.password, avatar: req.body.avatar, email: req.body.email, bio: req.body.bio, admin: req.body.admin, active: req.body.active };
   console.log(newUser);
-  // INSERT INTO `groupomania`.`users_table` (`pseudo`, `password`, `avatar`, `email`, `bio`, `admin`, `active`) VALUES ('u3', 'mdp', 'https://upload.wikimedia.org/wikipedia/commons/9/98/OOjs_UI_icon_userAvatar.svg', 'u3@mail.fr', 'inconnu!', '0', '1');
-  db.promise().query(' INSERT INTO `groupomania`.`users_table` SET ? ', newUser)
+  // let newUserCryptedEmail="";
+  // let newUserHashedPassword="";
 
-  .then( ([results]) => {
-    console.log(results);
-    res.status(200).json(results);
-  })
-  .catch((error) => {
-    res.status(400).json({ error: error });
+  //*si chiffrage mail!//
+  newUser.email=cryptojs.HmacSHA256(req.body.email, process.env.CRYPTOJS_EMAIL).toString();
+  //newUserHashedPassword=bcrypt.hash(req.body.password, 10);//marche pas (promise returned)
+  //* hashage mdp ET sav dans bdd (non dissociable) //
+  bcrypt.hash(req.body.password, 10)
+    .then(hash => {
+      newUser.password=hash;
+      //console.log(newUser.password);
+      console.log(newUser);
+    
+      // INSERT INTO `groupomania`.`users_table` (`pseudo`, `password`, `avatar`, `email`, `bio`, `admin`, `active`) VALUES ('u3', 'mdp', 'https://upload.wikimedia.org/wikipedia/commons/9/98/OOjs_UI_icon_userAvatar.svg', 'u3@mail.fr', 'inconnu!', '0', '1');
+      db.promise().query(' INSERT INTO `groupomania`.`users_table` SET ? ', newUser) 
+        .then( ([results]) => {
+          console.log(results);
+          console.log("utilisateur " +newUser.pseudo +" créé !");
+          res.status(201).json(results);
+        })
+        .catch((error) => {
+          res.status(400).json({ error: error }).send({probleme:'dans écriture bdd'});
+        })
     })
+    .catch(error => res.status(500).json({ error }).send({probleme:'ds calcul hash'}))
+
 }
 
 
+// ! ------ ! //
+// ! LOGIN  ! //
+// ! ------ ! //
 exports.login = (req, res, next) => {
   db.promise().query(' SELECT * FROM groupomania.users_table WHERE `pseudo`=? ', [req.body.pseudo])
   // INSERT INTO `groupomania`.`users_table` (`pseudo`, `password`, `avatar`, `email`, `bio`, `admin`, `active`) VALUES ('u3', 'mdp', 'https://upload.wikimedia.org/wikipedia/commons/9/98/OOjs_UI_icon_userAvatar.svg', 'u3@mail.fr', 'inconnu!', '0', '1');
