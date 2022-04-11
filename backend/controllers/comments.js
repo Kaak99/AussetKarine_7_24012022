@@ -32,42 +32,27 @@ exports.deleteComments = (req, res, next) => {
 //!__ renvoie : { message: String }           __//
 
 
-exports.createPosts = (req, res, next) => {
+exports.createComments = (req, res, next) => {
   //console.log(req);
-  // console.log(req.body.titre);
-  // console.log(req.body.contenu);
-  // console.log(req.body.image);
-  // console.log(req.body.id_Users);
+  console.log(req.body.contenu);
+  console.log(req.body.id_Posts);
+  console.log(req.body.id_Users);
     
-  const postObject = JSON.parse(req.body.post);
-  console.log("postObject");
-  console.log(postObject);
-  console.log("userId de demande");
-  console.log(postObject.id_Users);
-  let newPost ={};
-  if(!postObject.image){//cas ou pas d'image
-    newPost = { titre: postObject.titre, contenu: postObject.contenu, image: ``, id_Users: postObject.id_Users };
-    console.log(newPost);
+  // const commentObject = JSON.parse(req.body.post);
+  // console.log("commentObject");
+  // console.log(commentObject);
+  // console.log("userId de demande");
+  // console.log(commentObject.id_Users);
+  // console.log("Id du post commenté");
+  // console.log(commentObject.id_Posts);
+  let newComment ={ contenu: req.body.contenu, id_Posts: req.body.id_Posts, id_Users: req.body.id_Users };
+  console.log(newComment);
 
-  }
-  else{ //sinon (image présente)   
-    newComment = { titre: postObject.titre, contenu: postObject.contenu, image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`, id_Users: postObject.id_Users };
-    console.log(newPost);
-  }
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
-   db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', newPost) 
+   db.promise().query(' INSERT INTO `groupomania`.`comments_table` SET ? ', newComment) 
 
 .then( ([results]) => {
   console.log(results);
-  //console.log(req.body);
-  console.log(req.body.post);
-  console.log(JSON.parse(req.body.post));
-  console.log(req.protocol);
-  console.log(req.get('host'));
-  console.log(req.file.filename);
-  console.log(req.protocol +"://"+ req.get('host') +"/images/"+ req.file.filename);
-  console.log(results.insertId);
-  
   res.status(200).json(results);
 })
 .catch((error) => {
