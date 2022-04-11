@@ -12,7 +12,7 @@ const db = require('./db/db');
 
 const usersRoutes = require('./routes/users');//routes users
 const postsRoutes = require('./routes/posts');//routes post (ex stuffRoutes)
-
+const commentsRoutes = require('./routes/comments');//routes post (ex stuffRoutes)
 
 // //bdd
 // const db = mysql.createConnection({
@@ -78,7 +78,8 @@ app.use('/images' , express.static(path.join(__dirname, 'images')));
 app.use(express.static('images'));
 
 // routes //
-app.use('/api/posts', postsRoutes);//(ex stuffRoutes)
+app.use('/api/posts', postsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/comments', commentsRoutes);
 
 module.exports = app;
