@@ -13,7 +13,7 @@ const commentsController = require('../controllers/comments');
 //router.get('/', commentsController.getAllComments);
 router.post('/', commentsController.createComments);
 //router.get('/:id', postsController.getOnePostsComments);
-//router.put('/:id', commentsController.modifyComments);
+router.put('/:id', commentsController.modifyComments);
 router.delete('/:id', commentsController.deleteComments);
 
 
