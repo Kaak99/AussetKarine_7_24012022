@@ -12,7 +12,8 @@ const db = require('./db/db');
 
 const usersRoutes = require('./routes/users');//routes users
 const postsRoutes = require('./routes/posts');//routes post (ex stuffRoutes)
-const commentsRoutes = require('./routes/comments');//routes post (ex stuffRoutes)
+const commentsRoutes = require('./routes/comments');//routes commentaires
+const thumbsRoutes = require('./routes/thumbs');//routes thumbs
 
 // //bdd
 // const db = mysql.createConnection({
@@ -81,5 +82,6 @@ app.use(express.static('images'));
 app.use('/api/posts', postsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/comments', commentsRoutes);
+app.use('/api/thumbs', thumbsRoutes);
 
 module.exports = app;
