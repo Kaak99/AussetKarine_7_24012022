@@ -32,7 +32,7 @@ exports.getAllPosts = (req, res, next) => {
   */
 
   db.promise().query('SELECT * FROM groupomania.posts_table;')
-  .then( ([results]) => {
+  .then( ([results]) => {//renvoi un tableau d'objets 
     console.log(results);
     res.status(200).json(results);
   })
@@ -58,11 +58,11 @@ exports.getAllPosts = (req, res, next) => {
 
 exports.getOnePosts = (req, res, next) => {
 db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ', [req.params.id])
-.then( ([results]) => {
-  console.log(results);
+.then( ([results]) => {//renvoi un tableau d'objets 
+  console.log(results);//mais contenant un seul objet 
+  console.log(results[0].idPosts);//(à l'index zéro)
   console.log(results[0].idPosts);
-  console.log(results[0].idPosts);
-  res.status(200).json(results);
+  res.status(200).json(results[0]);
 })
 .catch((error) => {
   res.status(400).json({ error: error });
@@ -71,8 +71,12 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ', 
 
 };
 
-
-
+/* pour ne plus sortir un tableau
+db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ', [req.params.id])
+.then( (results) => {
+  console.log(results[0][0].idPosts);
+  res.status(200).json(results[0][0]);
+*/
 
 
 //!__   DELETE POSTS (DELETE+ id post)   __//
