@@ -3,9 +3,14 @@
     <nav>
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
-      <router-link to="/posts">posts</router-link>
+      <router-link to="/posts">Posts</router-link>
     </nav>
     <router-view />
+    <nav>
+      <router-link to="/">RGPD</router-link>
+      <router-link to="/about">Règlement interne</router-link>
+      <router-link to="/posts">Nous contacter</router-link>
+    </nav>
   </div>
 </template>
 
@@ -19,12 +24,15 @@
 }
 
 nav {
-  padding: 30px;
+  padding: 20px 50px;
+  /* margin: 20px;
+  justify-content: space-around; */
 }
 
 nav a {
   font-weight: bold;
   color: #2c3e50;
+  margin: 20px;
 }
 
 nav a.router-link-exact-active {
