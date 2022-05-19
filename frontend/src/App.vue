@@ -4,12 +4,15 @@
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
       <router-link to="/posts">Posts</router-link>
+      <router-link to="/users">Utilisateurs</router-link>
+      <router-link to="/monProfil">Mon profil</router-link>
+      <router-link to="/connection">Se connecter</router-link>
     </nav>
     <router-view />
     <nav>
-      <router-link to="/">RGPD</router-link>
-      <router-link to="/about">Règlement interne</router-link>
-      <router-link to="/posts">Nous contacter</router-link>
+      <router-link to="/#">RGPD</router-link>
+      <router-link to="/#">Règlement interne</router-link>
+      <router-link to="/#">Nous contacter</router-link>
     </nav>
   </div>
 </template>
