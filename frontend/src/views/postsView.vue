@@ -24,6 +24,22 @@
   </div>
 </template>
 
+<style>
+.main {
+  padding-bottom: 10px;
+}
+
+.postContainer {
+  padding: 10px;
+  border: solid 1px blue;
+}
+.post {
+  padding: 5px;
+  border: solid 1px cyan;
+  margin-bottom: 5px;
+}
+</style>
+
 <style scoped>
 .main {
   padding-bottom: 10px;
@@ -49,21 +65,27 @@
 </style>
 <script>
 // @ is an alias to /src
-/*
+
+//! ..... FONCTIONS ..... //
 //afficher warning
-function warning(){
-  noLoading.style.display = 'block' ;
+function warning() {
+  noLoading.style.visibility = "visible";
+  //noLoading.style.display = "block";
 }
 
 //afficher warning
-function noWarning(){
-  noLoading.style.display = 'none' ;
+function noWarning() {
+  noLoading.style.visibility = "hidden";
+  //noLoading.style.display = "none";
 }
-*/
-//const noLoading = document.querySelector('.noLoading');
 
+//! ..... CONST ..... //
+const noLoading = document.querySelector(".noLoading");
 //const postsContainerHTML = document.querySelector(".postsContainer");
 const url = "http://localhost:3000/api/posts";
+
+//! ..... CODE ..... //
+noWarning();
 
 fetch(url)
   .then((res) => {
@@ -73,7 +95,7 @@ fetch(url)
     } else {
       console.log("failed (fetch url)!"); //si bad url ou ...
       console.error("erreur : ", status.code); //affiche message d'erreur
-      //warning();
+      warning();
     }
   })
   .then((data) => {
@@ -104,6 +126,6 @@ fetch(url)
   .catch((error) => {
     console.log("error(du catch de fetch url)"); //+quand pas connexion server,bad url,erreur dans then
     console.error("erreur : ", error); //affiche message d'erreur
-    //warning();
+    warning();
   });
 </script>

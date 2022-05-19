@@ -7,7 +7,7 @@
       <!-- <div class="usersCard">
         <div class="user">
           <p class="user-pseudo">pseudo</p>
-          <p class="user-presentation">presentation</p>
+          <p class="user-bio">presentation</p>
         </div>
       </div> -->
     </div>
@@ -23,9 +23,22 @@
     </div>
   </div>
 </template>
-<style></style>
 
-<style scoped></style>
+<style scoped>
+.main {
+  padding-bottom: 10px;
+}
+
+.userContainer {
+  padding: 10px;
+  border: solid 1px blue;
+}
+
+.user {
+  padding: 5px;
+  border: solid 2px red;
+}
+</style>
 
 <script>
 // @ is an alias to /src
@@ -62,7 +75,7 @@ fetch(url)
 
     // Boucle pour récupérer les données des produits &écrire html//
     for (let i = 0; i < data.length; i++) {
-      console.log(data[i].name + data[i].price); // Visualisation si la boucle est opérationnel //
+      console.log(data[i].idUsers + data[i].pseudo); // Visualisation si la boucle est opérationnel //
 
       // Création de l'élément en HTML //
       //avec pour chaque le lien .html?id et img/nom/prix/description
