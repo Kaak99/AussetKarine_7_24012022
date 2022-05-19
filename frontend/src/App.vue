@@ -2,7 +2,6 @@
   <div id="app">
     <nav>
       <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link>
       <router-link to="/posts">Posts</router-link>
       <router-link to="/users">Utilisateurs</router-link>
       <router-link to="/monProfil">Mon profil</router-link>
@@ -10,8 +9,9 @@
     </nav>
     <router-view />
     <nav>
-      <router-link to="/#">RGPD</router-link>
+      <router-link to="/about">About</router-link>
       <router-link to="/#">Règlement interne</router-link>
+      <router-link to="/#">RGPD</router-link>
       <router-link to="/#">Nous contacter</router-link>
     </nav>
   </div>

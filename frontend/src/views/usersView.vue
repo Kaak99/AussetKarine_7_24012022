@@ -1,5 +1,87 @@
 <template>
-  <div class="post">
+  <div class="users">
     <h1>This is a usersView page test</h1>
+    <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
+    <div class="userContainer d-flex">
+      <!--ici démarre la zone de création de posts-->
+      <!-- <div class="usersCard">
+        <div class="user">
+          <p class="user-pseudo">pseudo</p>
+          <p class="user-presentation">presentation</p>
+        </div>
+      </div> -->
+    </div>
+
+    <div class="noLoading">
+      <p class="problemeServeur centerTxt">Un problème est survenu.</p>
+      <p class="problemeServeur centerTxt">
+        Il semble que le serveur soit indisponible.
+      </p>
+      <p class="problemeServeur centerTxt">
+        Ou bien qu'il y ait un problème sur votre connexion internet
+      </p>
+    </div>
   </div>
 </template>
+<style></style>
+
+<style scoped></style>
+
+<script>
+// @ is an alias to /src
+/*
+//afficher warning
+function warning(){
+  noLoading.style.display = 'block' ;
+}
+
+//afficher warning
+function noWarning(){
+  noLoading.style.display = 'none' ;
+}
+*/
+//const noLoading = document.querySelector('.noLoading');
+
+//const postsContainerHTML = document.querySelector(".postsContainer");
+const url = "http://localhost:3000/api/users";
+
+fetch(url)
+  .then((res) => {
+    if (res.ok) {
+      console.log("success(fetch url)!");
+      return res.json();
+    } else {
+      console.log("failed (fetch url)!"); //si bad url ou ...
+      console.error("erreur : ", status.code); //affiche message d'erreur
+      //warning();
+    }
+  })
+  .then((data) => {
+    console.log(data); //affiche les data de l'api (tableau d'objet)
+    let usersString = ""; // Création de la variable qui concatenera tous éléments
+
+    // Boucle pour récupérer les données des produits &écrire html//
+    for (let i = 0; i < data.length; i++) {
+      console.log(data[i].name + data[i].price); // Visualisation si la boucle est opérationnel //
+
+      // Création de l'élément en HTML //
+      //avec pour chaque le lien .html?id et img/nom/prix/description
+      usersString += `        
+        <div class="user">
+          <p class="user-pseudo">${data[i].pseudo}</p>
+          <p class="user-bio">${data[i].bio}</p>
+        </div>`;
+    }
+
+    // Insertion html créé : mis dans .postsContainerHTML (index.html) //
+    const userContainerHTML = document.querySelector(".userContainer");
+    userContainerHTML.innerHTML = usersString;
+  })
+
+  // Message d'erreur //
+  .catch((error) => {
+    console.log("error(du catch de fetch url)"); //+quand pas connexion server,bad url,erreur dans then
+    console.error("erreur : ", error); //affiche message d'erreur
+    //warning();
+  });
+</script>
