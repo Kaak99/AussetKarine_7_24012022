@@ -1,24 +1,57 @@
 //! ............................... TEMPLATE ............................... //
 
 <template>
-  <!-- <div class="connection"> 
-    <h1>This is a connection page test</h1>
-  </div>-->
-
-  <div class="users">
-    <h1>This is a usersView page test</h1>
-    <p>{{ text1 }}</p>
-    <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
-    <div class="userContainer d-flex">
-      <!--ici démarre la zone de création de posts-->
-      <!-- <div class="usersCard">
+  <div class="container">
+    <div class="users">
+      <h1>Connection page test</h1>
+      <h2 class="centerTxt">Veuillez rentrer votre pseudo et mot de passe</h2>
+      <div class="userContainer d-flex">
+        <!--ici démarre la zone de création de posts-->
+        <!-- <div class="usersCard">
         <div class="user">
           <p class="user-pseudo">pseudo</p>
           <p class="user-bio">presentation</p>
         </div>
       </div> -->
-    </div>
+        <label for="userPseudo" title="au moins 5 lettres">Pseudo :</label>
+        <input
+          type="text"
+          size="10"
+          maxlength="20"
+          class="centerTxt"
+          name="pseudo"
+          id="pseudo"
+          placeholder="votre pseudo"
+          required
+        />
+        <p id="pseudoAlert" class="userPseudoAlert">
+          <i class="fas fa-times-circle"></i>Pseudo incorrect
+        </p>
+        <p id="pseudoOk" class="userPseudoValid">
+          <i class="fas fa-check-circle"></i>Pseudo accepté
+        </p>
 
+        <label for="userPassword" title="au moins 6 caractères"
+          >Mot de passe :</label
+        >
+        <input
+          type="password"
+          size="10"
+          maxlength="16"
+          class="centerTxt cart"
+          name="userPassword"
+          id="userPassword"
+          placeholder="mot de passe"
+          required
+        />
+        <p id="passwordAlert" class="userPasswordAlert">
+          <i class="fas fa-times-circle"></i>mot de passe incorrect
+        </p>
+        <p id="passwordOk" class="userPasswordValid">
+          <i class="fas fa-check-circle"></i>mot de passe accepté
+        </p>
+      </div>
+    </div>
     <div class="noLoading">
       <p class="problemeServeur centerTxt">Un problème est survenu.</p>
       <p class="problemeServeur centerTxt">
@@ -69,7 +102,7 @@
 <script>
 // @ is an alias to /src
 //import { axios } from "axios";
-import axios from "axios";
+//import axios from "axios";
 export default {
   name: "connectionView",
 };
@@ -87,7 +120,7 @@ function noWarning(){
 //const noLoading = document.querySelector('.noLoading');
 
 //const postsContainerHTML = document.querySelector(".postsContainer");
-const url = "http://localhost:3000/api/users";
+//const url = "http://localhost:3000/api/users/login";
 
 // axios.get('https://api.chucknorris.io/jokes/search?query=god')
 //   .then(function (response) {
@@ -96,34 +129,4 @@ const url = "http://localhost:3000/api/users";
 //   .catch(function (error) {
 //     console.log(error);
 //   });
-
-axios
-  .get(url)
-  .then((data) => {
-    console.log(data); //affiche les data de l'api (tableau d'objet)
-    let usersString = ""; // Création de la variable qui concatenera tous éléments
-
-    // Boucle pour récupérer les données des produits &écrire html//
-    for (let i = 0; i < data.length; i++) {
-      console.log(data[i].idUsers + data[i].pseudo); // Visualisation si la boucle est opérationnel //
-
-      // Création de l'élément en HTML //
-      //avec pour chaque le lien .html?id et img/nom/prix/description
-      usersString += `        
-        <div class="user">
-          <p class="user-pseudo">${data[i].pseudo}</p>
-          <p class="user-bio">${data[i].bio}</p>
-        </div>`;
-    }
-
-    // Insertion html créé : mis dans .postsContainerHTML (index.html) //
-    const userContainerHTML = document.querySelector(".userContainer");
-    userContainerHTML.innerHTML = usersString;
-  })
-
-  // Message d'erreur //
-  .catch((error) => {
-    console.error("erreur : ", error); //affiche message d'erreur
-    //warning();
-  });
 </script>

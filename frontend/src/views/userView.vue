@@ -3,29 +3,26 @@
 <template>
   <div>
     <div class="users" v-show="loading === true">
-      <h1>This is a usersView page test</h1>
+      <h1>This is one userView page test</h1>
       <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
-      <div class="userContainer d-flex">
+      <div class="OneUserContainer d-flex">
         <!--ici démarre la zone de users-->
         <!-- <div class="usersCard">
         <div class="user">
           <p class="user-pseudo">pseudo</p>
           <p class="user-bio">presentation</p>
         </div>
-        </div> -->
+      </div> -->
         <div v-for="user in getApi" :key="user.idUsers" class="usersCard">
+          <!-- <div v-for="user in getApi" :key="user.idUsers" class="usersCard"> -->
           <div class="user">
             <!-- <div class="user" :href="npmjs.com"> -->
             <!-- <div class="user" :href="html/product.html?${data[i]._id}"> -->
             <!-- <router-link to="/posts">Posts</router-link> -->
-            <!-- <a class="user-pseudo" :href="`urlVue2`">{{ user.pseudo }}</a> -->
-            <router-link to="/user" class="user-pseudo">{{
-              user.pseudo
-            }}</router-link>
-            <!-- <router-link to="/user?{{user.idUsers}}" class="user-pseudo">{{
-              user.pseudo
-            }}</router-link> -->
-            <!-- <router-link to="/userView?">click here<router-link> -->
+            <p class="user-pseudo">{{ user.pseudo }}</p>
+            <p class="user-email">{{ user.email }}</p>
+            <p class="user-bio">{{ user.bio }}</p>
+            <!-- <img href="http://localhost>" -->
           </div>
         </div>
         <p>{{ getApi }}</p>
@@ -58,11 +55,14 @@ export default {
       getApi: null,
       url: "http://localhost:3000/api/users",
       urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
+      oneUrl: "http://localhost:3000/api/user/{{getApi.idUsers}}",
     };
   },
   mounted() {
     axios.get(this.url).then((response) => {
-      this.getApi = response.data;
+      this.getApi = response.data[0];
+      // this.getApi = response.data;
+      console.log(this.getApi);
       this.loading = true;
     });
     // axios.get(this.url).then((response) => (this.getApi = response.data));
