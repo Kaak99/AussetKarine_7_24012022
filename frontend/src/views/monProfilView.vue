@@ -1,3 +1,5 @@
+//! ............................... TEMPLATE ............................... //
+
 <template>
   <div class="post">
     <h1>This is a monProfile page test</h1>
@@ -24,6 +26,8 @@
   </div>
 </template>
 
+//! ............................... STYLE ............................... //
+
 <style scoped>
 .main {
   padding-bottom: 10px;
@@ -39,3 +43,5 @@
   border: solid 1px cyan;
 }
 </style>
+
+//! ............................... SCRIPT ............................... //

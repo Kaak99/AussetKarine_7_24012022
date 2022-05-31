@@ -1,3 +1,4 @@
+//! ............................... TEMPLATE ............................... //
 <template>
   <div class="about">
     <h1>This is an about page</h1>
@@ -22,6 +23,14 @@
     <HelloWorld2 msg="Welcome to Your Vue.js App" />
   </div>
 </template>
+
+//! ............................... STYLE ............................... //
+
+<style></style>
+
+<style scoped></style>
+
+//! ............................... SCRIPT ............................... //
 
 <script>
 // @ is an alias to /src

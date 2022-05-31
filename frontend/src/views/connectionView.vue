@@ -1,3 +1,5 @@
+//! ............................... TEMPLATE ............................... //
+
 <template>
   <!-- <div class="connection"> 
     <h1>This is a connection page test</h1>
@@ -5,6 +7,7 @@
 
   <div class="users">
     <h1>This is a usersView page test</h1>
+    <p>{{ text1 }}</p>
     <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
     <div class="userContainer d-flex">
       <!--ici démarre la zone de création de posts-->
@@ -28,6 +31,7 @@
   </div>
 </template>
 
+//! ............................... STYLE ............................... //
 <style>
 .user {
   padding: 5px;
@@ -60,10 +64,15 @@
 }
 </style>
 
+//! ............................... SCRIPT ............................... //
+
 <script>
 // @ is an alias to /src
 //import { axios } from "axios";
 import axios from "axios";
+export default {
+  name: "connectionView",
+};
 /*
 //afficher warning
 function warning(){

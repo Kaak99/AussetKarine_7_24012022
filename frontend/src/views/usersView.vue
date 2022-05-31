@@ -1,3 +1,5 @@
+//! ............................... TEMPLATE ............................... //
+
 <template>
   <div class="users">
     <h1>This is a usersView page test</h1>
@@ -24,6 +26,8 @@
   </div>
 </template>
 
+//! ............................... STYLE ............................... //
+
 <style scoped>
 .main {
   padding-bottom: 10px;
@@ -39,6 +43,8 @@
   border: solid 2px red;
 }
 </style>
+
+//! ............................... SCRIPT ............................... //
 
 <script>
 // @ is an alias to /src

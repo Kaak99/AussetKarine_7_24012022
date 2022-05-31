@@ -1,18 +1,24 @@
-<template>
-  <div class="posts" v-if="loading === true">
-    <h1>This is a posts page test</h1>
-    <h2 class="centerTxt">Tous les posts</h2>
-    <div class="postContainer d-flex">
-      <!--ici démarre la zone de création de posts-->
-      <!-- <div class="postsCard">
-        <div class="post">
-          <p class="post-title">titre du post</p>
-          <p class="post-text">texte du post</p>
-        </div>
-      </div> -->
-    </div>
+//! ............................... TEMPLATE ............................... //
 
+<template>
+  <div>
+    <div class="posts" v-if="loading === true">
+      <h1>This is a posts page test</h1>
+      <p>{{ getApi }}</p>
+      <h2 class="centerTxt">Tous les posts</h2>
+      <div class="postContainer d-flex">
+        <!--ici démarre la zone de création de posts-->
+        <div v-for="post in getApi" :key="post.idPosts" class="postsCard">
+          <div class="post">
+            <!-- <router-link to="/posts">Posts</router-link> -->
+            <p class="post-title">{{ post.titre }}</p>
+            <p class="post-text">{{ post.contenu }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="noLoading" v-if="loading === false">
+      <!--  ou v-else ?  -->
       <p class="problemeServeur centerTxt">Un problème est survenu.</p>
       <p class="problemeServeur centerTxt">
         Il semble que le serveur soit indisponible.
@@ -23,6 +29,76 @@
     </div>
   </div>
 </template>
+
+//! ............................... SCRIPT ............................... //
+
+<script>
+// @ is an alias to /src
+import axios from "axios";
+
+export default {
+  name: "postsView",
+
+  data() {
+    return {
+      info: null,
+      loading: true,
+      compteur: 0,
+      text1: "texte de test",
+      url: "http://localhost:3000/api/posts",
+      getApi: null,
+    };
+  },
+  mounted() {
+    axios.get(this.url).then((response) => (this.getApi = response.data));
+  },
+};
+/*
+import axios from "axios";
+export default {
+  //pourquoi erreur sinon??
+  name: "postsView",
+  data() {
+    return {
+      getApi: null,
+      url: "http://localhost:3000/posts",
+    };
+  },
+};
+// eslint-disable-next-line no-undef
+new Vue({
+  el: "#app",
+  data: {
+    loading: false,
+    compteur: 0,
+    text1: "texte de test",
+    //url: "http://localhost:3000/posts",
+    //getApi: null,
+  },
+  methods: {
+    getPostsAxios: function () {
+      axios
+        .get("http://localhost:3000/posts")
+        .then((data) => {
+          console.log(data); //affiche les data de l'api (tableau d'objet)
+          this.getApi = data;
+        })
+
+        // Message d'erreur //
+        .catch((error) => {
+          console.error("erreur : ", error); //affiche message d'erreur
+          //warning();
+        });
+    },
+  },
+  computed: {},
+  watch: {},
+});
+
+*/
+</script>
+
+//! ............................... STYLE ............................... //
 
 <style>
 .main {
@@ -63,21 +139,3 @@
   text-decoration: underline;
 }
 </style>
-
-<script>
-// @ is an alias to /src
-// eslint-disable-next-line no-undef
-new Vue({
-  el: "#monRS",
-  data: {
-    loading: false,
-    compteur: 0,
-    url: "http://localhost:3000/posts",
-  },
-  methods: {
-    getPostsAxios: function () {},
-  },
-  computed: {},
-  watch: {},
-});
-</script>
