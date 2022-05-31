@@ -4,7 +4,6 @@
   <div>
     <div class="posts" v-if="loading === true">
       <h1>This is a posts page test</h1>
-      <p>{{ getApi }}</p>
       <h2 class="centerTxt">Tous les posts</h2>
       <div class="postContainer d-flex">
         <!--ici démarre la zone de création de posts-->
@@ -15,10 +14,11 @@
             <p class="post-text">{{ post.contenu }}</p>
           </div>
         </div>
+        <p>{{ getApi }}</p>
       </div>
     </div>
-    <div class="noLoading" v-if="loading === false">
-      <!--  ou v-else ?  -->
+    <div class="noLoading" v-else>
+      <!-- <div class="noLoading" v-if="loading === false"> -->
       <p class="problemeServeur centerTxt">Un problème est survenu.</p>
       <p class="problemeServeur centerTxt">
         Il semble que le serveur soit indisponible.
@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       info: null,
-      loading: true,
+      loading: false,
       compteur: 0,
       text1: "texte de test",
       url: "http://localhost:3000/api/posts",
@@ -50,7 +50,11 @@ export default {
     };
   },
   mounted() {
-    axios.get(this.url).then((response) => (this.getApi = response.data));
+    // axios.get(this.url).then((response) => (this.getApi = response.data));
+    axios.get(this.url).then((response) => {
+      this.getApi = response.data;
+      this.loading = true;
+    });
   },
 };
 /*
