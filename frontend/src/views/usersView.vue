@@ -22,6 +22,9 @@
             <router-link to="/user" class="user-pseudo">{{
               user.pseudo
             }}</router-link>
+            <router-link :to="{ name: 'user', params: { id: user.idUsers } }">{{
+              user.pseudo
+            }}</router-link>
             <!-- <router-link to="/user?{{user.idUsers}}" class="user-pseudo">{{
               user.pseudo
             }}</router-link> -->

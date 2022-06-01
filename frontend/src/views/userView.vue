@@ -13,18 +13,18 @@
           <p class="user-bio">presentation</p>
         </div>
       </div> -->
-        <div v-for="user in getApi" :key="user.idUsers" class="usersCard">
-          <!-- <div v-for="user in getApi" :key="user.idUsers" class="usersCard"> -->
-          <div class="user">
-            <!-- <div class="user" :href="npmjs.com"> -->
-            <!-- <div class="user" :href="html/product.html?${data[i]._id}"> -->
-            <!-- <router-link to="/posts">Posts</router-link> -->
-            <p class="user-pseudo">{{ user.pseudo }}</p>
-            <p class="user-email">{{ user.email }}</p>
-            <p class="user-bio">{{ user.bio }}</p>
-            <!-- <img href="http://localhost>" -->
-          </div>
+        <!-- <div v-for="user in getApi" :key="user.idUsers" class="usersCard"> -->
+        <!-- <div v-for="user in getApi" :key="user.idUsers" class="usersCard"> -->
+        <div class="user">
+          <!-- <div class="user" :href="npmjs.com"> -->
+          <!-- <div class="user" :href="html/product.html?${data[i]._id}"> -->
+          <!-- <router-link to="/posts">Posts</router-link> -->
+          <p class="user-pseudo">{{ getApi.pseudo }}</p>
+          <p class="user-email">{{ getApi.email }}</p>
+          <p class="user-bio">{{ getApi.bio }}</p>
+          <!-- <img href="http://localhost>" -->
         </div>
+
         <p>{{ getApi }}</p>
       </div>
     </div>
@@ -52,14 +52,15 @@ export default {
   data() {
     return {
       loading: false,
-      getApi: null,
-      url: "http://localhost:3000/api/users",
+      getApi: "",
+      url: "http://localhost:3000/api",
       urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
       oneUrl: "http://localhost:3000/api/user/{{getApi.idUsers}}",
     };
   },
-  mounted() {
-    axios.get(this.url).then((response) => {
+  created() {
+    console.log(this.$route.params.id);
+    axios.get(this.url + `/users/` + this.$route.params.id).then((response) => {
       this.getApi = response.data[0];
       // this.getApi = response.data;
       console.log(this.getApi);
