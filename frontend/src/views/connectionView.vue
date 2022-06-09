@@ -101,10 +101,29 @@
 
 <script>
 // @ is an alias to /src
-//import { axios } from "axios";
-//import axios from "axios";
+import axios from "axios";
+
 export default {
   name: "connectionView",
+  data() {
+    return {
+      compteur: 0,
+      loading: false,
+      url: "http://localhost:3000/api/users/login",
+      getApi: "",
+    };
+  },
+  created() {
+    axios
+      .post(this.url, { pseudo: "user60", password: "mdp" })
+      .then((response) => {
+        this.getApi = response.data;
+        console.log(this.getApi);
+        console.log(this.getApi.userId);
+        console.log(this.getApi.token);
+        this.loading = true;
+      });
+  },
 };
 /*
 //afficher warning

@@ -49,10 +49,13 @@ export default {
       getApi: null,
     };
   },
-  mounted() {
+  created() {
+    //mounted() {
     // axios.get(this.url).then((response) => (this.getApi = response.data));
     axios.get(this.url).then((response) => {
       this.getApi = response.data;
+      //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
+      console.log(this.getApi);
       this.loading = true;
     });
   },

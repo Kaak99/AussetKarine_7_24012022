@@ -15,13 +15,9 @@
         </div> -->
         <div v-for="user in getApi" :key="user.idUsers" class="usersCard">
           <div class="user">
-            <!-- <div class="user" :href="npmjs.com"> -->
-            <!-- <div class="user" :href="html/product.html?${data[i]._id}"> -->
-            <!-- <router-link to="/posts">Posts</router-link> -->
-            <!-- <a class="user-pseudo" :href="`urlVue2`">{{ user.pseudo }}</a> -->
-            <router-link to="/user" class="user-pseudo">{{
+            <!-- <router-link to="/user" class="user-pseudo">{{
               user.pseudo
-            }}</router-link>
+            }}</router-link> -->
             <router-link :to="{ name: 'user', params: { id: user.idUsers } }">{{
               user.pseudo
             }}</router-link>
