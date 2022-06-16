@@ -4,6 +4,7 @@
   <div>
     <div class="users" v-show="loading === true">
       <h1>This is a usersView page test</h1>
+      <p>{{ token0 }}</p>
       <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
       <div class="userContainer d-flex">
         <!--ici démarre la zone de users-->
@@ -55,11 +56,16 @@ export default {
     return {
       loading: false,
       getApi: null,
-      number1: 0,
+      number1: 2,
       url: "http://localhost:3000/api/users",
       urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
+      monImport: "",
+      token0: this.token,
     };
   },
+
+  props: ["token"],
+
   mounted() {
     axios
       .get(this.url)

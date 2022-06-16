@@ -66,6 +66,7 @@ exports.changeUserActivity = (req, res, next) => {
 // ! SIGNUP (inscription) ! //
 // ! ---------------------! //
 exports.signup = (req, res, next) => {
+  console.log(" =============== début =============== ");
   console.log(req.body.pseudo);
   console.log(req.body.password);
   let newUser = {
@@ -77,7 +78,7 @@ exports.signup = (req, res, next) => {
     admin: req.body.admin,
     active: req.body.active,
   };
-  console.log(newUser);
+  //console.log(newUser);
   // let newUserCryptedEmail="";
   // let newUserHashedPassword="";
 
@@ -98,20 +99,16 @@ exports.signup = (req, res, next) => {
       db.promise()
         .query(" INSERT INTO `groupomania`.`users_table` SET ? ", newUser)
         .then(([results]) => {
-          console.log(results);
+          //console.log(results);
           console.log("utilisateur " + newUser.pseudo + " créé !");
+          console.log(" =============== réponse:(et fin) =============== ");
           res.status(201).json(results);
         })
         .catch((error) => {
-          res
-            .status(400)
-            .json({ error: error })
-            .send({ probleme: "dans écriture bdd" });
+          res.status(400).json({ error: error });
         });
     })
-    .catch((error) =>
-      res.status(500).json({ error }).send({ probleme: "ds calcul hash" })
-    );
+    .catch((error) => res.status(500).json({ error }));
 };
 
 // ! ------ ! //

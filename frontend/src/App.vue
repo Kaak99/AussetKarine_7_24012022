@@ -8,8 +8,10 @@
       <router-link to="/users">Utilisateurs</router-link>
       <router-link to="/monProfil">Mon profil</router-link>
       <router-link to="/connection">Se connecter</router-link>
+      <router-link to="/signup">S'inscrire</router-link>
     </nav>
-    <router-view />
+    <!-- <router-view :token="token"></router-view> -->
+    <router-view :token="test"></router-view>
     <nav>
       <router-link to="/about">About</router-link>
       <router-link to="/#">Règlement interne</router-link>
@@ -49,4 +51,16 @@ nav a.router-link-exact-active {
 
 //! ............................... SCRIPT ............................... //
 
-<script></script>
+<script>
+export default {
+  name: "App",
+  data() {
+    return {
+      test: "test",
+    };
+  },
+  props: {
+    token: String,
+  },
+};
+</script>
