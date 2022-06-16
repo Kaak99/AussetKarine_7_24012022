@@ -60,11 +60,16 @@ export default {
     };
   },
   mounted() {
-    axios.get(this.url).then((response) => {
-      this.getApi = response.data;
-      this.loading = true;
-    });
-    // axios.get(this.url).then((response) => (this.getApi = response.data));
+    axios
+      .get(this.url)
+      .then((response) => {
+        this.getApi = response.data;
+        this.loading = true;
+      })
+      // axios.get(this.url).then((response) => (this.getApi = response.data));
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 
