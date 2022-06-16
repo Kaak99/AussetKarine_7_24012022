@@ -51,7 +51,7 @@ export default {
       getApi: null,
     };
   },
-  mounted() {
+  created() {
     // axios.get(this.url).then((response) => (this.getApi = response.data));
     axios.get(this.url).then((response) => {
       // axios.get(`${this.url}/4`).then((response) => {

@@ -53,8 +53,10 @@
           <p id="passwordOk" class="userPasswordValid">
             <i class="fas fa-check-circle"></i>mot de passe accepté
           </p>
-          <button class="">Je me connecte !</button>
-          <p>{{ pseudo }}</p>
+          <button class="buttonValid" v-on:click.prevent="envoi">
+            Je me connecte !
+          </button>
+          <p>{{ messageRetour }}</p>
         </div>
       </form>
     </div>
@@ -82,7 +84,7 @@ export default {
   data() {
     return {
       compteur: 0,
-      loading: false,
+      loading: true,
       url: "http://localhost:3000/api/users/login",
       getApi: "",
       messageRetour: "",
@@ -90,27 +92,31 @@ export default {
       mdp: "",
     };
   },
-  created() {
-    axios
-      // .post(this.url, { pseudo: this.pseudo, password: this.mdp })
-      .post(this.url, { pseudo: "user60", password: "mdp" })
-      .then((response) => {
-        this.getApi = response.data;
-        this.messageRetour = "Connexion";
-        console.log(this.getApi);
-        console.log(this.getApi.userId);
-        console.log(this.getApi.token);
-        this.loading = true;
-        localStorage.setItem(
-          JSON.stringify(this.getApi.userId),
-          JSON.stringify(this.getApi.token)
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-        this.messageRetour = "Problème";
-        this.loading = false;
-      });
+  methods: {
+    envoi: function () {
+      axios
+        .post(this.url, { pseudo: this.pseudo, password: this.mdp })
+        // .post(this.url, { pseudo: "user60", password: "mdp" })
+        .then((response) => {
+          this.getApi = response.data;
+          this.messageRetour = "Connexion";
+          console.log(this.getApi);
+          console.log(this.getApi.userId);
+          console.log(this.getApi.token);
+          this.loading = true;
+          localStorage.setItem(
+            JSON.stringify(this.getApi.userId),
+            JSON.stringify(this.getApi.token)
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+          this.messageRetour = error.response.data.erreur;
+          console.log(error.response.data);
+          //this.messageRetour = this.getApi.error;
+          //this.loading = false;
+        });
+    },
   },
 };
 </script>
