@@ -55,6 +55,7 @@ export default {
     return {
       loading: false,
       getApi: null,
+      number1: 0,
       url: "http://localhost:3000/api/users",
       urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
     };
