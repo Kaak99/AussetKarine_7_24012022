@@ -4,7 +4,7 @@
   <div>
     <div class="users" v-show="loading === true">
       <h1>This is a usersView page test</h1>
-      <p>{{ token0 }}</p>
+      <p>{{ monToken }}</p>
       <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
       <div class="userContainer d-flex">
         <!--ici démarre la zone de users-->
@@ -28,7 +28,7 @@
             <!-- <router-link to="/userView?">click here<router-link> -->
           </div>
         </div>
-        <p>{{ getApi }}</p>
+        <!-- <p>{{ getApi }}</p> -->
       </div>
     </div>
 
@@ -55,12 +55,12 @@ export default {
   data() {
     return {
       loading: false,
-      getApi: null,
+      getApi: "",
       number1: 2,
       url: "http://localhost:3000/api/users",
       urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
       monImport: "",
-      token0: this.token,
+      monToken: this.token,
     };
   },
 
@@ -79,48 +79,6 @@ export default {
       });
   },
 };
-
-// //fetch
-// fetch(url)
-//   .then((res) => {
-//     if (res.ok) {
-//       console.log("success(fetch url)!");
-//       return res.json();
-//     } else {
-//       console.log("failed (fetch url)!"); //si bad url ou ...
-//       console.error("erreur : ", status.code); //affiche message d'erreur
-//       //warning();
-//     }
-//   })
-//   .then((data) => {
-//     console.log(data); //affiche les data de l'api (tableau d'objet)
-//     let usersString = ""; // Création de la variable qui concatenera tous éléments
-
-//     // Boucle pour récupérer les données des produits &écrire html//
-//     for (let i = 0; i < data.length; i++) {
-//       console.log(data[i].idUsers + data[i].pseudo); // Visualisation si la boucle est opérationnel //
-
-//       // Création de l'élément en HTML //
-//       //avec pour chaque le lien .html?id et img/nom/prix/description
-//       usersString += `
-//         <div class="user">
-//           <p class="user-pseudo">${data[i].pseudo}</p>
-//           <p class="user-bio">${data[i].bio}</p>
-//         </div>`;
-//     }
-
-//     // Insertion html créé : mis dans .postsContainerHTML (index.html) //
-//     const userContainerHTML = document.querySelector(".userContainer");
-//     userContainerHTML.innerHTML = usersString;
-//   })
-
-//   // Message d'erreur //
-//   .catch((error) => {
-//     console.log("error(du catch de fetch url)"); //+quand pas connexion server,bad url,erreur dans then
-//     console.error("erreur : ", error); //affiche message d'erreur
-//     //warning();
-//   });
-//
 </script>
 
 //! ............................... STYLE ............................... //

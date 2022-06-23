@@ -10,8 +10,9 @@
       <router-link to="/connection">Se connecter</router-link>
       <router-link to="/signup">S'inscrire</router-link>
     </nav>
+    <!-- <router-view /> -->
     <!-- <router-view :token="token"></router-view> -->
-    <router-view :token="test"></router-view>
+    <router-view :token="monTest"></router-view>
     <nav>
       <router-link to="/about">About</router-link>
       <router-link to="/#">Règlement interne</router-link>
@@ -20,6 +21,22 @@
     </nav>
   </div>
 </template>
+
+//! ............................... SCRIPT ............................... //
+
+<script>
+export default {
+  name: "App",
+  data() {
+    return {
+      monTest: "ceci est mon test!!",
+    };
+  },
+  props: {
+    token: String,
+  },
+};
+</script>
 
 //! ............................... STYLE ............................... //
 
@@ -48,19 +65,3 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
-
-//! ............................... SCRIPT ............................... //
-
-<script>
-export default {
-  name: "App",
-  data() {
-    return {
-      test: "test",
-    };
-  },
-  props: {
-    token: String,
-  },
-};
-</script>

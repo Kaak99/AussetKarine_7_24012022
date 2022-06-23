@@ -104,10 +104,12 @@ export default {
           console.log(this.getApi.userId);
           console.log(this.getApi.token);
           this.loading = true;
-          localStorage.setItem(
-            JSON.stringify(this.getApi.userId),
-            JSON.stringify(this.getApi.token)
-          );
+          // localStorage.setItem(
+          //   JSON.stringify(this.getApi.userId),
+          //   JSON.stringify(this.getApi.token)
+          // );
+          localStorage.setItem("userId", JSON.stringify(this.getApi.userId));
+          localStorage.setItem("userToken", JSON.stringify(this.getApi.token));
         })
         .catch((error) => {
           console.log(error);
