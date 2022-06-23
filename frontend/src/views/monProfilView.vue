@@ -5,9 +5,9 @@
     <h1>This is a monProfile page test</h1>
     <section class="monProfilContainer">
       <div class="profil">
-        <!-- <p>{{ getApi[0].pseudo }}</p>
-        <p>{{ getApi[0].email }}</p>
-        <p>{{ getApi[0].bio }}</p> -->
+        <p>{{ getApi.pseudo }}</p>
+        <p>{{ getApi.email }}</p>
+        <p>{{ getApi.bio }}</p>
         <!-- <img :src="/src/assets/img/avatar.png" /> -->
         <!-- <img :src="require(`@/assets/img/avatar.png`)" /> -->
       </div>
@@ -32,11 +32,12 @@ export default {
       thisId: localStorage.getItem("userId"),
       url: "http://localhost:3000/api",
       urlGod: "http://localhost:3000/api/users/4",
-      thisUrl: "http://localhost:3000/api/users/{{thisId}}",
-      getApi: "",
+      thisUrl: "",
+      getApi: {},
     };
   },
   created() {
+    this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
     // axios.get(this.url).then((response) => (this.getApi = response.data));
     //this.thisId = localStorage.getItem("userId");
     console.log(this.thisId);
@@ -45,10 +46,10 @@ export default {
     axios.get(this.url + `/users/` + this.thisId).then((response) => {
       // axios.get(this.thisUrl).then((response) => {
       // axios.get(`${this.url}/4`).then((response) => {
-      this.getApi = response.data;
+      this.getApi = response.data[0];
+      //console.log(response);
       console.log(this.getApi);
-      console.log(this.getApi[0]);
-      console.log(this.getApi[0]);
+      console.log(this.getApi.pseudo);
       this.loading = true;
     });
   },
