@@ -1,8 +1,8 @@
 //! ............................... TEMPLATE ............................... //
 
 <template>
-  <div class="container">
-    <div class="users">
+  <div class="containAll">
+    <div class="users container">
       <!-- <div class="users" v-if="loading === true"> -->
       <form class="formSignup">
         <h1>Signup page test</h1>

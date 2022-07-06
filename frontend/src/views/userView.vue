@@ -2,7 +2,7 @@
 
 <template>
   <div>
-    <div class="users" v-show="loading === true">
+    <div class="users container" v-show="loading === true">
       <h1>This is one userView page test</h1>
       <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
       <div class="OneUserContainer d-flex">
@@ -25,7 +25,7 @@
           <!-- <img href="http://localhost>" -->
         </div>
 
-        <p>{{ getApi }}</p>
+        <!-- <p>{{ getApi }}</p> -->
       </div>
     </div>
 

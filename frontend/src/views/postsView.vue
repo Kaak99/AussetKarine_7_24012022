@@ -2,7 +2,7 @@
 
 <template>
   <div>
-    <div class="posts" v-if="loading === true">
+    <div class="posts container" v-if="loading === true">
       <h1>This is a posts page test</h1>
       <h2 class="centerTxt">Tous les posts</h2>
       <div class="postContainer d-flex">
@@ -11,10 +11,22 @@
           <div class="post">
             <!-- <router-link to="/posts">Posts</router-link> -->
             <p class="post-title">{{ post.titre }}</p>
+            <div class="post-image">
+              <!-- <img alt="imag" src="../assets/imag.jpg" /> -->
+              <img alt="imag" v-bind:src="post.image" />
+            </div>
+
             <p class="post-text">{{ post.contenu }}</p>
+            <div class="post-icon d-flex">
+              <p class="addComment d-flex">📩</p>
+              <p class="thumbUp d-flex">👍🏻</p>
+              <p class="thumbDown d-flex">👎🏻</p>
+              <p class="modifyPost d-flex">✍🏻</p>
+              <p class="deletePost d-flex">🗑️</p>
+            </div>
           </div>
         </div>
-        <p>{{ getApi }}</p>
+        <!-- <p>{{ getApi }}</p> -->
       </div>
     </div>
     <div class="noLoading" v-else>
@@ -65,49 +77,6 @@ export default {
       });
   },
 };
-/*
-import axios from "axios";
-export default {
-  //pourquoi erreur sinon??
-  name: "postsView",
-  data() {
-    return {
-      getApi: null,
-      url: "http://localhost:3000/posts",
-    };
-  },
-};
-// eslint-disable-next-line no-undef
-new Vue({
-  el: "#app",
-  data: {
-    loading: false,
-    compteur: 0,
-    text1: "texte de test",
-    //url: "http://localhost:3000/posts",
-    //getApi: null,
-  },
-  methods: {
-    getPostsAxios: function () {
-      axios
-        .get("http://localhost:3000/posts")
-        .then((data) => {
-          console.log(data); //affiche les data de l'api (tableau d'objet)
-          this.getApi = data;
-        })
-
-        // Message d'erreur //
-        .catch((error) => {
-          console.error("erreur : ", error); //affiche message d'erreur
-          //warning();
-        });
-    },
-  },
-  computed: {},
-  watch: {},
-});
-
-*/
 </script>
 
 //! ............................... STYLE ............................... //
@@ -137,7 +106,10 @@ new Vue({
   padding: 10px;
   border: solid 1px blue;
 }
-
+.post-icon {
+  flex-direction: row;
+  justify-content: space-evenly;
+}
 .post {
   padding: 5px;
   border: solid 2px red;

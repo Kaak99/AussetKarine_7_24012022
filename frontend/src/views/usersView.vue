@@ -2,7 +2,7 @@
 
 <template>
   <div>
-    <div class="users" v-show="loading === true">
+    <div class="users container" v-show="loading === true">
       <h1>This is a usersView page test</h1>
       <p>{{ monToken }}</p>
       <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
@@ -85,16 +85,17 @@ export default {
 
 <style scoped>
 .main {
-  padding-bottom: 10px;
+  padding-bottom: 1vw;
 }
 
 .userContainer {
   padding: 10px;
-  border: solid 1px blue;
+  border: solid 2px darkblue;
 }
 
 .user {
   padding: 5px;
-  border: solid 2px red;
+  border: solid 1px #fd2d01;
+  /* #fd2d01=var(--main-color1); */
 }
 </style>

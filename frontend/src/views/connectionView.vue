@@ -1,8 +1,8 @@
 //! ............................... TEMPLATE ............................... //
 
 <template>
-  <div class="container">
-    <div class="users" v-if="loading === true">
+  <div class="containAll">
+    <div class="users container" v-if="loading === true">
       <form class="formLogin">
         <h1>Connection page test</h1>
         <h2 class="centerTxt">Veuillez rentrer votre pseudo et mot de passe</h2>
@@ -92,6 +92,7 @@ export default {
       mdp: "",
     };
   },
+  // emits: ["update:isConnected"],
   methods: {
     envoi: function () {
       axios
@@ -110,6 +111,7 @@ export default {
           // );
           localStorage.setItem("userId", JSON.stringify(this.getApi.userId));
           localStorage.setItem("userToken", JSON.stringify(this.getApi.token));
+          this.$emit("connection", true);
         })
         .catch((error) => {
           console.log(error);

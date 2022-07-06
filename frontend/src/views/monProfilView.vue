@@ -1,7 +1,7 @@
 //! ............................... TEMPLATE ............................... //
 
 <template>
-  <div class="post">
+  <div class="post container">
     <h1>This is a monProfile page test</h1>
     <section class="monProfilContainer">
       <div class="profil">
