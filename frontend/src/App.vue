@@ -132,6 +132,16 @@ p {
   display: flex;
   flex-direction: column;
 }
+.d-flex2c {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.d-flex2s {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
 .container {
   /* background-color: var(--main-color2); */
   background-color: #ffd7d7;

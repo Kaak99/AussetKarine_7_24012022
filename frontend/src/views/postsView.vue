@@ -3,9 +3,41 @@
 <template>
   <div>
     <div class="posts container" v-if="loading === true">
-      <h1>This is a posts page test</h1>
+      <h1>Posts page test</h1>
       <h2 class="centerTxt">Tous les posts</h2>
       <div class="postContainer d-flex">
+        <div class="inputContainer d-flex">
+          <label for="post-title" title="maximum 50 caractères">Titre :</label>
+          <input
+            type="text"
+            size="50"
+            maxlength="50"
+            class="centerTxt input-title"
+            name="inputTitle"
+            id="inputTitle"
+            placeholder="votre titre"
+            required
+          />
+
+          <label for="post-write" title="maximum 500 caractères"
+            >Contenu :</label
+          >
+          <textarea
+            rows="4"
+            cols="1"
+            maxlength="500"
+            class="centerTxt input-text"
+            name="inputText"
+            id="inputText"
+            placeholder="votre message"
+            required
+          ></textarea>
+          <div class="input-button d-flex2s">
+            <i class="fa-solid fa-image"></i>
+            <i class="fa-solid fa-paper-plane"></i>
+          </div>
+        </div>
+
         <!--ici démarre la zone de création de posts-->
         <div v-for="post in getApi" :key="post.idPosts" class="postsCard">
           <div class="post">
@@ -13,17 +45,26 @@
             <p class="post-title">{{ post.titre }}</p>
             <div class="post-image">
               <!-- <img alt="imag" src="../assets/imag.jpg" /> -->
-              <img alt="imag" v-bind:src="post.image" />
+              <img
+                alt="image d'illustration "
+                v-bind:src="post.image"
+                v-if="post.image"
+              />
             </div>
 
             <p class="post-text">{{ post.contenu }}</p>
-            <div class="post-icon d-flex">
-              <p class="addComment d-flex">📩</p>
+            <p class="post-icon d-flex2c">
+              <!-- <p class="addComment d-flex">📩</p>
               <p class="thumbUp d-flex">👍🏻</p>
               <p class="thumbDown d-flex">👎🏻</p>
               <p class="modifyPost d-flex">✍🏻</p>
-              <p class="deletePost d-flex">🗑️</p>
-            </div>
+              <p class="deletePost d-flex">🗑️</p> -->
+              <i class="fa-solid fa-comment addComment"></i>
+              <i class="fa-solid fa-thumbs-up thumbUp"></i>
+              <i class="fa-solid fa-thumbs-down thumbDown"></i>
+              <i class="fa-solid fa-pen-to-square modifyPost"></i>
+              <i class="fa-solid fa-trash-can deletePost"></i>
+            </p>
           </div>
         </div>
         <!-- <p>{{ getApi }}</p> -->
@@ -59,6 +100,12 @@ export default {
       text1: "texte de test",
       url: "http://localhost:3000/api/posts",
       getApi: null,
+      commentFlag: 0,
+      likeFlag: 0,
+      unlikeFlag: 0,
+      modifyFlag: 0,
+      deleteFlag: 0,
+      authFlag: 0,
     };
   },
   created() {
@@ -121,5 +168,13 @@ export default {
   background-color: pink;
   font-weight: bold;
   text-decoration: underline;
+}
+.modifyPost,
+.deletePost {
+  color: #d11421;
+}
+.fa-solid {
+  cursor: pointer;
+  margin: 5px;
 }
 </style>

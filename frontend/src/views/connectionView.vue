@@ -112,6 +112,7 @@ export default {
           localStorage.setItem("userId", JSON.stringify(this.getApi.userId));
           localStorage.setItem("userToken", JSON.stringify(this.getApi.token));
           this.$emit("connection", true);
+          this.$router.push("/");
         })
         .catch((error) => {
           console.log(error);

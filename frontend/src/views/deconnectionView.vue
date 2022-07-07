@@ -49,6 +49,8 @@ export default {
   methods: {
     envoi: function () {
       localStorage.clear();
+      this.$emit("connection", false);
+      this.$router.push("/connection");
     },
   },
 };
