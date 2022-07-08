@@ -34,7 +34,7 @@
 //import axios from "axios";
 
 export default {
-  name: "connectionView",
+  name: "deconnectionView",
   data() {
     return {
       compteur: 0,

@@ -3,41 +3,44 @@
 <template>
   <div>
     <div class="posts container" v-if="loading === true">
-      <h1>Posts page test</h1>
+      <h1>Voici la liste de tous les messages</h1>
       <h2 class="centerTxt">Tous les posts</h2>
       <div class="postContainer d-flex">
-        <div class="inputContainer d-flex">
-          <label for="post-title" title="maximum 50 caractères">Titre :</label>
-          <input
-            type="text"
-            size="50"
-            maxlength="50"
-            class="centerTxt input-title"
-            name="inputTitle"
-            id="inputTitle"
-            placeholder="votre titre"
-            required
-          />
+        <div class="writeBox">
+          <div class="inputContainer d-flex">
+            <label for="post-title" title="maximum 50 caractères"
+              >Titre :</label
+            >
+            <input
+              type="text"
+              size="50"
+              maxlength="50"
+              class="centerTxt input-title"
+              name="inputTitle"
+              id="inputTitle"
+              placeholder="votre titre"
+              required
+            />
 
-          <label for="post-write" title="maximum 500 caractères"
-            >Contenu :</label
-          >
-          <textarea
-            rows="4"
-            cols="1"
-            maxlength="500"
-            class="centerTxt input-text"
-            name="inputText"
-            id="inputText"
-            placeholder="votre message"
-            required
-          ></textarea>
-          <div class="input-button d-flex2s">
-            <i class="fa-solid fa-image"></i>
-            <i class="fa-solid fa-paper-plane"></i>
+            <label for="post-write" title="maximum 500 caractères"
+              >Contenu :</label
+            >
+            <textarea
+              rows="4"
+              cols="1"
+              maxlength="500"
+              class="centerTxt input-text"
+              name="inputText"
+              id="inputText"
+              placeholder="votre message"
+              required
+            ></textarea>
+            <div class="input-button d-flex2s">
+              <i class="fa-solid fa-image"></i>
+              <i class="fa-solid fa-paper-plane"></i>
+            </div>
           </div>
         </div>
-
         <!--ici démarre la zone de création de posts-->
         <div v-for="post in getApi" :key="post.idPosts" class="postsCard">
           <div class="post">
@@ -128,30 +131,29 @@ export default {
 
 //! ............................... STYLE ............................... //
 
-<style>
-.main {
-  padding-bottom: 10px;
-}
-
-.postContainer {
-  padding: 10px;
-  border: solid 1px blue;
-}
-.post {
-  padding: 5px;
-  border: solid 1px cyan;
-  margin-bottom: 5px;
-}
-</style>
+<style></style>
 
 <style scoped>
 .main {
   padding-bottom: 10px;
 }
-
+.inputContainer {
+  /* background-color: var(--main-color2); */
+  background-color: #919ba7;
+  border-radius: 25px;
+  /* margin: 1vw 6vw; */
+  width: 90%;
+  margin: 10px auto;
+  color: #3b46eb;
+}
 .postContainer {
   padding: 10px;
   border: solid 1px blue;
+}
+.writeBox {
+  padding: 10px;
+  border: solid 1px blue;
+  margin-bottom: 10px;
 }
 .post-icon {
   flex-direction: row;
@@ -159,7 +161,8 @@ export default {
 }
 .post {
   padding: 5px;
-  border: solid 2px red;
+  border: solid 1px red;
+  margin-bottom: 5px;
 }
 .forme {
   color: green;

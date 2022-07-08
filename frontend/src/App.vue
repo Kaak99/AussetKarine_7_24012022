@@ -99,11 +99,11 @@ nav {
   justify-content: space-around; */
 }
 
-nav a {
+a {
   font-weight: bold;
   color: #919ba7;
   margin: 1vw 2vw;
-  font-size: 3vw+1;
+  font-size: 3.4vw;
 }
 
 nav a.router-link-exact-active {
@@ -116,17 +116,17 @@ nav a.router-link-exact-active {
 h1 {
   /* color: var(--main-color1); */
   color: #fd2d01;
-  font-size: 5vw+1;
+  font-size: 4.4vw;
 }
 h2 {
   /* color: var(--main-color1); */
   color: black;
-  font-size: 4vw+1;
+  font-size: 3.4vw;
 }
 p {
   /* color: var(--main-color3); */
   color: #4e5166;
-  font-size: 3vw+1;
+  font-size: 2.4vw;
 }
 .d-flex {
   display: flex;
@@ -148,5 +148,100 @@ p {
   /* margin: 1vw 6vw; */
   width: 85%;
   margin: 0px auto;
+}
+/*_______________________________________________________*/
+/*_____________responsive___@media______________________*/
+/*_____________________________________________________*/
+
+@media all and (max-width: 300px) /* <300w*/ {
+  a,
+  h2 {
+    font-size: 7vw;
+  }
+  h1 {
+    font-size: 8vw;
+  }
+  p {
+    font-size: 6vw;
+  }
+}
+@media all and (min-width: 300px) and (max-width: 400px) /* 300-400w*/ {
+  a,
+  h2 {
+    font-size: 6vw;
+  }
+  h1 {
+    font-size: 7vw;
+  }
+  p {
+    font-size: 5vw;
+  }
+}
+@media all and (min-width: 400px) and (max-width: 500px) /* 400-500w*/ {
+  a,
+  h2 {
+    font-size: 5vw;
+    color: darkviolet;
+  }
+  h1 {
+    font-size: 6vw;
+  }
+  p {
+    font-size: 4vw;
+  }
+}
+
+@media all and (min-width: 500px) and (max-width: 600px) /* 500-600w*/ {
+  a,
+  h2 {
+    font-size: 3.8vw;
+  }
+  h1 {
+    font-size: 4.8vw;
+  }
+
+  p {
+    font-size: 2.8vw;
+  }
+}
+
+/* entre 600 et 900px*/
+
+@media all and (min-width: 900px) and (max-width: 1400px) /* 900-1400w*/ {
+  a,
+  h2 {
+    font-size: 3.2vw;
+  }
+  h1 {
+    font-size: 4.2vw;
+  }
+
+  p {
+    font-size: 2.2vw;
+  }
+}
+@media all and (min-width: 1400px) and (max-width: 2000px) /* 1400-2000w*/ {
+  a,
+  h2 {
+    font-size: 3vw;
+  }
+  h1 {
+    font-size: 4vw;
+  }
+  p {
+    font-size: 2vw;
+  }
+}
+@media all and (min-width: 2000px) /* >2000w*/ {
+  a,
+  h2 {
+    font-size: 2vw;
+  }
+  h1 {
+    font-size: 3vw;
+  }
+  p {
+    font-size: 1vw;
+  }
 }
 </style>
