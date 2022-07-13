@@ -12,6 +12,7 @@
               >Titre :</label
             >
             <input
+              v-model="inputTitle"
               type="text"
               size="50"
               maxlength="50"
@@ -26,6 +27,7 @@
               >Contenu :</label
             >
             <textarea
+              v-model="inputText"
               rows="4"
               cols="1"
               maxlength="500"
@@ -37,12 +39,19 @@
             ></textarea>
             <div class="input-button d-flex2s">
               <i class="fa-solid fa-image"></i>
-              <i class="fa-solid fa-paper-plane"></i>
+              <i
+                class="fa-solid fa-paper-plane envoiPost"
+                v-on:click.prevent="envoiPost"
+              ></i>
             </div>
           </div>
         </div>
-        <!--ici démarre la zone de création de posts-->
-        <div v-for="post in getApi" :key="post.idPosts" class="postsCard">
+        <!--ici démarre la zone d'affichage des posts-->
+        <div
+          v-for="post in getApiResponse"
+          :key="post.idPosts"
+          class="postsCard"
+        >
           <div class="post">
             <!-- <router-link to="/posts">Posts</router-link> -->
             <p class="post-title">{{ post.titre }}</p>
@@ -70,7 +79,7 @@
             </p>
           </div>
         </div>
-        <!-- <p>{{ getApi }}</p> -->
+        <!-- <p>{{ getApiResponse }}</p> -->
       </div>
     </div>
     <div class="noLoading" v-else>
@@ -102,7 +111,12 @@ export default {
       compteur: 0,
       text1: "texte de test",
       url: "http://localhost:3000/api/posts",
-      getApi: null,
+      getApiResponse: null,
+      postApiResponse: "",
+      messageRetour: "",
+      inputTitle: "",
+      inputText: "",
+      inputFile: "",
       commentFlag: 0,
       likeFlag: 0,
       unlikeFlag: 0,
@@ -113,18 +127,63 @@ export default {
   },
   created() {
     //mounted() {
-    // axios.get(this.url).then((response) => (this.getApi = response.data));
+    // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
     axios
       .get(this.url)
       .then((response) => {
-        this.getApi = response.data;
+        this.getApiResponse = response.data;
         //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
-        console.log(this.getApi);
+        console.log(this.getApiResponse);
         this.loading = true;
       })
       .catch((error) => {
         console.log(error);
       });
+  },
+  methods: {
+    envoiPost: function () {
+      let post = {
+        titre: this.inputTitle,
+        contenu: this.inputText,
+        id_Users: JSON.parse(localStorage.getItem("userId")),
+      };
+      const image = "http://localhost:3000/images/te65.jpg1657701354677.jpg";
+      // const image = this.inputFile;
+      const bodyParameters = { post: post, image: image };
+      const token = JSON.parse(localStorage.getItem("userToken"));
+      console.log(bodyParameters);
+      console.log(token);
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      console.log(config);
+
+      axios
+        .post(
+          this.url,
+          bodyParameters,
+          config
+          // { headers: { Authorization: "Bearer " + token } }
+          // { headers: { Authorization: `Bearer ${token}` } }
+        )
+        // .post(this.url, { pseudo: "user60", password: "mdp" })
+        .then((response) => {
+          this.postApiResponse = response.data;
+          this.messageRetour = "Message envoyé !";
+          // console.log(this.postApiResponse);
+          // console.log(this.postApiResponse.userId);
+          // console.log(this.postApiResponse.token);
+          this.loading = true;
+          //this.$router.push("/");
+        })
+        .catch((error) => {
+          console.log(error);
+          this.messageRetour = error.response.data.erreur;
+          console.log(error.response.data);
+          //this.messageRetour = this.getApi.error;
+          //this.loading = false;
+        });
+    },
   },
 };
 </script>

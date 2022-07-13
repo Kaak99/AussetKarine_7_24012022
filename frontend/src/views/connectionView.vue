@@ -86,7 +86,7 @@ export default {
       compteur: 0,
       loading: true,
       url: "http://localhost:3000/api/users/login",
-      getApi: "",
+      postApiResponse: "",
       messageRetour: "",
       pseudo: "",
       mdp: "",
@@ -99,18 +99,24 @@ export default {
         .post(this.url, { pseudo: this.pseudo, password: this.mdp })
         // .post(this.url, { pseudo: "user60", password: "mdp" })
         .then((response) => {
-          this.getApi = response.data;
+          this.postApiResponse = response.data;
           this.messageRetour = "Connexion";
-          console.log(this.getApi);
-          console.log(this.getApi.userId);
-          console.log(this.getApi.token);
+          console.log(this.postApiResponse);
+          console.log(this.postApiResponse.userId);
+          console.log(this.postApiResponse.token);
           this.loading = true;
           // localStorage.setItem(
-          //   JSON.stringify(this.getApi.userId),
-          //   JSON.stringify(this.getApi.token)
+          //   JSON.stringify(this.postApiResponse.userId),
+          //   JSON.stringify(this.postApiResponse.token)
           // );
-          localStorage.setItem("userId", JSON.stringify(this.getApi.userId));
-          localStorage.setItem("userToken", JSON.stringify(this.getApi.token));
+          localStorage.setItem(
+            "userId",
+            JSON.stringify(this.postApiResponse.userId)
+          );
+          localStorage.setItem(
+            "userToken",
+            JSON.stringify(this.postApiResponse.token)
+          );
           this.$emit("connection", true);
           this.$router.push("/");
         })
@@ -118,7 +124,7 @@ export default {
           console.log(error);
           this.messageRetour = error.response.data.erreur;
           console.log(error.response.data);
-          //this.messageRetour = this.getApi.error;
+          //this.messageRetour = this.postApiResponse.error;
           //this.loading = false;
         });
     },

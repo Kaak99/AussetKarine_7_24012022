@@ -142,7 +142,7 @@ export default {
       compteur: 0,
       loading: true,
       url: "http://localhost:3000/api/users/signup",
-      getApi: "",
+      postApiResponse: "",
       messageRetour: "",
       email: "",
       pseudo: "",
@@ -165,22 +165,22 @@ export default {
         })
         // .post(this.url, { pseudo: "user60", password: "mdp" })
         .then((response) => {
-          this.getApi = response.data;
+          this.postApiResponse = response.data;
           this.messageRetour = "inscription...";
-          console.log(this.getApi);
-          //console.log(this.getApi.userId);
-          //console.log(this.getApi.token);
+          console.log(this.postApiResponse);
+          //console.log(this.postApiResponse.userId);
+          //console.log(this.postApiResponse.token);
           this.loading = true;
           // localStorage.setItem(
-          //   JSON.stringify(this.getApi.userId),
-          //   JSON.stringify(this.getApi.token)
+          //   JSON.stringify(this.postApiResponse.userId),
+          //   JSON.stringify(this.postApiResponse.token)
           // );
         })
         .catch((error) => {
           console.log(error);
           this.messageRetour = error.response.data.erreur;
           console.log(error.response.data);
-          //this.messageRetour = this.getApi.error;
+          //this.messageRetour = this.postApiResponse.error;
           //this.loading = false;
         });
     },

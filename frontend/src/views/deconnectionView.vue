@@ -40,7 +40,6 @@ export default {
       compteur: 0,
       loading: true,
       url: "http://localhost:3000/api/users/login",
-      getApi: "",
       messageRetour: "",
       pseudo: "",
       mdp: "",
