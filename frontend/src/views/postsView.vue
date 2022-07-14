@@ -37,6 +37,7 @@
               placeholder="votre message"
               required
             ></textarea>
+
             <div class="input-button d-flex">
               <!-- <i class="fa-solid fa-image"></i> -->
               <input
@@ -55,6 +56,7 @@
             </div>
           </div>
         </div>
+        {{ idConnected }}
         <!--ici démarre la zone d'affichage des posts-->
         <div
           v-for="post in getApiResponse"
@@ -63,6 +65,7 @@
         >
           <div class="post">
             <!-- <router-link to="/posts">Posts</router-link> -->
+            <p>Ecrit par {{ post.id_Users }} le {{ post.time }}</p>
             <p class="post-title">{{ post.titre }}</p>
             <div class="post-image">
               <!-- <img alt="imag" src="../assets/imag.jpg" /> -->
@@ -83,14 +86,21 @@
               <i class="fa-solid fa-comment addComment"></i>
               <i class="fa-solid fa-thumbs-up thumbUp"></i>
               <i class="fa-solid fa-thumbs-down thumbDown"></i>
-              <i class="fa-solid fa-pen-to-square modifyPost"></i>
-              <i class="fa-solid fa-trash-can deletePost"></i>
+              <i
+                class="fa-solid fa-pen-to-square modifyPost"
+                v-if="post.id_Users == idConnected"
+              ></i>
+              <i
+                class="fa-solid fa-trash-can deletePost"
+                v-if="post.id_Users == idConnected"
+              ></i>
             </p>
           </div>
         </div>
         <!-- <p>{{ getApiResponse }}</p> -->
       </div>
     </div>
+
     <div class="noLoading" v-else>
       <!-- <div class="noLoading" v-if="loading === false"> -->
       <p class="problemeServeur centerTxt">Un problème est survenu.</p>
@@ -132,6 +142,7 @@ export default {
       modifyFlag: 0,
       deleteFlag: 0,
       authFlag: 0,
+      idConnected: localStorage.getItem("userId"),
     };
   },
   created() {
@@ -141,8 +152,14 @@ export default {
   },
   methods: {
     selectFile() {
-      this.file = this.$refs.file.files[0];
+      //console.log(this.$refs.file.files[0].name);
+      this.inputFile = this.$refs.file.files[0];
+      console.log(this.inputFile);
     },
+    // selectFile: function (e) {
+    //   this.inputFile = e.target.files[0];
+    //   console.log(this.inputFile);
+    // },
     getAllPost() {
       axios
         .get(this.url)
@@ -157,21 +174,23 @@ export default {
         });
     },
     envoiPost: function () {
-      let post = {
-        titre: this.inputTitle,
-        contenu: this.inputText,
-        image: this.inputFile,
-        //id_Users: JSON.parse(localStorage.getItem("userId")).toString(),
-        id_Users: localStorage.getItem("userId"),
-      };
-      //const image = "";
-      // const image = this.inputFile;
-      const bodyParameters = post;
-      // const bodyParameters = { post: post, image: image };
-      const token = localStorage.getItem("userToken");
-      // const token = JSON.parse(localStorage.getItem("userToken"));
-      console.log(bodyParameters);
-      console.log(token);
+      // let bodyParameters = {
+      //   titre: this.inputTitle,
+      //   contenu: this.inputText,
+      //   image: this.inputFile,
+      //   //id_Users: JSON.parse(localStorage.getItem("userId")).toString(),
+      //   id_Users: localStorage.getItem("userId"),
+      // };
+
+      const formdata = new FormData();
+      formdata.append("titre", this.inputTitle);
+      formdata.append("contenu", this.inputText);
+      if (this.inputFile) {
+        formdata.append("image", this.inputFile, this.inputFile.name);
+      }
+      formdata.append("id_Users", localStorage.getItem("userId"));
+      console.log(formdata);
+
       // const config = {
       //   headers: {
       //     "Content-Type": "application/json",
@@ -184,7 +203,7 @@ export default {
       axios
         .post(
           this.url,
-          bodyParameters,
+          formdata,
           config
           // { headers: { Authorization: "Bearer " + token } }
           // { headers: { Authorization: `Bearer ${token}` } }
@@ -197,6 +216,10 @@ export default {
           // console.log(this.postApiResponse.userId);
           // console.log(this.postApiResponse.token);
           this.loading = true;
+          //remettre els champs à zero
+          this.inputTitle = "";
+          this.inputText = "";
+          this.inputFile = "";
           this.getAllPost();
           //this.$router.push("/");
         })
