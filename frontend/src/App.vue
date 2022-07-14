@@ -164,6 +164,9 @@ p {
   p {
     font-size: 6vw;
   }
+  .fileButton {
+    font-size: 2vw;
+  }
 }
 @media all and (min-width: 300px) and (max-width: 400px) /* 300-400w*/ {
   a,

@@ -37,8 +37,17 @@
               placeholder="votre message"
               required
             ></textarea>
-            <div class="input-button d-flex2s">
-              <i class="fa-solid fa-image"></i>
+            <div class="input-button d-flex">
+              <!-- <i class="fa-solid fa-image"></i> -->
+              <input
+                type="file"
+                class="fileButton"
+                id="file"
+                ref="file"
+                @change="selectFile()"
+                accept=".jpg,.png"
+              />
+
               <i
                 class="fa-solid fa-paper-plane envoiPost"
                 v-on:click.prevent="envoiPost"
@@ -128,35 +137,48 @@ export default {
   created() {
     //mounted() {
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
-    axios
-      .get(this.url)
-      .then((response) => {
-        this.getApiResponse = response.data;
-        //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
-        console.log(this.getApiResponse);
-        this.loading = true;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    this.getAllPost();
   },
   methods: {
+    selectFile() {
+      this.file = this.$refs.file.files[0];
+    },
+    getAllPost() {
+      axios
+        .get(this.url)
+        .then((response) => {
+          this.getApiResponse = response.data;
+          //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
+          //console.log(this.getApiResponse);
+          this.loading = true;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     envoiPost: function () {
       let post = {
         titre: this.inputTitle,
         contenu: this.inputText,
-        id_Users: JSON.parse(localStorage.getItem("userId")),
+        image: this.inputFile,
+        //id_Users: JSON.parse(localStorage.getItem("userId")).toString(),
+        id_Users: localStorage.getItem("userId"),
       };
-      const image = "http://localhost:3000/images/te65.jpg1657701354677.jpg";
+      //const image = "";
       // const image = this.inputFile;
-      const bodyParameters = { post: post, image: image };
+      const bodyParameters = post;
+      // const bodyParameters = { post: post, image: image };
       const token = JSON.parse(localStorage.getItem("userToken"));
       console.log(bodyParameters);
       console.log(token);
-      const config = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
-      console.log(config);
+      // const config = {
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      // console.log(config);
+      const config = null;
 
       axios
         .post(
@@ -174,6 +196,7 @@ export default {
           // console.log(this.postApiResponse.userId);
           // console.log(this.postApiResponse.token);
           this.loading = true;
+          this.getAllPost();
           //this.$router.push("/");
         })
         .catch((error) => {
@@ -205,6 +228,18 @@ export default {
   margin: 10px auto;
   color: #3b46eb;
 }
+.input-button {
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fileButton {
+  display: flex;
+  flex-direction: columns;
+  flex-wrap: wrap;
+  color: green;
+  font-size: 3vw;
+}
+
 .postContainer {
   padding: 10px;
   border: solid 1px blue;

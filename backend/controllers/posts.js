@@ -158,14 +158,17 @@ exports.deletePosts = (req, res, next) => {
 
 exports.createPosts = (req, res, next) => {
   //console.log(req);
-  //console.log(req.body);
+  console.log(req.body);
   //console.log(req.route);
-  console.log(req.file);
+  //console.log(req.file);//si fichier presente
   // console.log(req.body.titre);
   // console.log(req.body.contenu);
   // console.log(req.body.id_Users);
 
-  const postObject = JSON.parse(req.body.post);
+  // const postObject = JSON.parse(req.body.post);
+
+  // const postObject = req.body.post;
+  const postObject = req.body;
   //console.log(req.body);
   //const postImage = JSON.parse(req.body.image);
   console.log("postObject");
@@ -180,6 +183,7 @@ exports.createPosts = (req, res, next) => {
   let newPost = {};
   //console.log({ monImage: req.file.originalname });
   // if (postObject.image === "") {
+  console.log(req.file);
   if (!req.file) {
     // if (!postObject.image) {
     //cas ou pas d'image
