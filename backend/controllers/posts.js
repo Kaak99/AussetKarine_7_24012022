@@ -29,10 +29,10 @@ exports.getAllPosts = (req, res, next) => {
   */
 
   db.promise()
-    .query("SELECT * FROM groupomania.posts_table;")
+    .query("SELECT * FROM groupomania.posts_table ORDER BY time DESC;")
     .then(([results]) => {
-      //renvoi un tableau d'objets
-      console.log(results);
+      //renvoi un tableau d'objets results
+      //console.log(results);
       res.status(200).json(results);
     })
     .catch((error) => {
@@ -157,8 +157,8 @@ exports.deletePosts = (req, res, next) => {
 //!__ renvoie : { message: String }           __//
 
 exports.createPosts = (req, res, next) => {
-  //console.log(req);
-  console.log(req.body);
+  console.log(req);
+  //console.log(req.body);
   //console.log(req.route);
   //console.log(req.file);//si fichier presente
   // console.log(req.body.titre);

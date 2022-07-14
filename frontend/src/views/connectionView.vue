@@ -105,18 +105,17 @@ export default {
           console.log(this.postApiResponse.userId);
           console.log(this.postApiResponse.token);
           this.loading = true;
+          localStorage.setItem("userId", this.postApiResponse.userId);
+          localStorage.setItem("userToken", this.postApiResponse.token);
+          //stringify inutile? token est une chaine mais userId??
           // localStorage.setItem(
-          //   JSON.stringify(this.postApiResponse.userId),
+          //   "userId",
+          //   JSON.stringify(this.postApiResponse.userId)
+          // );
+          // localStorage.setItem(
+          //   "userToken",
           //   JSON.stringify(this.postApiResponse.token)
           // );
-          localStorage.setItem(
-            "userId",
-            JSON.stringify(this.postApiResponse.userId)
-          );
-          localStorage.setItem(
-            "userToken",
-            JSON.stringify(this.postApiResponse.token)
-          );
           this.$emit("connection", true);
           this.$router.push("/");
         })

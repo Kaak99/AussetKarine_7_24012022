@@ -168,7 +168,8 @@ export default {
       // const image = this.inputFile;
       const bodyParameters = post;
       // const bodyParameters = { post: post, image: image };
-      const token = JSON.parse(localStorage.getItem("userToken"));
+      const token = localStorage.getItem("userToken");
+      // const token = JSON.parse(localStorage.getItem("userToken"));
       console.log(bodyParameters);
       console.log(token);
       // const config = {
