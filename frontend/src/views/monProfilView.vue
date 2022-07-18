@@ -2,12 +2,28 @@
 
 <template>
   <div class="post container">
-    <h1>This is a monProfile page test</h1>
+    <h1>Mon Profile</h1>
     <section class="monProfilContainer">
-      <div class="profil">
+      <div class="profil-card">
+        <p>Profil créé le : {{ getApiResponse.time }}</p>
+        <img alt="avatar " v-bind:src="getApiResponse.avatar" />
         <p>{{ getApiResponse.pseudo }}</p>
         <p>{{ getApiResponse.email }}</p>
         <p>{{ getApiResponse.bio }}</p>
+        <i
+          class="fa-solid fa-pen-to-square modifyUser"
+          title="modifier le profil"
+        ></i>
+        <i
+          class="fa-solid fa-trash-can deleteUser"
+          title="supprimer le profil"
+          v-on:click="deleteUser"
+        ></i>
+        <!-- <i
+          class="fa-solid fa-trash-can deletePost"
+          v-if="post.id_Users == idConnected || idConnected == 1"
+          v-on:click="deletePost(post.idPosts)"
+        ></i> -->
         <!-- <img :src="/src/assets/img/avatar.png" /> -->
         <!-- <img :src="require(`@/assets/img/avatar.png`)" /> -->
       </div>
@@ -35,6 +51,11 @@ export default {
       thisUrl: "",
       getApiResponse: {},
     };
+  },
+  methods: {
+    deleteUser() {
+      console.log("j'efface");
+    },
   },
   created() {
     this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;

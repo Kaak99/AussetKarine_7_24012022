@@ -3,8 +3,8 @@
 <template>
   <div class="containAll d-flex">
     <div class="users container" v-if="loading === true">
-      <h1>Déconnection page test</h1>
-      <h2 class="centerTxt">cliquez pour vous déconnecter</h2>
+      <h1>Vous partez déjà ?</h1>
+      <h2 class="centerTxt">Cliquez pour vous déconnecter</h2>
       <div class="d-flex">
         <!-- <button class="buttonValid" v-on:click.prevent="localStorage.clear()">
           Je me déconnecte !
@@ -48,8 +48,8 @@ export default {
   methods: {
     envoi: function () {
       localStorage.clear();
-      this.$emit("connection", false);
-      this.$router.push("/connection");
+      this.$emit("connection", false); //fait remonter (app.vue) l'action connection avec parametre false
+      this.$router.push("/connection"); //redirection vers page de connection
     },
   },
 };

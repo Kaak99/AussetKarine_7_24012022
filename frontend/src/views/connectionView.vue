@@ -116,8 +116,8 @@ export default {
           //   "userToken",
           //   JSON.stringify(this.postApiResponse.token)
           // );
-          this.$emit("connection", true);
-          this.$router.push("/");
+          this.$emit("connection", true); //fait remonter à app.vue l'action connection avec le parametre true
+          this.$router.push("/"); //redirection vers /home
         })
         .catch((error) => {
           console.log(error);

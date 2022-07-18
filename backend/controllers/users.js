@@ -62,6 +62,54 @@ exports.changeUserActivity = (req, res, next) => {
     });
 };
 
+exports.deleteUsers = (req, res, next) => {
+  //pour admin
+
+  db.promise()
+    .query(" SELECT * FROM groupomania.users_table WHERE `idUsers`=? ", [
+      req.params.id,
+    ])
+    .then(([results]) => {
+      console.log("---then-find---");
+      //console.log(req);
+      console.log(results);
+      console.log(results[0].image);
+      if (results[0].image) {
+        const filename = results[0].image.split("/images/")[1];
+        fs.unlink(`images/${filename}`, () => {
+          db.promise()
+            .query(" DELETE FROM groupomania.users_table WHERE `idUsers`=? ;", [
+              req.params.id,
+            ])
+            .then(([results]) => {
+              console.log("---then1-efface---");
+
+              res.status(200).json(results);
+            })
+            .catch((error) => {
+              console.log("---catch---");
+              res.status(400).json({ error: error });
+              //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
+            });
+        });
+      } else {
+        db.promise()
+          .query(" DELETE FROM groupomania.users_table WHERE `idUsers`=? ;", [
+            req.params.id,
+          ])
+          .then(([results]) => {
+            console.log("---then2-efface---");
+
+            res.status(200).json(results);
+          })
+          .catch((error) => {
+            console.log("---catch---");
+            res.status(400).json({ error: error });
+          });
+      }
+    });
+};
+
 // ! -------------------- ! //
 // ! SIGNUP (inscription) ! //
 // ! ---------------------! //

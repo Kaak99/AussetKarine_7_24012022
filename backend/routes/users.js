@@ -1,18 +1,18 @@
 // tests (à retirer)
 console.log(` ----> user-route`);
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 //const checksignUp = require('../middleware/checksignUp');
 
-const usersController = require('../controllers/users');
+const usersController = require("../controllers/users");
 
-router.get('/', usersController.getAllUsers);
-router.get('/:id', usersController.getOneUsers);
-router.put('/:id', usersController.changeUserActivity);
+router.get("/", usersController.getAllUsers);
+router.get("/:id", usersController.getOneUsers);
+router.put("/:id", usersController.changeUserActivity);
+router.delete("/:id", usersController.deleteUsers);
 
-
-router.post('/signup', usersController.signup);
-router.post('/login', usersController.login);
+router.post("/signup", usersController.signup);
+router.post("/login", usersController.login);
 
 module.exports = router;

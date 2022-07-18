@@ -171,6 +171,7 @@ export default {
           //console.log(this.postApiResponse.userId);
           //console.log(this.postApiResponse.token);
           this.loading = true;
+          this.$router.push("/connection"); //redirection vers /connection
           // localStorage.setItem(
           //   JSON.stringify(this.postApiResponse.userId),
           //   JSON.stringify(this.postApiResponse.token)

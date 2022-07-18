@@ -3,9 +3,11 @@
 <template>
   <div>
     <div class="users container" v-show="loading === true">
-      <h1>This is a usersView page test</h1>
-      <p>{{ monToken }}</p>
-      <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
+      <h1>Tous nos utilisateurs</h1>
+      <!-- <p>{{ monToken }}</p> -->
+      <h2 class="centerTxt">
+        Cliquez sur un utilisateur pour détailler sa fiche
+      </h2>
       <div class="userContainer d-flex">
         <!--ici démarre la zone de users-->
         <!-- <div class="usersCard">
@@ -16,16 +18,12 @@
         </div> -->
         <div v-for="user in getApi" :key="user.idUsers" class="usersCard">
           <div class="user">
-            <!-- <router-link to="/user" class="user-pseudo">{{
-              user.pseudo
-            }}</router-link> -->
             <router-link :to="{ name: 'user', params: { id: user.idUsers } }">{{
               user.pseudo
             }}</router-link>
-            <!-- <router-link to="/user?{{user.idUsers}}" class="user-pseudo">{{
+            <!-- <router-link to="`/users/${user.idUsers}`" class="user-pseudo">{{
               user.pseudo
             }}</router-link> -->
-            <!-- <router-link to="/userView?">click here<router-link> -->
           </div>
         </div>
         <!-- <p>{{ getApi }}</p> -->

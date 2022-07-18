@@ -39,6 +39,7 @@ const routes = [
   },
   {
     path: "/user/:id",
+    // variable dynamique qui pourra être modifiée est marquée par [:] (cf vuerouter)
     name: "user",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

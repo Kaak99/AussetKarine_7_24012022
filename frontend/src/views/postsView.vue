@@ -46,17 +46,21 @@
                 id="file"
                 ref="file"
                 @change="selectFile()"
-                accept=".jpg,.png"
+                accept=".jpg,.jpeg,.png,.gif,.webp"
               />
 
               <i
                 class="fa-solid fa-paper-plane envoiPost"
+                title="envoyer le message"
                 v-on:click.prevent="envoiPost"
               ></i>
             </div>
           </div>
         </div>
         {{ idConnected }}
+        <!--modale-->
+        <!-- <modalPost2></modalPost2> -->
+        <!-- <modalPost toggleModal="Welcome here" /> -->
         <!--ici démarre la zone d'affichage des posts-->
         <div
           v-for="post in getApiResponse"
@@ -83,16 +87,28 @@
               <p class="thumbDown d-flex">👎🏻</p>
               <p class="modifyPost d-flex">✍🏻</p>
               <p class="deletePost d-flex">🗑️</p> -->
-              <i class="fa-solid fa-comment addComment"></i>
-              <i class="fa-solid fa-thumbs-up thumbUp"></i>
-              <i class="fa-solid fa-thumbs-down thumbDown"></i>
+              <i
+                class="fa-solid fa-comment addComment"
+                title="Commentaires"
+              ></i>
+              <i
+                class="fa-solid fa-thumbs-up thumbUp"
+                title="liker le message"
+              ></i>
+              <i
+                class="fa-solid fa-thumbs-down thumbDown"
+                title="disliker le message"
+              ></i>
               <i
                 class="fa-solid fa-pen-to-square modifyPost"
-                v-if="post.id_Users == idConnected"
+                title="modifier le message"
+                v-if="post.id_Users == idConnected || idConnected == 1"
               ></i>
               <i
                 class="fa-solid fa-trash-can deletePost"
-                v-if="post.id_Users == idConnected"
+                title="supprimer le message"
+                v-if="post.id_Users == idConnected || idConnected == 1"
+                v-on:click="deletePost(post.idPosts)"
               ></i>
             </p>
           </div>
@@ -119,9 +135,11 @@
 <script>
 // @ is an alias to /src
 import axios from "axios";
+// import modalPost from "@/components/modalPost.vue";
 
 export default {
   name: "postsView",
+  // components: modalPost,
 
   data() {
     return {
@@ -145,6 +163,7 @@ export default {
       idConnected: localStorage.getItem("userId"),
     };
   },
+
   created() {
     //mounted() {
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
@@ -160,6 +179,19 @@ export default {
     //   this.inputFile = e.target.files[0];
     //   console.log(this.inputFile);
     // },
+    deletePost(idPosts) {
+      console.log(idPosts);
+      alert("Voulez vous vraiment supprimer le message " + idPosts + " ?");
+      axios
+        .delete(this.url + "/" + idPosts)
+        .then((res) => {
+          console.log(res);
+          this.getAllPost();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     getAllPost() {
       axios
         .get(this.url)
@@ -219,7 +251,8 @@ export default {
           //remettre els champs à zero
           this.inputTitle = "";
           this.inputText = "";
-          this.inputFile = "";
+          this.inputFile = "jjj";
+          //this.$refs.file = "ttt";
           this.getAllPost();
           //this.$router.push("/");
         })
@@ -261,7 +294,7 @@ export default {
   flex-direction: columns;
   flex-wrap: wrap;
   color: green;
-  font-size: 3vw;
+  font-size: 2vw;
 }
 
 .postContainer {
@@ -281,6 +314,11 @@ export default {
   padding: 5px;
   border: solid 1px red;
   margin-bottom: 5px;
+}
+.fa-solid:hover {
+  /*box-shadow: 10px 5px 5px black;*/
+  /*transform: scale(1.01);*/
+  filter: brightness(1.5);
 }
 .forme {
   color: green;

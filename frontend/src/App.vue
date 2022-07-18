@@ -3,6 +3,7 @@
 <template>
   <div id="app">
     <nav>
+      <!-- router-link = les liens pour la navigation via le routeur -->
       <router-link to="/">Home</router-link>
       <router-link to="/posts" v-if="isConnected">Posts</router-link>
       <router-link to="/users" v-if="isConnected">Utilisateurs</router-link>
@@ -19,7 +20,9 @@
       {{ isConnected }}
     </nav>
     <!-- <router-view /> -->
-    <!-- <router-view :token="token"></router-view> -->
+    <!-- router-view = là ou le routeur doit afficher la route choisie -->
+    <!-- c'est donc là le main de la page (routerlink up&down pour la navigation haut&bas) -->
+    <!-- bien définir les PROPS dans le router-view -->
     <router-view
       :token="monTest"
       @connection="
@@ -28,6 +31,7 @@
         }
       "
     ></router-view>
+    <!--on a défini dans routerView des props, v-bind_token et l'action connection qui recoit un parametre booelen(true à la connection, false à la deco)-->
     <nav>
       <router-link to="/about">About</router-link>
       <router-link to="/#">Règlement interne</router-link>
@@ -55,7 +59,7 @@ export default {
   },
   props: {
     token: String,
-    connected: Boolean,
+    // connected: Boolean,
   },
   created() {
     if (localStorage.getItem("userId")) {
@@ -165,7 +169,7 @@ p {
     font-size: 6vw;
   }
   .fileButton {
-    font-size: 2vw;
+    font-size: 4vw !important;
   }
 }
 @media all and (min-width: 300px) and (max-width: 400px) /* 300-400w*/ {
@@ -178,6 +182,9 @@ p {
   }
   p {
     font-size: 5vw;
+  }
+  .fileButton {
+    font-size: 3.5vw !important;
   }
 }
 @media all and (min-width: 400px) and (max-width: 500px) /* 400-500w*/ {
@@ -192,6 +199,9 @@ p {
   p {
     font-size: 4vw;
   }
+  .fileButton {
+    font-size: 3vw !important;
+  }
 }
 
 @media all and (min-width: 500px) and (max-width: 600px) /* 500-600w*/ {
@@ -205,6 +215,9 @@ p {
 
   p {
     font-size: 2.8vw;
+  }
+  .fileButton {
+    font-size: 2.5vw !important;
   }
 }
 
@@ -222,6 +235,9 @@ p {
   p {
     font-size: 2.2vw;
   }
+  .fileButton {
+    font-size: 2vw !important;
+  }
 }
 @media all and (min-width: 1400px) and (max-width: 2000px) /* 1400-2000w*/ {
   a,
@@ -234,6 +250,9 @@ p {
   p {
     font-size: 2vw;
   }
+  .fileButton {
+    font-size: 1.5vw !important;
+  }
 }
 @media all and (min-width: 2000px) /* >2000w*/ {
   a,
@@ -245,6 +264,9 @@ p {
   }
   p {
     font-size: 1vw;
+  }
+  .fileButton {
+    font-size: 1vw !important;
   }
 }
 </style>
