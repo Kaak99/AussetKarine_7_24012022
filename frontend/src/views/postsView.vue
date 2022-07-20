@@ -46,7 +46,7 @@
                 id="file"
                 ref="file"
                 @change="selectFile()"
-                accept=".jpg,.jpeg,.png,.gif,.webp"
+                accept="image/.jpg,.jpeg,.png,.gif,.webp"
               />
 
               <i
@@ -67,6 +67,7 @@
           :key="post.idPosts"
           class="postsCard"
         >
+          <!-- v-if="post.active == 1" -->
           <div class="post">
             <!-- <router-link to="/posts">Posts</router-link> -->
             <p>Ecrit par {{ post.id_Users }} le {{ post.time }}</p>
@@ -74,6 +75,7 @@
             <div class="post-image">
               <!-- <img alt="imag" src="../assets/imag.jpg" /> -->
               <img
+                class="postImage"
                 alt="image d'illustration "
                 v-bind:src="post.image"
                 v-if="post.image"
@@ -335,5 +337,12 @@ export default {
 .fa-solid {
   cursor: pointer;
   margin: 5px;
+}
+.postImage {
+  width: 85%;
+  max-width: 800px;
+  min-width: 80px;
+  max-height: 1000px;
+  object-fit: contain;
 }
 </style>

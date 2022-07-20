@@ -115,17 +115,40 @@ exports.deleteUsers = (req, res, next) => {
 // ! ---------------------! //
 exports.signup = (req, res, next) => {
   console.log(" =============== début =============== ");
+  //console.log(req);
+  console.log("body=");
+  console.log(req.body);
   console.log(req.body.pseudo);
   console.log(req.body.password);
-  let newUser = {
-    pseudo: req.body.pseudo,
-    password: req.body.password,
-    avatar: req.body.avatar,
-    email: req.body.email,
-    bio: req.body.bio,
-    admin: req.body.admin,
-    active: req.body.active,
-  };
+  console.log(" =============== pause =============== ");
+  let newUser;
+  if (!req.file) {
+    console.log({ cas1noImag: req.body });
+    newUser = {
+      pseudo: req.body.pseudo,
+      password: req.body.password,
+      // avatar: req.body.avatar,
+      avatar: "http://localhost:3000/images/default.jpg",
+      email: req.body.email,
+      bio: req.body.bio,
+      admin: req.body.admin,
+      active: req.body.active,
+    };
+  } else {
+    console.log({ cas2Imag: req.body });
+    newUser = {
+      pseudo: req.body.pseudo,
+      password: req.body.password,
+      // avatar: req.body.avatar,
+      avatar: `${req.protocol}://${req.get("host")}/images/${
+        req.file.filename
+      }`,
+      email: req.body.email,
+      bio: req.body.bio,
+      admin: req.body.admin,
+      active: req.body.active,
+    };
+  }
   //console.log(newUser);
   // let newUserCryptedEmail="";
   // let newUserHashedPassword="";

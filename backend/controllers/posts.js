@@ -173,19 +173,14 @@ exports.createPosts = (req, res, next) => {
   //const postImage = JSON.parse(req.body.image);
   console.log("postObject");
   console.log(postObject);
-  // console.log("postObject2");
-  // console.log(postObject2);
-  //console.log("postImage");
-  //console.log(postImage);
   console.log("userId de demande");
   console.log(postObject.id_Users);
   //console.log(postObject.image);
   let newPost = {};
   //console.log({ monImage: req.file.originalname });
-  // if (postObject.image === "") {
   console.log(req.file);
   if (!req.file) {
-    // if (!postObject.image) {
+    // if (!postObject.image) {//existe pas, c req.file
     //cas ou pas d'image
     newPost = {
       titre: postObject.titre,

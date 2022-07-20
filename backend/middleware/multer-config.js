@@ -10,7 +10,7 @@ const MIME_TYPES = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/gif": "gif",
-  "image/png": "webp",
+  "image/webp": "webp",
 };
 
 //multer config=const storage=1/destination fichier(dossier images)2/filename

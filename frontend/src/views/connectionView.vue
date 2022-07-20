@@ -4,8 +4,10 @@
   <div class="containAll">
     <div class="users container" v-if="loading === true">
       <form class="formLogin">
-        <h1>Connection page test</h1>
-        <h2 class="centerTxt">Veuillez rentrer votre pseudo et mot de passe</h2>
+        <h1>Connectez vous ici</h1>
+        <h2 class="centerTxt">
+          Veuillez rentrer votre pseudo et votre mot de passe
+        </h2>
         <div class="userContainer d-flex">
           <!--ici démarre la zone de création de posts-->
           <!-- <div class="usersCard">

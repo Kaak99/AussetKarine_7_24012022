@@ -5,8 +5,8 @@
     <div class="users container">
       <!-- <div class="users" v-if="loading === true"> -->
       <form class="formSignup">
-        <h1>Signup page test</h1>
-        <h2 class="centerTxt">Veuillez rentrer votre pseudo et mot de passe</h2>
+        <h1>Page d'inscription</h1>
+        <h2 class="centerTxt">Veuillez rentrer les informations demandées</h2>
         <div class="userContainer d-flex">
           <!--ici démarre la zone de création de posts-->
           <!-- <div class="usersCard">
@@ -17,7 +17,7 @@
          </div> -->
           <label for="userEmail" title="format email & >5car">Email :</label>
           <input
-            v-model="email"
+            v-model="inputEmail"
             type="text"
             size="20"
             maxlength="30"
@@ -36,7 +36,7 @@
 
           <label for="userPseudo" title="au moins 5 lettres">Pseudo :</label>
           <input
-            v-model="pseudo"
+            v-model="inputPseudo"
             type="text"
             size="10"
             maxlength="20"
@@ -55,7 +55,7 @@
 
           <label for="userBio" title="au moins 5 lettres">Bio :</label>
           <textarea
-            v-model="bio"
+            v-model="inputBio"
             name="bio"
             id="bio"
             placeholder="votre bio"
@@ -70,8 +70,19 @@
             <i class="fas fa-check-circle"></i>Bio acceptée
           </p>
 
-          <label for="userAvatar" title="au moins 5 lettres">Avatar :</label>
+          <label for="userAvatar" title="fichier jpg/webp/gif/png <50mo"
+            >Avatar :</label
+          >
           <input
+            type="file"
+            class="fileButton"
+            id="file"
+            ref="file"
+            name="image"
+            @change="selectFile()"
+            accept=".jpg,.jpeg,.png,.gif,.webp"
+          />
+          <!-- <input
             v-model="avatar"
             type="text"
             size="20"
@@ -81,7 +92,7 @@
             id="avatar"
             placeholder="votre avatar"
             default="avatarAnonyme"
-          />
+          /> -->
           <p id="avatarAlert" class="userAvatarAlert">
             <i class="fas fa-times-circle"></i>Avatar incorrect
           </p>
@@ -93,7 +104,7 @@
             >Mot de passe :</label
           >
           <input
-            v-model="mdp"
+            v-model="inputPassword"
             type="password"
             size="10"
             maxlength="16"
@@ -109,7 +120,7 @@
           <p id="passwordOk" class="userPasswordValid">
             <i class="fas fa-check-circle"></i>mot de passe accepté
           </p>
-          <button class="buttonValid" v-on:click.prevent="envoi">
+          <button class="buttonValid" v-on:click.prevent="envoiInscription">
             Je m'inscris !
           </button>
           <p>{{ messageRetour }}</p>
@@ -144,25 +155,55 @@ export default {
       url: "http://localhost:3000/api/users/signup",
       postApiResponse: "",
       messageRetour: "",
-      email: "",
-      pseudo: "",
-      bio: "",
-      avatar: "",
-      mdp: "",
+      inputEmail: "",
+      inputPseudo: "",
+      inputBio: "",
+      inputPassword: "",
+      inputFile: "",
+      image: "",
     };
   },
   methods: {
-    envoi: function () {
+    selectFile() {
+      //console.log(this.$refs.file.files[0].name);
+      this.inputFile = this.$refs.file.files[0];
+      console.log(this.inputFile);
+    },
+    envoiInscription: function () {
+      let formdata = new FormData();
+      console.log(this.inputPseudo);
+      console.log(this.inputPassword);
+      console.log(this.inputEmail);
+      formdata.append("pseudo", this.inputPseudo);
+      formdata.append("password", this.inputPassword);
+      formdata.append("email", this.inputEmail);
+      console.log(formdata);
+      if (this.inputFile) {
+        formdata.append("image", this.inputFile, this.inputFile.name);
+        // } else {
+        //   formdata.append(
+        //     "image",
+        //     "http://localhost:3000/images/default.jpg",
+        //     "default.jpg"
+        //   );
+      }
+      formdata.append("id_Users", localStorage.getItem("userId"));
+      formdata.append("bio", this.inputBio);
+      formdata.append("admin", 0);
+      formdata.append("active", 1);
+
+      console.log(formdata);
       axios
-        .post(this.url, {
-          pseudo: this.pseudo,
-          password: this.mdp,
-          avatar: this.avatar,
-          email: this.email,
-          bio: this.bio,
-          admin: 0,
-          active: 1,
-        })
+        // .post(this.url, {
+        //   pseudo: this.pseudo,
+        //   password: this.mdp,
+        //   image: this.avatar,
+        //   email: this.email,
+        //   bio: this.bio,
+        //   admin: 0,
+        //   active: 1,
+        // })
+        .post(this.url, formdata)
         // .post(this.url, { pseudo: "user60", password: "mdp" })
         .then((response) => {
           this.postApiResponse = response.data;
