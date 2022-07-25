@@ -71,9 +71,20 @@
           <div class="post">
             <!-- <router-link to="/posts">Posts</router-link> -->
             <!-- <p>Ecrit par {{ post.id_Users }} le {{ post.time }}</p> -->
-            <p>
-              Ecrit par {{ post.avatar }} {{ post.pseudo }} le {{ post.time }}
-            </p>
+            <div class="d-flex2c">
+              <p>Ecrit par {{ post.pseudo }}</p>
+              <img alt="avatar" class="postAvatar" v-bind:src="post.avatar" />
+              <!-- <p>le {{ dayjs(post.time).format("DD/MM/YYYY") }}</p> 
+              -->
+              <!-- <p>
+                le
+                {{ dayjs(getApiResponse.post.time).format("DD/MM/YYYY HH:mm") }}
+              </p> -->
+              <p>le {{ timeDayjs }}</p>
+
+              <!-- <p>le {{ post.timeDayjs }}</p> -->
+              <!-- <p>le {{ post.time }}</p> -->
+            </div>
             <p class="post-title">{{ post.titre }}</p>
             <div class="post-image">
               <!-- <img alt="imag" src="../assets/imag.jpg" /> -->
@@ -141,6 +152,7 @@
 // @ is an alias to /src
 import axios from "axios";
 import modalPost from "@/components/modalPost.vue";
+import dayjs from "dayjs";
 
 export default {
   name: "postsView",
@@ -161,10 +173,7 @@ export default {
       inputFile: "",
       commentFlag: 0,
       likeFlag: 0,
-      unlikeFlag: 0,
-      modifyFlag: 0,
-      deleteFlag: 0,
-      authFlag: 0,
+      timeDayjs: [],
       idConnected: localStorage.getItem("userId"),
     };
   },
@@ -210,6 +219,10 @@ export default {
           this.getApiResponse = response.data;
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
           //console.log(this.getApiResponse);
+          this.timeDayjs = dayjs(this.getApiResponse.time).format(
+            "DD/MM/YYYY HH:mm"
+          );
+          console.log(this.timeDayjs);
           this.loading = true;
         })
         .catch((error) => {
@@ -353,5 +366,13 @@ export default {
   min-width: 80px;
   max-height: 1000px;
   object-fit: contain;
+}
+.postAvatar {
+  width: 2%;
+  max-width: 100px;
+  min-width: 20px;
+  object-fit: contain;
+  margin-left: 5px;
+  margin-right: 20px;
 }
 </style>
