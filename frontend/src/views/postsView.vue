@@ -46,7 +46,7 @@
                 id="file"
                 ref="file"
                 @change="selectFile()"
-                accept="image/.jpg,.jpeg,.png,.gif,.webp"
+                accept=".jpg,.jpeg,.png,.gif,.webp"
               />
 
               <i
@@ -59,9 +59,9 @@
         </div>
         {{ idConnected }}
         <!--modale-->
-        <!-- <modalPost2></modalPost2> -->
+        <!-- <modal-post></modal-post> -->
         <!-- <modalPost toggleModal="Welcome here" /> -->
-        <!--ici démarre la zone d'affichage des posts-->
+        <!--ici démarre la zone d'affichage des posts -->
         <div
           v-for="post in getApiResponse"
           :key="post.idPosts"
@@ -70,7 +70,10 @@
           <!-- v-if="post.active == 1" -->
           <div class="post">
             <!-- <router-link to="/posts">Posts</router-link> -->
-            <p>Ecrit par {{ post.id_Users }} le {{ post.time }}</p>
+            <!-- <p>Ecrit par {{ post.id_Users }} le {{ post.time }}</p> -->
+            <p>
+              Ecrit par {{ post.avatar }} {{ post.pseudo }} le {{ post.time }}
+            </p>
             <p class="post-title">{{ post.titre }}</p>
             <div class="post-image">
               <!-- <img alt="imag" src="../assets/imag.jpg" /> -->
@@ -137,11 +140,11 @@
 <script>
 // @ is an alias to /src
 import axios from "axios";
-// import modalPost from "@/components/modalPost.vue";
+import modalPost from "@/components/modalPost.vue";
 
 export default {
   name: "postsView",
-  // components: modalPost,
+  // components: { "modal-post": modalPost },
 
   data() {
     return {
@@ -183,16 +186,22 @@ export default {
     // },
     deletePost(idPosts) {
       console.log(idPosts);
-      alert("Voulez vous vraiment supprimer le message " + idPosts + " ?");
-      axios
-        .delete(this.url + "/" + idPosts)
-        .then((res) => {
-          console.log(res);
-          this.getAllPost();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (
+        confirm("Voulez vous vraiment supprimer le message " + idPosts + " ?")
+      ) {
+        axios
+          .delete(this.url + "/" + idPosts)
+          .then((res) => {
+            console.log(res);
+            //alert("Votre message " + idPosts + " a bien été supprimé");
+            this.getAllPost();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        this.getAllPost();
+      }
     },
     getAllPost() {
       axios
@@ -253,8 +262,8 @@ export default {
           //remettre els champs à zero
           this.inputTitle = "";
           this.inputText = "";
-          this.inputFile = "jjj";
-          //this.$refs.file = "ttt";
+          this.$refs.file.value = "";
+
           this.getAllPost();
           //this.$router.push("/");
         })

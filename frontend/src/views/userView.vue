@@ -3,8 +3,8 @@
 <template>
   <div>
     <div class="users container" v-show="loading === true">
-      <h1>This is one userView page test</h1>
-      <h2 class="centerTxt">Présentation de nos utilisateurs</h2>
+      <h1>Présentation de nos utilisateurs</h1>
+      <h2 class="centerTxt">voici la fiche de :</h2>
       <div class="OneUserContainer d-flex">
         <!--ici démarre la zone de users-->
         <!-- <div class="usersCard">
@@ -13,15 +13,19 @@
           <p class="user-bio">presentation</p>
         </div>
       </div> -->
-        <!-- <div v-for="user in getApi" :key="user.idUsers" class="usersCard"> -->
-        <!-- <div v-for="user in getApi" :key="user.idUsers" class="usersCard"> -->
+        <!-- <div v-for="user in getApiResponse" :key="user.idUsers" class="usersCard"> -->
+        <!-- <div v-for="user in getApiResponse" :key="user.idUsers" class="usersCard"> -->
         <div class="user">
           <!-- <div class="user" :href="npmjs.com"> -->
           <!-- <div class="user" :href="html/product.html?${data[i]._id}"> -->
           <!-- <router-link to="/posts">Posts</router-link> -->
-          <p class="user-pseudo">{{ getApi.pseudo }}</p>
-          <p class="user-email">{{ getApi.email }}</p>
-          <p class="user-bio">{{ getApi.bio }}</p>
+          <p class="user-pseudo">{{ getApiResponse.pseudo }}</p>
+
+          <img alt="avatar" class="avatar" v-bind:src="getApiResponse.avatar" />
+          <p class="user-email">Adresse email : {{ getApiResponse.email }}</p>
+
+          <p class="user-bio">Bio : {{ getApiResponse.bio }}</p>
+          <p class="user-time">Profil créé le : {{ getApiResponse.time }}</p>
           <!-- <img href="http://localhost>" -->
         </div>
 
@@ -52,21 +56,21 @@ export default {
   data() {
     return {
       loading: false,
-      getApi: "",
+      getApiResponse: "",
       url: "http://localhost:3000/api",
       urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
-      oneUrl: "http://localhost:3000/api/user/{{getApi.idUsers}}",
+      oneUrl: "http://localhost:3000/api/user/{{getApiResponse.idUsers}}",
     };
   },
   created() {
     console.log(this.$route.params.id);
     axios.get(this.url + `/users/` + this.$route.params.id).then((response) => {
-      this.getApi = response.data[0];
-      // this.getApi = response.data;
-      console.log(this.getApi);
+      this.getApiResponse = response.data[0];
+      // this.getApiResponse = response.data;
+      console.log(this.getApiResponse);
       this.loading = true;
     });
-    // axios.get(this.url).then((response) => (this.getApi = response.data));
+    // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
   },
 };
 
@@ -128,5 +132,12 @@ export default {
 .user {
   padding: 5px;
   border: solid 2px red;
+}
+.user-pseudo {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.user-time {
+  font-style: italic;
 }
 </style>

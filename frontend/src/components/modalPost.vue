@@ -5,8 +5,10 @@
   <div class="bloc-modale">
     <div class="overlay">
       <div class="btn-modale">x</div>
-      <h2>Le contenu de la modale {{ revele }}</h2>
-      <p>hellomodale {{ toggleModal }}</p>
+      <!-- <h2>Le contenu de la modale {{ revele }}</h2>
+      <p>hellomodale {{ toggleModal }}</p> -->
+      <h2>Le contenu de la modale</h2>
+      <p>hellomodale</p>
     </div>
   </div>
 </template>
@@ -15,11 +17,11 @@
 
 <script>
 export default {
-  name: "modalPost",
-  props: {
-    revele: Boolean,
-    toggleModal: String,
-  },
+  name: "modal-post",
+  // props: {
+  //   revele: Boolean,
+  //   toggleModal: String,
+  // },
 };
 </script>
 
