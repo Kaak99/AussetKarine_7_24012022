@@ -18,10 +18,10 @@
 <script>
 export default {
   name: "modal-post",
-  // props: {
-  //   revele: Boolean,
-  //   toggleModal: String,
-  // },
+  props: {
+    revele: Boolean,
+    toggleModal: String,
+  },
 };
 </script>
 

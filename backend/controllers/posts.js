@@ -24,9 +24,13 @@ exports.getAllPosts = (req, res, next) => {
     function(err, results) {
       res.status(200).json(results);
     //console.log(results);
-    }
-  )
+    })
   */
+
+  // db.promise()
+  // .query("SELECT * FROM groupomania.posts_table")
+  // .then(([results]) => {res.status(200).json(results);})
+  // .catch((error) => {res.status(400).json(error);});
 
   db.promise()
     .query(

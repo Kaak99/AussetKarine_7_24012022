@@ -122,6 +122,8 @@ export default {
       urlGod: "http://localhost:3000/api/users/4",
       thisUrl: "",
       getApiResponse: {},
+      inputPseudo: "",
+      inputBio: "",
     };
   },
   methods: {

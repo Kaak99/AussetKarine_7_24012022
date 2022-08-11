@@ -93,6 +93,11 @@ export default {
   --primaryColor50: #2c3e50;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 nav {
   padding: 1vw 2vw;
   display: flex;
@@ -160,76 +165,60 @@ p {
 @media all and (max-width: 300px) /* <300w*/ {
   a,
   h2 {
-    font-size: 7vw;
+    font-size: 4vw;
   }
   h1 {
-    font-size: 8vw;
+    font-size: 4vw;
   }
-  p {
-    font-size: 6vw;
+  p,
+  label,
+  input,
+  textarea {
+    font-size: 3.5vw;
   }
   .fileButton {
-    font-size: 4vw !important;
+    font-size: 1.4vw !important;
   }
 }
 @media all and (min-width: 300px) and (max-width: 400px) /* 300-400w*/ {
   a,
   h2 {
-    font-size: 6vw;
+    font-size: 3vw;
   }
   h1 {
-    font-size: 7vw;
+    font-size: 3vw;
   }
   p {
-    font-size: 5vw;
+    font-size: 2.8vw;
   }
   .fileButton {
-    font-size: 3.5vw !important;
+    font-size: 1.6vw !important;
   }
 }
 @media all and (min-width: 400px) and (max-width: 500px) /* 400-500w*/ {
   a,
   h2 {
-    font-size: 5vw;
+    font-size: 2.8vw;
     color: darkviolet;
   }
   h1 {
-    font-size: 6vw;
+    font-size: 2.8vw;
   }
   p {
-    font-size: 4vw;
+    font-size: 2.6vw;
   }
   .fileButton {
-    font-size: 3vw !important;
+    font-size: 1.8vw !important;
   }
 }
 
 @media all and (min-width: 500px) and (max-width: 600px) /* 500-600w*/ {
   a,
   h2 {
-    font-size: 3.8vw;
+    font-size: 2.6vw;
   }
   h1 {
-    font-size: 4.8vw;
-  }
-
-  p {
-    font-size: 2.8vw;
-  }
-  .fileButton {
-    font-size: 2.5vw !important;
-  }
-}
-
-/* entre 600 et 900px*/
-
-@media all and (min-width: 900px) and (max-width: 1400px) /* 900-1400w*/ {
-  a,
-  h2 {
-    font-size: 3.2vw;
-  }
-  h1 {
-    font-size: 4.2vw;
+    font-size: 2.6vw;
   }
 
   p {
@@ -239,34 +228,68 @@ p {
     font-size: 2vw !important;
   }
 }
+
+@media all and (min-width: 600px) and (max-width: 900px) /* entre 600 et 900px*/ {
+  a,
+  h2 {
+    font-size: 2.2vw;
+  }
+  h1 {
+    font-size: 2vw;
+  }
+
+  p {
+    font-size: 1.8vw;
+  }
+  .fileButton {
+    font-size: 1.8vw !important;
+  }
+}
+
+@media all and (min-width: 900px) and (max-width: 1400px) /* 900-1400w*/ {
+  a,
+  h2 {
+    font-size: 1.7vw;
+  }
+  h1 {
+    font-size: 1.7vw;
+  }
+
+  p {
+    font-size: 1.2vw;
+  }
+  .fileButton {
+    font-size: 1.2vw !important;
+  }
+}
 @media all and (min-width: 1400px) and (max-width: 2000px) /* 1400-2000w*/ {
   a,
   h2 {
-    font-size: 3vw;
+    font-size: 1.5vw;
   }
   h1 {
-    font-size: 4vw;
-  }
-  p {
-    font-size: 2vw;
-  }
-  .fileButton {
-    font-size: 1.5vw !important;
-  }
-}
-@media all and (min-width: 2000px) /* >2000w*/ {
-  a,
-  h2 {
-    font-size: 2vw;
-  }
-  h1 {
-    font-size: 3vw;
+    font-size: 1.6vw;
   }
   p {
     font-size: 1vw;
   }
   .fileButton {
     font-size: 1vw !important;
+  }
+}
+@media all and (min-width: 2000px) /* >2000w*/ {
+  a,
+  h2 {
+    font-size: 1.4vw;
+  }
+  h1 {
+    font-size: 1.5vw;
+  }
+  p {
+    font-size: 0.9vw;
+  }
+  .fileButton {
+    font-size: 0.9vw !important;
   }
 }
 </style>
