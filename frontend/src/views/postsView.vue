@@ -6,6 +6,7 @@
       <h1>Voici la liste de tous les messages</h1>
       <h2 class="centerTxt">Tous les posts</h2>
       <div class="postContainer d-flex">
+        <!-- ............✍️ ici démarre la zone d'input "new post" ✍️.............. -->
         <div class="writeBox">
           <div class="inputContainer d-flex">
             <label for="post-title" title="maximum 50 caractères"
@@ -61,10 +62,11 @@
         <!-- .................. modale .................. -->
         <!-- <modal-post></modal-post> -->
         <!-- <modalPost toggleModal="Welcome here" /> -->
-        <!-- .................. ici démarre la zone d'affichage des posts .................. -->
+        <!-- ................📩 ici démarre la zone d'affichage des posts 📩................ -->
         <div
           v-for="post in getApiResponse"
           :key="post.idPosts"
+          :id="post.idPosts"
           class="postsCard"
         >
           <div class="post">
@@ -79,10 +81,6 @@
                 le
                 {{ format(post.time) }}
               </p>
-              <!-- {{ format(post.time) }} -->
-              <!-- {{ dayjs().format("DD/MM/YYYY") }}
-              <p>le {{ post.timeDayjs }}</p>
-              <p>le {{ post.time }}</p> -->
             </div>
             <p class="post-title">{{ post.titre }}</p>
             <div class="post-image">
@@ -97,11 +95,6 @@
 
             <p class="post-text">{{ post.contenu }}</p>
             <p class="post-icon d-flex2c">
-              <!-- <p class="addComment d-flex">📩</p>
-              <p class="thumbUp d-flex">👍🏻</p>
-              <p class="thumbDown d-flex">👎🏻</p>
-              <p class="modifyPost d-flex">✍🏻</p>
-              <p class="deletePost d-flex">🗑️</p> -->
               <i
                 class="fa-solid fa-comment addComment"
                 title="Commentaires"
@@ -119,6 +112,7 @@
                 class="fa-solid fa-pen-to-square modifyPost"
                 title="modifier le message"
                 v-if="post.id_Users == idConnected || idConnected == 45"
+                v-on:click="modifyPost(post.idPosts)"
               ></i>
               <i
                 class="fa-solid fa-trash-can deletePost"
@@ -127,15 +121,20 @@
                 v-on:click="deletePost(post.idPosts)"
               ></i>
             </p>
-          </div>
 
-          <!-- .......... ici démarre la zone d'affichage des commentaires .......... -->
-          <comment-view text="props!" :idFromPost="post.idPosts"></comment-view>
+            <!-- ........💬 ici démarre la zone d'affichage des commentaires 💬........ -->
+            <comment-view
+              v-if="showCommentsBoolean"
+              text="props!"
+              :idFromPost="post.idPosts"
+            ></comment-view>
+          </div>
+          <!-- <p>{{ getApiResponse }}</p> -->
         </div>
-        <!-- <p>{{ getApiResponse }}</p> -->
       </div>
     </div>
 
+    <!-- ........🔌 ici la zone d'erreur réseau / serveur 🔌........ -->
     <div class="noLoading" v-else>
       <!-- <div class="noLoading" v-if="loading === false"> -->
       <p class="problemeServeur centerTxt">Un problème est survenu.</p>
@@ -181,6 +180,7 @@ export default {
       timeDayjs: [],
       idConnected: localStorage.getItem("userId"),
       postIdToComment: "5",
+      showCommentsBoolean: false,
     };
   },
 
@@ -194,11 +194,6 @@ export default {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
       // console.log();
     },
-    showComments(idPosts) {
-      console.log(idPosts);
-      // this.postIdToComment = idPosts;
-      // localStorage.setItem("postId2comment", idPosts);
-    },
     selectFile() {
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
@@ -208,6 +203,18 @@ export default {
     //   this.inputFile = e.target.files[0];
     //   console.log(this.inputFile);
     // },
+
+    //! on montre les commentaires
+    showComments(idPosts) {
+      // console.log(idPosts);
+      // this.showCommentsBoolean = true;
+      this.showCommentsBoolean = !this.showCommentsBoolean;
+      console.log(this.showCommentsBoolean);
+      // this.postIdToComment = idPosts;
+      // localStorage.setItem("postId2comment", idPosts);
+    },
+
+    //! on 🗑️ supprime un post
     deletePost(idPosts) {
       console.log(idPosts);
       if (
@@ -227,6 +234,24 @@ export default {
         this.getAllPost();
       }
     },
+
+    // //! on ✍️ modifie un post
+    // //faire cas image ou non ; faire via modale?
+    // modifyPost(idPosts) {
+    //   console.log(idPosts);
+    //   axios
+    //     .put(this.url + "/" + idPosts)
+    //     .then((res) => {
+    //       console.log(res);
+    //       //alert("Votre message " + idPosts + " a bien été supprimé");
+    //       this.getAllPost();
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // },
+
+    //! on 📦 récupère tous les posts from backend
     getAllPost() {
       axios
         .get(this.url)
@@ -244,6 +269,8 @@ export default {
           console.log(error);
         });
     },
+
+    //! on ✉️ envoie un post au backend
     envoiPost: function () {
       // let bodyParameters = {
       //   titre: this.inputTitle,
@@ -259,7 +286,7 @@ export default {
       if (this.inputFile) {
         formdata.append("image", this.inputFile, this.inputFile.name);
       }
-      formdata.append("id_Users", localStorage.getItem("userId"));
+      formdata.append("id_Users", this.idConnected);
       console.log(formdata);
 
       // const config = {
@@ -322,7 +349,6 @@ export default {
   /* margin: 1vw 6vw; */
   width: 100%;
   /* margin: 10px auto; */
-  color: #3b46eb;
 }
 .input-button {
   align-items: center;
@@ -336,7 +362,9 @@ export default {
   color: #ffd7d7;
   /* font-size: 5vw; */
 }
-
+.envoiPost {
+  padding: 10px;
+}
 .postContainer {
   padding: 10px;
   border: solid 1px blue;
@@ -349,20 +377,16 @@ export default {
 .post-icon {
   flex-direction: row;
   justify-content: space-evenly;
+  margin-bottom: 1.6vw;
 }
 .post {
   border: solid 1px red;
-  margin-bottom: 5px;
+  margin: 1.4vw 0;
 }
 .postOrigin {
   margin: 5px 0;
 }
 
-.fa-solid:hover {
-  /*box-shadow: 10px 5px 5px black;*/
-  /*transform: scale(1.01);*/
-  filter: brightness(1.5);
-}
 .forme {
   color: green;
 }
@@ -376,13 +400,20 @@ export default {
   width: 90%;
   margin: 10px auto;
 }
-.modifyPost,
-.deletePost {
-  color: #d11421;
-}
+
 .fa-solid {
   cursor: pointer;
   margin: 5px;
+  /* color: #3b46eb; */
+}
+.fa-solid:hover {
+  /*box-shadow: 10px 5px 5px black;*/
+  /*transform: scale(1.01);*/
+  filter: brightness(1.5);
+}
+.modifyPost,
+.deletePost {
+  color: #d11421;
 }
 .postImage {
   width: 90%;

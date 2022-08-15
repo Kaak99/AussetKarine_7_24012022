@@ -31,6 +31,7 @@
         }
       "
     ></router-view>
+    <!-- ou bien on peut appeler la fonction qui retourne isConnected = booleanTransmi au leiu de cette ronction fléchée -->
     <!--on a défini dans routerView des props, v-bind_token et l'action connection qui recoit un parametre booelen(true à la connection, false à la deco)-->
     <nav>
       <router-link to="/about">About</router-link>
@@ -91,6 +92,7 @@ export default {
   --primaryColor2: #d11421;
   --primaryColor3: #3b46eb;
   --primaryColor50: #2c3e50;
+  word-break: break-all;
 }
 
 * {

@@ -22,15 +22,20 @@ exports.getAllComments = (req, res, next) => {
     });
 };
 
-//!__   get all COMMENTS from ONE POST(get)               __//
+//!__   get all COMMENTS from ONE POST(get)   __//
 //!__ recoit : -                             __//
 //!__ renvoie tableau de toutes les comments __//
 
 exports.getAllComments4OnePost = (req, res, next) => {
   db.promise()
-    .query(" SELECT * FROM groupomania.comments_table  WHERE `id_Posts`=? ;", [
-      req.params.id,
-    ])
+    // .query(
+    //   " SELECT * FROM groupomania.comments_table  WHERE `id_Posts`=?  ORDER BY time DESC;",
+    //   [req.params.id]
+    // )
+    .query(
+      "SELECT * FROM groupomania.comments_table as c left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
+      [req.params.id]
+    )
     .then(([results]) => {
       console.log("affiche...");
       res.status(200).json(results);
