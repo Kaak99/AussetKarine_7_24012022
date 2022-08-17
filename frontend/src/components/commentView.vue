@@ -2,7 +2,8 @@
 
 <template>
   <!-- <div class="container">  </div> -->
-  <div class="bloc-comments">
+  <!-- notre bloc-comments aura aussi comme identifiant de classe l'id du post qui l'a appelé(idFromPost) -->
+  <div :class="`bloc-comments ${idFromPost}`">
     <div class="newComment d-flex">
       <label for="comment-write" title="maximum 500 caractères"></label>
       <textarea
@@ -23,6 +24,8 @@
       ></i>
     </div>
 
+    <!-- ........💬 ici démarre la zone d'affichage des commentaires 💬....VFOR.... -->
+    <!-- <div class="commentsList"> -->
     <div class="commentsList">
       <div
         v-for="comment in getApiResponse"
@@ -54,7 +57,7 @@
             ></i>
             <i
               class="fa-solid fa-trash-can deletePost"
-              title="supprimer le message"
+              title="supprimer le commentaire"
               v-if="comment.id_Users == idConnected || idConnected == 45"
               v-on:click="deleteComment(comment.idComments)"
             ></i>

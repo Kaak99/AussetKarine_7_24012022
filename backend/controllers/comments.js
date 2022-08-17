@@ -121,7 +121,7 @@ exports.modifyComments = (req, res, next) => {
   //on a juste besoin de changer le contenu
   db.promise()
     .query(
-      " UPDATE `groupomania`.`comments_table` SET contenu=?  WHERE `idComments`=? ",
+      " UPDATE `groupomania`.`comments_table` SET `contenu`=?  WHERE `idComments`=? ",
       [req.body.contenu, req.params.id]
     )
     .then(([results]) => {

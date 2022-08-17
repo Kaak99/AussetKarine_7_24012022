@@ -62,7 +62,7 @@
         <!-- .................. modale .................. -->
         <!-- <modal-post></modal-post> -->
         <!-- <modalPost toggleModal="Welcome here" /> -->
-        <!-- ................📩 ici démarre la zone d'affichage des posts 📩................ -->
+        <!-- ................📩 ici démarre la zone d'affichage des posts 📩......VFOR.......... -->
         <div
           v-for="post in getApiResponse"
           :key="post.idPosts"
@@ -83,6 +83,7 @@
               </p>
             </div>
             <p class="post-title">{{ post.titre }}</p>
+            <!-- {{ post.idLikes[0] }} -->
             <div class="post-image">
               <!-- <img alt="imag" src="../assets/imag.jpg" /> -->
               <img
@@ -94,20 +95,29 @@
             </div>
 
             <p class="post-text">{{ post.contenu }}</p>
-            <p class="post-icon d-flex2c">
+            <div class="post-icon d-flex2c">
               <i
                 class="fa-solid fa-comment addComment"
                 title="Commentaires"
                 v-on:click="showComments(post.idPosts)"
               ></i>
-              <i
+              <!-- <i
                 class="fa-solid fa-thumbs-up thumbUp"
                 title="liker le message"
               ></i>
               <i
                 class="fa-solid fa-thumbs-down thumbDown"
                 title="disliker le message"
-              ></i>
+              ></i> -->
+              <div class="likeContainer">
+                <i
+                  class="fa-solid fa-heart like"
+                  title="liker le message"
+                  v-on:click="likeUnlike(post.idPosts)"
+                ></i>
+                <!-- <p class="likeNumber">{{ post.like }}</p> -->
+                <p class="likeNumber" title="nombre de likes">5</p>
+              </div>
               <i
                 class="fa-solid fa-pen-to-square modifyPost"
                 title="modifier le message"
@@ -120,11 +130,11 @@
                 v-if="post.id_Users == idConnected || idConnected == 45"
                 v-on:click="deletePost(post.idPosts)"
               ></i>
-            </p>
+            </div>
 
             <!-- ........💬 ici démarre la zone d'affichage des commentaires 💬........ -->
             <comment-view
-              v-if="showCommentsBoolean"
+              v-show="showCommentsBoolean"
               text="props!"
               :idFromPost="post.idPosts"
             ></comment-view>
@@ -169,6 +179,7 @@ export default {
       compteur: 0,
       text1: "texte de test",
       url: "http://localhost:3000/api/posts",
+      urlLikes: "http://localhost:3000/api/likes",
       getApiResponse: null,
       postApiResponse: "",
       messageRetour: "",
@@ -203,6 +214,52 @@ export default {
     //   this.inputFile = e.target.files[0];
     //   console.log(this.inputFile);
     // },
+
+    //! retourne le nombre de like d'un post
+    postLikeNumber(idPosts) {
+      console.log(idPosts);
+    },
+
+    //! on like (ou retire le like)
+    likeUnlike(idPosts) {
+      // console.log(idPosts);
+      //1/ on ajoute un like (mais faire test avant)
+      const config = null;
+
+      let newLike = {
+        like: 0, //sera forcément 0 ou 1
+        id_Posts: idPosts,
+        id_Users: this.idConnected,
+      };
+      axios
+        .post(
+          this.urlLikes,
+          newLike,
+          config
+          // { headers: { Authorization: "Bearer " + token } }
+          // { headers: { Authorization: `Bearer ${token}` } }
+        )
+        // .post(this.url, { pseudo: "user60", password: "mdp" })
+        .then((response) => {
+          this.postApiResponse = response.data;
+          this.messageRetour = "Message envoyé !";
+          // console.log(this.postApiResponse);
+          // console.log(this.postApiResponse.userId);
+          // console.log(this.postApiResponse.token);
+          this.loading = true;
+          // console.log("j'ai liké !");
+
+          this.getAllPost();
+          //this.$router.push("/");
+        })
+        .catch((error) => {
+          console.log(error);
+          this.messageRetour = error.response.data.erreur;
+          console.log(error.response.data);
+          //this.messageRetour = this.getApi.error;
+          //this.loading = false;
+        });
+    },
 
     //! on montre les commentaires
     showComments(idPosts) {
@@ -429,5 +486,20 @@ export default {
   object-fit: contain;
   margin-left: 5px;
   margin-right: 20px;
+}
+.likeContainer {
+  position: relative;
+}
+.likeNumber {
+  position: absolute;
+  left: 35px;
+  top: 14px;
+  cursor: default;
+}
+.fa-heart:hover {
+  color: #3b46eb;
+}
+.blue {
+  color: #3b46eb;
 }
 </style>
