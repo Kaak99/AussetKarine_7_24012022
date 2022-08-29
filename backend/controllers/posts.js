@@ -35,8 +35,8 @@ exports.getAllPosts = (req, res, next) => {
   db.promise()
     .query(
       "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
-      // "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u left join groupomania.likes_table as l on p.id_Users=u.idUsers=l.id_Users ORDER BY p.time DESC;"
     )
+    // "SELECT *.p, *.u , COUNT(like) FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;"
     .then(([results]) => {
       //renvoi un tableau d'objets results
       //console.log(results);

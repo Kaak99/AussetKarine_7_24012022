@@ -99,7 +99,7 @@
               <i
                 class="fa-solid fa-comment addComment"
                 title="Commentaires"
-                v-on:click="showComments(post.idPosts)"
+                v-on:click="showCommentsFunction(post.idPosts)"
               ></i>
               <!-- <i
                 class="fa-solid fa-thumbs-up thumbUp"
@@ -133,10 +133,17 @@
             </div>
 
             <!-- ........💬 ici démarre la zone d'affichage des commentaires 💬........ -->
-            <comment-view
+            <!-- <comment-view
               v-show="showCommentsBoolean"
               text="props!"
               :idFromPost="post.idPosts"
+              :style="[true && { display: 'none' }]"
+            ></comment-view> -->
+            <comment-view
+              v-show="commentShowTab.indexOf(post.idPosts) !== -1"
+              text="props!"
+              :idFromPost="post.idPosts"
+              :style="[true && { display: 'none' }]"
             ></comment-view>
           </div>
           <!-- <p>{{ getApiResponse }}</p> -->
@@ -192,6 +199,7 @@ export default {
       idConnected: localStorage.getItem("userId"),
       postIdToComment: "5",
       showCommentsBoolean: false,
+      commentShowTab: [],
     };
   },
 
@@ -201,6 +209,28 @@ export default {
     this.getAllPost();
   },
   methods: {
+    // showCommentsFunction(idpost) {
+    //   const test = this.commentShowTab.indexOf(idpost);
+    //   if (test == -1) {
+    //     //pas de valeur retournée
+    //     this.commentShowTab.push(idpost);
+    //   } else {
+    //     this.commentShowTab = this.commentShowTab.filter(
+    //       (element) => element !== idpost
+    //     );
+    //   }
+    // },
+    showCommentsFunction(idpost) {
+      const test = this.commentShowTab.indexOf(idpost);
+      if (test == -1) {
+        //pas de valeur retournée
+        this.commentShowTab.push(idpost);
+      } else {
+        this.commentShowTab = this.commentShowTab.filter(
+          (element) => element !== idpost
+        );
+      }
+    },
     format(maDate) {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
       // console.log();

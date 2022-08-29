@@ -93,12 +93,13 @@ export default {
       url: `http://localhost:3000/api/comments`,
       inputComment: "",
       commentApiResponse: "",
+      comCount: 0,
     };
   },
   mounted() {
     //mounted() {
     // axios.get(this.url).then((response) => (this.commentApiResponse = response.data));
-    this.getAllComment();
+    this.getAllComments4OnePost();
   },
   methods: {
     format(maDate) {
@@ -107,14 +108,16 @@ export default {
     },
 
     //! on récupère tous les commentaires from backend
-    getAllComment: function () {
+    getAllComments4OnePost: function () {
       //console.log(this.commentApiResponse);
       console.log("recup Commentaires");
       axios
         .get(this.url + "/" + this.idFromPost)
         .then((response) => {
           this.getApiResponse = response.data;
+          this.comCount = response.data.length;
           console.log(this.getApiResponse);
+          console.log(this.comCount);
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
           //console.log(this.getApiResponse);
         })
@@ -135,13 +138,13 @@ export default {
           .then((res) => {
             console.log(res);
             //alert("Votre message " + idComment + " a bien été supprimé");
-            this.getAllComment();
+            this.getAllComments4OnePost();
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        this.getAllComment();
+        this.getAllComments4OnePost();
       }
     },
     //! on ✍️ modifie un commentaire
@@ -155,13 +158,13 @@ export default {
           .then((res) => {
             console.log(res);
             //alert("Votre message " + idPosts + " a bien été supprimé");
-            this.getAllComment();
+            this.getAllComments4OnePost();
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        this.getAllComment();
+        this.getAllComments4OnePost();
       }
     },
 
@@ -202,7 +205,7 @@ export default {
           this.loading = true;
           //remettre els champs à zero
           this.inputComment = "";
-          this.getAllComment();
+          this.getAllComments4OnePost();
           //this.$router.push("/");
         })
         .catch((error) => {
