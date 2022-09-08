@@ -28,7 +28,7 @@
     <!-- <div class="commentsList"> -->
     <div class="commentsList">
       <div
-        v-for="comment in getApiResponse"
+        v-for="(comment, index) in getApiResponse"
         :key="comment.idComments"
         class="commentsCard"
       >
@@ -63,6 +63,9 @@
             ></i>
           </p>
           {{ idFromPost }}
+
+          {{ comCount - index }}sur {{ comCount }}
+
           <!-- {{ localStorage.getItem("postId2comment") }} -->
         </div>
       </div>
@@ -83,6 +86,7 @@ export default {
     toggleCommentsView: Boolean,
     text: String,
     idFromPost: Number,
+    comCountTab: Array,
   },
   data() {
     return {

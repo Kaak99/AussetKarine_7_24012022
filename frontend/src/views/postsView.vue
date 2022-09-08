@@ -95,12 +95,16 @@
             </div>
 
             <p class="post-text">{{ post.contenu }}</p>
+
             <div class="post-icon d-flex2c">
-              <i
-                class="fa-solid fa-comment addComment"
-                title="Commentaires"
-                v-on:click="showCommentsFunction(post.idPosts)"
-              ></i>
+              <div class="commentContainer">
+                <i
+                  class="fa-solid fa-comment addComment"
+                  title="Commentaires"
+                  v-on:click="showCommentsFunction(post.idPosts)"
+                ></i>
+                <p class="commentNumber" title="nombre de commentaires">5555</p>
+              </div>
               <!-- <i
                 class="fa-solid fa-thumbs-up thumbUp"
                 title="liker le message"
@@ -116,7 +120,7 @@
                   v-on:click="likeUnlike(post.idPosts)"
                 ></i>
                 <!-- <p class="likeNumber">{{ post.like }}</p> -->
-                <p class="likeNumber" title="nombre de likes">5</p>
+                <p class="likeNumber" title="nombre de likes">5555</p>
               </div>
               <i
                 class="fa-solid fa-pen-to-square modifyPost"
@@ -143,8 +147,9 @@
               v-show="commentShowTab.indexOf(post.idPosts) !== -1"
               text="props!"
               :idFromPost="post.idPosts"
-              :style="[true && { display: 'none' }]"
             ></comment-view>
+            <!-- on aurait pu utiliser 
+              :style="[true && { display: 'none' }]" à la place de vshow -->
           </div>
           <!-- <p>{{ getApiResponse }}</p> -->
         </div>
@@ -189,26 +194,50 @@ export default {
       urlLikes: "http://localhost:3000/api/likes",
       getApiResponse: null,
       postApiResponse: "",
+      getLikeResponse: "",
       messageRetour: "",
       inputTitle: "",
       inputText: "",
       inputFile: "",
-      commentFlag: 0,
-      likeFlag: 0,
       timeDayjs: [],
       idConnected: localStorage.getItem("userId"),
       postIdToComment: "5",
       showCommentsBoolean: false,
       commentShowTab: [],
+      likeOnTab: [],
+      likeCount: 0,
     };
   },
 
   created() {
     //mounted() {
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
+    //this.getAllLikes4OnePost(145);
     this.getAllPost();
+    this.getAllLikes();
   },
+  computed: {},
   methods: {
+    //! retourne le nombre de like d'un post
+    getAllLikes4OnePost(idPosts) {
+      console.log(idPosts);
+
+      const test = axios
+        .get(this.urlLikes + "/" + idPosts)
+        .then((response) => {
+          this.getLikeResponse = response.data;
+          //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
+          //console.log(this.getLikeResponse);
+          this.likeCount = response.data.length;
+          console.log(this.likeCount);
+          return response.data.length;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      console.log("test", test);
+      return test;
+    },
     // showCommentsFunction(idpost) {
     //   const test = this.commentShowTab.indexOf(idpost);
     //   if (test == -1) {
@@ -221,16 +250,33 @@ export default {
     //   }
     // },
     showCommentsFunction(idpost) {
+      //on va stocker dans un tableau les idpost des click pour afficher les Commentaires
+      //dans le else, on retire les idpost si sont reclickés
+      //car le vshow ne montrera que les idpost qui sont dans le tableau
+      //(et si on avait reclické, on avait refermé)
       const test = this.commentShowTab.indexOf(idpost);
+      console.log("start");
+      console.log(this.commentShowTab);
+      console.log(this.commentShowTab.indexOf(idpost));
       if (test == -1) {
-        //pas de valeur retournée
+        //pas de valeur retournée=cet idPost n'est pas stocké
+        //alors on l'ajoute au tableau
         this.commentShowTab.push(idpost);
+        console.log("ifmoins1");
+        console.log(this.commentShowTab);
+        console.log(this.commentShowTab.indexOf(idpost));
       } else {
+        //si cet idpost etait stocké, on le retire
+        //(on ne garde que les elements qui ne sont pas idPost)
         this.commentShowTab = this.commentShowTab.filter(
           (element) => element !== idpost
         );
+        console.log("sinon");
+        console.log(this.commentShowTab);
+        console.log(this.commentShowTab.indexOf(idpost));
       }
     },
+
     format(maDate) {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
       // console.log();
@@ -245,9 +291,10 @@ export default {
     //   console.log(this.inputFile);
     // },
 
-    //! retourne le nombre de like d'un post
-    postLikeNumber(idPosts) {
-      console.log(idPosts);
+    //!getAllLikes
+    getAllLikes() {
+      console.log("getApiResponse  from getAllPost");
+      console.log(this.getApiResponse);
     },
 
     //! on like (ou retire le like)
@@ -345,7 +392,8 @@ export default {
         .then((response) => {
           this.getApiResponse = response.data;
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
-          //console.log(this.getApiResponse);
+          console.log("getApiResponse from getAllPost");
+          console.log(this.getApiResponse);
           this.timeDayjs = dayjs(this.getApiResponse.time).format(
             "DD/MM/YYYY HH:mm"
           );
@@ -355,6 +403,17 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+
+      //creer un tableau likeOnTab contenant pour chaque entrée/post la liste des users ayant liké
+      // et dont index =idem celui de apiresponse entrée[0] = post le + recent, tout en haut
+
+      // console.log("getApiResponse");
+      // console.log(this.getApiResponse);
+      // for (let index = 0; index < this.getApiResponse.length; index++) {
+      //   this.likeOnTab.push(
+      //     this.getAllLikes4OnePost(this.getApiResponse[0].idPosts)
+      //   );
+      // }
     },
 
     //! on ✉️ envoie un post au backend
@@ -517,14 +576,17 @@ export default {
   margin-left: 5px;
   margin-right: 20px;
 }
-.likeContainer {
+.likeContainer,
+.commentContainer {
   position: relative;
 }
-.likeNumber {
-  position: absolute;
-  left: 35px;
+.likeNumber,
+.commentNumber {
+  /* position: absolute; */
+  left: 24px;
   top: 14px;
   cursor: default;
+  /* width: 30px; */
 }
 .fa-heart:hover {
   color: #3b46eb;

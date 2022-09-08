@@ -22,7 +22,7 @@ exports.getAllComments = (req, res, next) => {
     });
 };
 
-//!__   get all COMMENTS from ONE POST(get)   __//
+//!__   get all COMMENTS from ONE POST(get + id du post)   __//
 //!__ recoit : -                             __//
 //!__ renvoie tableau de toutes les comments __//
 
@@ -34,6 +34,32 @@ exports.getAllComments4OnePost = (req, res, next) => {
     // )
     .query(
       "SELECT * FROM groupomania.comments_table as c left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
+      [req.params.id]
+    )
+    .then(([results]) => {
+      console.log("affiche...");
+      res.status(200).json(results);
+    })
+    .catch((error) => {
+      console.log("---catch(getAllComments4OnePost)---");
+      res.status(400).json({ error: error });
+    });
+};
+//table-com(c) est left-jointe à table-user(u) sur le critere des userId de chaque table
+//on prends tous(*) les com pour l'id post donné /:id (et on classe par ordre decroissant)
+
+//!__   get COMMENT'S number for ONE POST(GET +id du post) __//
+//!__ recoit : -                             __//
+//!__ renvoie tableau de toutes les comments __//
+
+exports.getCommentsNumber4OnePost = (req, res, next) => {
+  db.promise()
+    // .query(
+    //   " SELECT * FROM groupomania.comments_table  WHERE `id_Posts`=?  ORDER BY time DESC;",
+    //   [req.params.id]
+    // )
+    .query(
+      "SELECT COUNT(*) FROM groupomania.comments_table WHERE `id_Posts`=?;",
       [req.params.id]
     )
     .then(([results]) => {

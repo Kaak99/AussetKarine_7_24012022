@@ -11,6 +11,7 @@ const commentsController = require("../controllers/comments");
 
 router.get("/", commentsController.getAllComments);
 router.get("/:id", commentsController.getAllComments4OnePost);
+router.get("/count/:id", commentsController.getCommentsNumber4OnePost);
 
 router.post("/", commentsController.createComments);
 //router.get('/:id', postsController.getOnePostsComments);

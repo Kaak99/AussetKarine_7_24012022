@@ -5,6 +5,53 @@ console.log(` --------> likes-ctrl`);
 const db = require("../db/db");
 const fs = require("fs"); //package fs de node
 
+//!__   get LIKE'S number for ONE POST(GET +id du like) __//
+//!__ recoit : -                             __//
+//!__ renvoie tableau de toutes les comments __//
+// Faux! compte le nombre d'entrée dans la bdd! donc compte les likes à zero comme à 1 !
+exports.getLikesNumber4OnePost = (req, res, next) => {
+  db.promise()
+    // .query(
+    //   " SELECT * FROM groupomania.comments_table  WHERE `id_Posts`=?  ORDER BY time DESC;",
+    //   [req.params.id]
+    // )
+    .query("SELECT COUNT(*) FROM groupomania.likes_table WHERE `id_Posts`=?;", [
+      req.params.id,
+    ])
+    .then(([results]) => {
+      console.log("affiche...");
+      res.status(200).json(results);
+    })
+    .catch((error) => {
+      console.log("---catch(getLikesNumber4OnePost)---");
+      res.status(400).json({ error: error });
+    });
+};
+
+//!__   get all LIKES (positif= à 1) from ONE POST(get + id du post)   __//
+//!__ recoit : -                             __//
+//!__ renvoie tableau d'objets tq {"idLikes": xx,"like": 1,"id_Users": xx,"id_Posts": xx }, __//
+
+exports.getAllLikes4OnePost = (req, res, next) => {
+  db.promise()
+    .query(
+      " SELECT * FROM groupomania.likes_table  WHERE `id_Posts`=? AND `like`=1 ;",
+      [req.params.id]
+    )
+    // .query(
+    //   "SELECT * FROM groupomania.likes_table as l left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
+    //   [req.params.id]
+    // )
+    .then(([results]) => {
+      console.log("like=" + results.length);
+      res.status(200).json(results);
+    })
+    .catch((error) => {
+      console.log("---catch(getAllComments4OnePost)---");
+      res.status(400).json({ error: error });
+    });
+};
+
 //!__       CREATE LIKEs  (POST+id likes)                     __//
 //!__ recoit : raw-JSON {"like":1,"id_Posts":x,"id_Users":x}  __//
 //!__ renvoie : { message: String }                           __//
@@ -30,7 +77,7 @@ const fs = require("fs"); //package fs de node
 //     });
 // };
 
-//!__       MODIFY LIKEs  (PUT+id likes)          __//
+//!__   MODIFY LIKEs  (PUT+id likes= NON) (POST) (permet creer+modifier)   __//
 //!__ recoit : raw-JSON                               __//
 //!__ renvoie : { message: String }                  __//
 
@@ -39,7 +86,7 @@ const fs = require("fs"); //package fs de node
 //il faut que le back regarde si champ existe et recup idlike et mette à jour la valeur
 //si n'existe pas, cree la donnée
 //tout faire en mode post du coté de la requete front/postman?? (pas de put, il faut choisir)
-//autre solution : à chaque nouveau user ou nouveau post, la base sql cree un champ like à valeur à zero par defaut (e tdans ce cas là, juste un put necessaire)
+//autre solution : à chaque nouveau user ou nouveau post, la base sql cree un champ like à valeur à zero par defaut (e tdans ce cas là, juste un put necessaire; mais va gonfler++ la bdd inutilement pour des likes qui ne seraient jamais créés sans ça)
 
 exports.modifyLikes = (req, res, next) => {
   //console.log(req);
