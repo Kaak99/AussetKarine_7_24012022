@@ -135,7 +135,7 @@ exports.createComments = (req, res, next) => {
 
 exports.modifyComments = (req, res, next) => {
   //console.log(req);
-  console.log(req.body);
+  //console.log(req.body);
   //db.promise().query(' SELECT * FROM groupomania.comments_table WHERE `idComments`=? ', [req.params.id])
   //const commentsObject = { contenu: req.body.contenu, id_Posts: req.body.id_Posts, id_Users: req.body.id_Users };
   //console.log(commentsObject);

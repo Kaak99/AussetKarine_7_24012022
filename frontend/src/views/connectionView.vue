@@ -106,9 +106,11 @@ export default {
           console.log(this.postApiResponse);
           console.log(this.postApiResponse.userId);
           console.log(this.postApiResponse.token);
+          console.log(this.postApiResponse.admin);
           this.loading = true;
           localStorage.setItem("userId", this.postApiResponse.userId);
           localStorage.setItem("userToken", this.postApiResponse.token);
+          localStorage.setItem("admin", this.postApiResponse.admin);
           //stringify inutile? token est une chaine mais userId??
           // localStorage.setItem(
           //   "userId",

@@ -36,10 +36,13 @@ exports.getAllPosts = (req, res, next) => {
     .query(
       "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
     )
-    // "SELECT *.p, *.u , COUNT(like) FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;"
+    // "SELECT *.p, *.u , COUNT(like) FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;")//notworking
+    // "SELECT * FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.id_Users=l.id_Users ORDER BY p.time DESC;")//notworking
+    // "SELECT p.idPosts p.titre p.contenu p.image p.time u.pseudo u.avatar u.active u.admin l.like  FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;")
+
     .then(([results]) => {
       //renvoi un tableau d'objets results
-      //console.log(results);
+      console.log(results);
       res.status(200).json(results);
     })
     .catch((error) => {
@@ -67,9 +70,9 @@ exports.getOnePosts = (req, res, next) => {
     ])
     .then(([results]) => {
       //renvoi un tableau d'objets
-      console.log(results); //mais contenant un seul objet
-      console.log(results[0].idPosts); //(à l'index zéro)
-      console.log(results[0].idPosts);
+      //console.log(results); //mais contenant un seul objet
+      //console.log(results[0].idPosts); //(à l'index zéro)
+      //console.log(results[0].idPosts);
       res.status(200).json(results[0]);
     })
     .catch((error) => {
@@ -99,10 +102,10 @@ exports.deletePosts = (req, res, next) => {
       req.params.id,
     ])
     .then(([results]) => {
-      console.log("---then-find---");
+      //console.log("---then-find---");
       //console.log(req);
-      console.log(results);
-      console.log(results[0].image);
+      //console.log(results);
+      //console.log(results[0].image);
       if (results[0].image) {
         const filename = results[0].image.split("/images/")[1];
         fs.unlink(`images/${filename}`, () => {
@@ -111,12 +114,12 @@ exports.deletePosts = (req, res, next) => {
               req.params.id,
             ])
             .then(([results]) => {
-              console.log("---then1-efface---");
+              //console.log("---then1-efface---");
 
               res.status(200).json(results);
             })
             .catch((error) => {
-              console.log("---catch---");
+              //console.log("---catch---");
               res.status(400).json({ error: error });
               //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
             });
@@ -127,12 +130,12 @@ exports.deletePosts = (req, res, next) => {
             req.params.id,
           ])
           .then(([results]) => {
-            console.log("---then2-efface---");
+            //console.log("---then2-efface---");
 
             res.status(200).json(results);
           })
           .catch((error) => {
-            console.log("---catch---");
+            //console.log("---catch---");
             res.status(400).json({ error: error });
           });
       }
@@ -164,7 +167,7 @@ exports.deletePosts = (req, res, next) => {
 //!__ renvoie : { message: String }           __//
 
 exports.createPosts = (req, res, next) => {
-  console.log(req);
+  //console.log(req);
   //console.log(req.body);
   //console.log(req.route);
   //console.log(req.file);//si fichier presente
@@ -178,14 +181,14 @@ exports.createPosts = (req, res, next) => {
   const postObject = req.body;
   //console.log(req.body);
   //const postImage = JSON.parse(req.body.image);
-  console.log("postObject");
-  console.log(postObject);
-  console.log("userId de demande");
-  console.log(postObject.id_Users);
+  //console.log("postObject");
+  //console.log(postObject);
+  //console.log("userId de demande");
+  //console.log(postObject.id_Users);
   //console.log(postObject.image);
   let newPost = {};
   //console.log({ monImage: req.file.originalname });
-  console.log(req.file);
+  //console.log(req.file);
   if (!req.file) {
     // if (!postObject.image) {//existe pas, c req.file
     //cas ou pas d'image
@@ -195,7 +198,7 @@ exports.createPosts = (req, res, next) => {
       image: "",
       id_Users: postObject.id_Users,
     };
-    console.log({ cas1noImag: newPost });
+    //console.log({ cas1noImag: newPost });
   } else {
     //sinon (image présente)
     newPost = {
@@ -204,14 +207,14 @@ exports.createPosts = (req, res, next) => {
       image: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
       id_Users: postObject.id_Users,
     };
-    console.log({ cas2Imag: newPost });
+    //console.log({ cas2Imag: newPost });
   }
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
   db.promise()
     .query(" INSERT INTO `groupomania`.`posts_table` SET ? ", newPost)
 
     .then(([results]) => {
-      console.log(results);
+      //console.log(results);
       //console.log(req.body);
       // console.log(req.body.post);
       // console.log(JSON.parse(req.body.post));
@@ -274,10 +277,10 @@ exports.modifyPosts = (req, res, next) => {
       req.params.id,
     ])
     .then(([results]) => {
-      console.log("---then-find---");
+      //console.log("---then-find---");
       //console.log(req);
-      console.log(results);
-      console.log(results[0].image);
+      //console.log(results);
+      //console.log(results[0].image);
 
       const postObject = req.file
         ? {
@@ -287,18 +290,18 @@ exports.modifyPosts = (req, res, next) => {
             }`,
           }
         : { ...req.body };
-      console.log(postObject);
+      //console.log(postObject);
       db.promise()
         .query(
           " UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ",
           [postObject, req.params.id]
         )
         .then(([results]) => {
-          console.log("---then1-modify---");
+          //console.log("---then1-modify---");
           res.status(200).json(results);
         })
         .catch((error) => {
-          console.log("---catch---");
+          //console.log("---catch---");
           res.status(400).json({ error: error });
         });
     });

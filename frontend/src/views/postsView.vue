@@ -58,7 +58,7 @@
             </div>
           </div>
         </div>
-        {{ idConnected }}
+        {{ idConnected }}{{ isAdmin }}{{ typeof isAdmin }}
         <!-- .................. modale .................. -->
         <!-- <modal-post></modal-post> -->
         <!-- <modalPost toggleModal="Welcome here" /> -->
@@ -101,9 +101,12 @@
                 <i
                   class="fa-solid fa-comment addComment"
                   title="Commentaires"
+                  :style="[aCommente && { color: 'blue' }]"
                   v-on:click="showCommentsFunction(post.idPosts)"
                 ></i>
-                <p class="commentNumber" title="nombre de commentaires">5555</p>
+                <p class="commentNumber" title="nombre de commentaires">
+                  {{ commentCount }}
+                </p>
               </div>
               <!-- <i
                 class="fa-solid fa-thumbs-up thumbUp"
@@ -117,6 +120,7 @@
                 <i
                   class="fa-solid fa-heart like"
                   title="liker le message"
+                  :style="[false && { color: 'blue' }]"
                   v-on:click="likeUnlike(post.idPosts)"
                 ></i>
                 <!-- <p class="likeNumber">{{ post.like }}</p> -->
@@ -125,13 +129,13 @@
               <i
                 class="fa-solid fa-pen-to-square modifyPost"
                 title="modifier le message"
-                v-if="post.id_Users == idConnected || idConnected == 45"
+                v-if="post.id_Users == idConnected || isAdmin === true"
                 v-on:click="modifyPost(post.idPosts)"
               ></i>
               <i
                 class="fa-solid fa-trash-can deletePost"
                 title="supprimer le message"
-                v-if="post.id_Users == idConnected || idConnected == 45"
+                v-if="post.id_Users == idConnected || isAdmin === true"
                 v-on:click="deletePost(post.idPosts)"
               ></i>
             </div>
@@ -141,12 +145,18 @@
               v-show="showCommentsBoolean"
               text="props!"
               :idFromPost="post.idPosts"
+              @combiendecomment="
+                (comCount) => {
+                  commentCount = comCount;
+                }
               :style="[true && { display: 'none' }]"
             ></comment-view> -->
             <comment-view
               v-show="commentShowTab.indexOf(post.idPosts) !== -1"
               text="props!"
               :idFromPost="post.idPosts"
+              @combiendecomment="commentCount = $event"
+              @atilCommenteCePost="aCommente = $event"
             ></comment-view>
             <!-- on aurait pu utiliser 
               :style="[true && { display: 'none' }]" à la place de vshow -->
@@ -201,11 +211,14 @@ export default {
       inputFile: "",
       timeDayjs: [],
       idConnected: localStorage.getItem("userId"),
+      isAdmin: localStorage.getItem("admin") === 1 ? true : false,
       postIdToComment: "5",
       showCommentsBoolean: false,
       commentShowTab: [],
       likeOnTab: [],
       likeCount: 0,
+      commentCount: 222,
+      aCommente: false,
     };
   },
 
@@ -213,14 +226,14 @@ export default {
     //mounted() {
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
     //this.getAllLikes4OnePost(145);
-    this.getAllPost();
-    this.getAllLikes();
+    this.getAllPost(); //recup tout (likes aussi)
+    //this.getAllLikes();
   },
   computed: {},
   methods: {
-    //! retourne le nombre de like d'un post
+    //! retourne le nombre de like d'un post//(non impl)
     getAllLikes4OnePost(idPosts) {
-      console.log(idPosts);
+      //console.log(idPosts);
 
       const test = axios
         .get(this.urlLikes + "/" + idPosts)
@@ -229,13 +242,13 @@ export default {
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
           //console.log(this.getLikeResponse);
           this.likeCount = response.data.length;
-          console.log(this.likeCount);
+          //console.log(this.likeCount);
           return response.data.length;
         })
         .catch((error) => {
           console.log(error);
         });
-      console.log("test", test);
+      //console.log("test", test);
       return test;
     },
     // showCommentsFunction(idpost) {
@@ -255,25 +268,25 @@ export default {
       //car le vshow ne montrera que les idpost qui sont dans le tableau
       //(et si on avait reclické, on avait refermé)
       const test = this.commentShowTab.indexOf(idpost);
-      console.log("start");
-      console.log(this.commentShowTab);
-      console.log(this.commentShowTab.indexOf(idpost));
+      //console.log("start");
+      //console.log(this.commentShowTab);
+      //console.log(this.commentShowTab.indexOf(idpost));
       if (test == -1) {
         //pas de valeur retournée=cet idPost n'est pas stocké
         //alors on l'ajoute au tableau
         this.commentShowTab.push(idpost);
-        console.log("ifmoins1");
-        console.log(this.commentShowTab);
-        console.log(this.commentShowTab.indexOf(idpost));
+        //console.log("ifmoins1");
+        //console.log(this.commentShowTab);
+        //console.log(this.commentShowTab.indexOf(idpost));
       } else {
         //si cet idpost etait stocké, on le retire
         //(on ne garde que les elements qui ne sont pas idPost)
         this.commentShowTab = this.commentShowTab.filter(
           (element) => element !== idpost
         );
-        console.log("sinon");
-        console.log(this.commentShowTab);
-        console.log(this.commentShowTab.indexOf(idpost));
+        //console.log("sinon");
+        //console.log(this.commentShowTab);
+        //console.log(this.commentShowTab.indexOf(idpost));
       }
     },
 
@@ -284,7 +297,7 @@ export default {
     selectFile() {
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
-      console.log(this.inputFile);
+      //console.log(this.inputFile);
     },
     // selectFile: function (e) {
     //   this.inputFile = e.target.files[0];
@@ -293,8 +306,8 @@ export default {
 
     //!getAllLikes
     getAllLikes() {
-      console.log("getApiResponse  from getAllPost");
-      console.log(this.getApiResponse);
+      //console.log("getApiResponse  from getAllPost");
+      //console.log(this.getApiResponse);
     },
 
     //! on like (ou retire le like)
@@ -332,7 +345,7 @@ export default {
         .catch((error) => {
           console.log(error);
           this.messageRetour = error.response.data.erreur;
-          console.log(error.response.data);
+          //console.log(error.response.data);
           //this.messageRetour = this.getApi.error;
           //this.loading = false;
         });
@@ -343,21 +356,21 @@ export default {
       // console.log(idPosts);
       // this.showCommentsBoolean = true;
       this.showCommentsBoolean = !this.showCommentsBoolean;
-      console.log(this.showCommentsBoolean);
+      //console.log(this.showCommentsBoolean);
       // this.postIdToComment = idPosts;
       // localStorage.setItem("postId2comment", idPosts);
     },
 
     //! on 🗑️ supprime un post
     deletePost(idPosts) {
-      console.log(idPosts);
+      //console.log(idPosts);
       if (
         confirm("Voulez vous vraiment supprimer le message " + idPosts + " ?")
       ) {
         axios
           .delete(this.url + "/" + idPosts)
           .then((res) => {
-            console.log(res);
+            //console.log(res);
             //alert("Votre message " + idPosts + " a bien été supprimé");
             this.getAllPost();
           })
@@ -392,12 +405,12 @@ export default {
         .then((response) => {
           this.getApiResponse = response.data;
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
-          console.log("getApiResponse from getAllPost");
-          console.log(this.getApiResponse);
+          //console.log("getApiResponse from getAllPost");
+          //console.log(this.getApiResponse);
           this.timeDayjs = dayjs(this.getApiResponse.time).format(
             "DD/MM/YYYY HH:mm"
           );
-          console.log(this.timeDayjs);
+          //console.log(this.timeDayjs);
           this.loading = true;
         })
         .catch((error) => {
@@ -433,7 +446,7 @@ export default {
         formdata.append("image", this.inputFile, this.inputFile.name);
       }
       formdata.append("id_Users", this.idConnected);
-      console.log(formdata);
+      //console.log(formdata);
 
       // const config = {
       //   headers: {
@@ -471,7 +484,7 @@ export default {
         .catch((error) => {
           console.log(error);
           this.messageRetour = error.response.data.erreur;
-          console.log(error.response.data);
+          //console.log(error.response.data);
           //this.messageRetour = this.getApi.error;
           //this.loading = false;
         });

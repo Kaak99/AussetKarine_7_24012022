@@ -98,6 +98,7 @@ export default {
       inputComment: "",
       commentApiResponse: "",
       comCount: 0,
+      hasCommentedThisPost: false,
     };
   },
   mounted() {
@@ -114,16 +115,26 @@ export default {
     //! on récupère tous les commentaires from backend
     getAllComments4OnePost: function () {
       //console.log(this.commentApiResponse);
+      //console.log(this.getApiResponse);
       console.log("recup Commentaires");
       axios
         .get(this.url + "/" + this.idFromPost)
         .then((response) => {
           this.getApiResponse = response.data;
+          //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
           this.comCount = response.data.length;
           console.log(this.getApiResponse);
           console.log(this.comCount);
-          //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
-          //console.log(this.getApiResponse);
+          for (let index = 0; index < this.getApiResponse.length; index++) {
+            if (
+              this.getApiResponse[index].idUsers ==
+              localStorage.getItem("userId")
+            ) {
+              this.hasCommentedThisPost = true;
+            }
+          }
+          this.$emit("combiendecomment", this.comCount);
+          this.$emit("aCommente", this.hasCommentedThisPost);
         })
         .catch((error) => {
           console.log(error);

@@ -90,8 +90,8 @@ exports.getAllLikes4OnePost = (req, res, next) => {
 
 exports.modifyLikes = (req, res, next) => {
   //console.log(req);
-  console.log("modifyLike!");
-  console.log(req.body);
+  //console.log("modifyLike!");
+  //console.log(req.body);
   db.promise()
     .query(
       " SELECT * FROM groupomania.likes_table WHERE `id_Users`=? AND `id_Posts`=?",
@@ -99,7 +99,7 @@ exports.modifyLikes = (req, res, next) => {
     )
     .then(([results]) => {
       //console.log(req);
-      console.log(results);
+      //console.log(results);
       let likeId; //id du like, à trouver dans bdd (si existe déjà) grace à id_user/post fourni dans req
       let likeUpdate = req.body.like; //la valeur qu'on veut donner au like d'apres req
       if (results.length === 0) {

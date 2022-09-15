@@ -55,7 +55,7 @@ export default {
       thisId: "vide",
       thisToken: "vide",
       isConnected: false,
-      isAdmin: "true",
+      isAdmin: localStorage.getItem("isAdmin") === 1 ? true : false,
     };
   },
   props: {
@@ -70,9 +70,9 @@ export default {
     } else {
       this.isConnected = false;
     }
-    console.log(this.thisId);
-    console.log(this.thisToken);
-    console.log(this.isConnected);
+    //console.log(this.thisId);
+    //console.log(this.thisToken);
+    //console.log(this.isConnected);
   },
 };
 </script>

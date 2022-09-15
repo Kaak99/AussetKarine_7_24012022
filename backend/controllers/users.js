@@ -207,6 +207,7 @@ exports.login = (req, res, next) => {
         //àvirerreturn res.status(400).json({ error: 'utilisateur inconnu !' });
         console.log(req.body.password);
         console.log(results[0].password);
+        console.log(results[0].admin);
         bcrypt.compare(req.body.password, results[0].password).then((valid) => {
           if (!valid) {
             //si mdp pas valide
@@ -215,6 +216,7 @@ exports.login = (req, res, next) => {
           } else {
             console.log("welcome back user " + results[0].pseudo + " !");
             res.status(200).json({
+              admin: results[0].admin,
               userId: results[0].idUsers,
               token: jwt.sign(
                 { userId: results[0].idUsers },
