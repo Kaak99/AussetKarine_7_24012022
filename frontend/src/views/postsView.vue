@@ -64,7 +64,7 @@
         <!-- <modalPost toggleModal="Welcome here" /> -->
         <!-- ................📩 ici démarre la zone d'affichage des posts 📩......VFOR.......... -->
         <div
-          v-for="post in getApiResponse"
+          v-for="(post, index) in getApiResponse"
           :key="post.idPosts"
           :id="post.idPosts"
           class="postsCard"
@@ -105,7 +105,7 @@
                   v-on:click="showCommentsFunction(post.idPosts)"
                 ></i>
                 <p class="commentNumber" title="nombre de commentaires">
-                  {{ commentCount }}
+                  {{ post.commentCount }}
                 </p>
               </div>
               <!-- <i
@@ -151,11 +151,17 @@
                 }
               :style="[true && { display: 'none' }]"
             ></comment-view> -->
+            {{ post.commentCount }}
+
             <comment-view
               v-show="commentShowTab.indexOf(post.idPosts) !== -1"
               text="props!"
               :idFromPost="post.idPosts"
-              @combiendecomment="commentCount = $event"
+              @combiendecomment="
+                (comCount) => {
+                  getApiResponse[index].commentCount = comCount;
+                }
+              "
               @atilCommenteCePost="aCommente = $event"
             ></comment-view>
             <!-- on aurait pu utiliser 
@@ -211,13 +217,12 @@ export default {
       inputFile: "",
       timeDayjs: [],
       idConnected: localStorage.getItem("userId"),
-      isAdmin: localStorage.getItem("admin") === 1 ? true : false,
+      isAdmin: localStorage.getItem("admin") == 1 ? true : false,
       postIdToComment: "5",
       showCommentsBoolean: false,
       commentShowTab: [],
       likeOnTab: [],
       likeCount: 0,
-      commentCount: 222,
       aCommente: false,
     };
   },
@@ -406,7 +411,7 @@ export default {
           this.getApiResponse = response.data;
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
           //console.log("getApiResponse from getAllPost");
-          //console.log(this.getApiResponse);
+          console.log("get", this.getApiResponse);
           this.timeDayjs = dayjs(this.getApiResponse.time).format(
             "DD/MM/YYYY HH:mm"
           );

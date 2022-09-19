@@ -55,7 +55,6 @@ export default {
       thisId: "vide",
       thisToken: "vide",
       isConnected: false,
-      isAdmin: localStorage.getItem("isAdmin") === 1 ? true : false,
     };
   },
   props: {

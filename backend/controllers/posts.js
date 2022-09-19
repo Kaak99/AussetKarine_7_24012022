@@ -43,6 +43,10 @@ exports.getAllPosts = (req, res, next) => {
     .then(([results]) => {
       //renvoi un tableau d'objets results
       console.log(results);
+      results = results.map((element) => {
+        element.commentCount = 0;
+        return element;
+      });
       res.status(200).json(results);
     })
     .catch((error) => {

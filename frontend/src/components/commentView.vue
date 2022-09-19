@@ -101,8 +101,8 @@ export default {
       hasCommentedThisPost: false,
     };
   },
+  //created() {
   mounted() {
-    //mounted() {
     // axios.get(this.url).then((response) => (this.commentApiResponse = response.data));
     this.getAllComments4OnePost();
   },
@@ -116,15 +116,15 @@ export default {
     getAllComments4OnePost: function () {
       //console.log(this.commentApiResponse);
       //console.log(this.getApiResponse);
-      console.log("recup Commentaires");
+      //console.log("recup Commentaires");
       axios
         .get(this.url + "/" + this.idFromPost)
         .then((response) => {
           this.getApiResponse = response.data;
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
           this.comCount = response.data.length;
-          console.log(this.getApiResponse);
-          console.log(this.comCount);
+          //console.log(this.getApiResponse);
+          console.log("test", this.comCount);
           for (let index = 0; index < this.getApiResponse.length; index++) {
             if (
               this.getApiResponse[index].idUsers ==
@@ -164,14 +164,14 @@ export default {
     },
     //! on ✍️ modifie un commentaire
     modifyComment(idComment, textComment) {
-      console.log(idComment);
-      console.log("hello");
+      //console.log(idComment);
+      //console.log("hello");
       let modif = prompt("Modifiez votre commentaire:", textComment);
       if (modif) {
         axios
           .put(this.url + "/" + idComment, { contenu: modif })
           .then((res) => {
-            console.log(res);
+            //console.log(res);
             //alert("Votre message " + idPosts + " a bien été supprimé");
             this.getAllComments4OnePost();
           })
@@ -188,15 +188,15 @@ export default {
       const config = null;
       // let id_Posts = "";
       // let id_Users = "";
-      console.log(this.inputComment);
-      console.log(this.idFromPost);
-      console.log(this.idConnected);
+      //console.log(this.inputComment);
+      //console.log(this.idFromPost);
+      //console.log(this.idConnected);
       let bodyParameters = {
         contenu: this.inputComment,
         id_Posts: this.idFromPost,
         id_Users: this.idConnected,
       };
-      console.log(bodyParameters);
+      //console.log(bodyParameters);
       axios
         // .post(this.url, {
         //   contenu: this.inputComment,
