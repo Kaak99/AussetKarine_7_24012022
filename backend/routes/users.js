@@ -10,6 +10,7 @@ const usersController = require("../controllers/users");
 
 router.get("/", usersController.getAllUsers);
 router.get("/:id", usersController.getOneUsers);
+router.get("/allLikes/:id", usersController.getAllLikes4OneUsers);
 router.put("/:id", usersController.changeUserActivity);
 router.delete("/:id", usersController.deleteUsers);
 

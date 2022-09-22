@@ -239,6 +239,34 @@ exports.login = (req, res, next) => {
     });
 };
 
+//!__   get allLikesForOneUser (positif= à 1)(get + id user)   __//
+//!__ recoit : -                             __//
+//!__ renvoie tableau d'objet {"id_Posts": xxx} où like=1   __//
+
+exports.getAllLikes4OneUsers = (req, res, next) => {
+  db.promise()
+    .query(
+      " SELECT id_Posts FROM groupomania.likes_table WHERE `id_Users`=? AND `like`=1 ;",
+      [req.params.id]
+    )
+    // .query(
+    //   " SELECT idPosts FROM groupomania.posts_table as p left join groupomania.likes_table as l on p.id_Users=l.id_Users WHERE `id_Users`=? AND `like`=1 ;",
+    //   [req.params.id]
+    // )
+    // .query(
+    //   "SELECT * FROM groupomania.likes_table as l left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
+    //   [req.params.id]
+    // )
+    .then(([results]) => {
+      console.log("allLlike for user " + req.params.id + "=" + results.length);
+      res.status(200).json(results);
+    })
+    .catch((error) => {
+      console.log("---catch(getAllLikes4OneUsers)---");
+      res.status(400).json({ error: error });
+    });
+};
+
 /* ---------------fin-----------------*/
 
 // //! 1.signup : on va enregistrer l'utilisateur dans la bdd

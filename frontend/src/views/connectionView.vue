@@ -88,10 +88,14 @@ export default {
       compteur: 0,
       loading: true,
       url: "http://localhost:3000/api/users/login",
+      urlallLikes: "http://localhost:3000/api/users/allLikes",
       postApiResponse: "",
+      getApiResponseAllLikes: "",
+      allLikeUserTab: [],
       messageRetour: "",
       pseudo: "",
       mdp: "",
+      userId: "",
     };
   },
   // emits: ["update:isConnected"],
@@ -102,6 +106,7 @@ export default {
         // .post(this.url, { pseudo: "user60", password: "mdp" })
         .then((response) => {
           this.postApiResponse = response.data;
+          this.userId = this.postApiResponse.userId;
           this.messageRetour = "Connexion";
           console.log(this.postApiResponse);
           console.log(this.postApiResponse.userId);
@@ -121,6 +126,34 @@ export default {
           //   JSON.stringify(this.postApiResponse.token)
           // );
           this.$emit("connection", true); //fait remonter à app.vue l'action connection avec le parametre true
+
+          //on stocke dans le storage un tableau avec tous les idpost likés par cet userId
+          axios
+            .get(this.urlallLikes + "/" + this.userId)
+            .then((response) => {
+              this.getApiResponseAllLikes = response.data;
+              // console.log("likes", this.getApiResponseAllLikes);
+              for (
+                let index = 0;
+                index < this.getApiResponseAllLikes.length;
+                index++
+              ) {
+                // console.log(index);
+                // console.log(this.getApiResponseAllLikes[index].id_Posts);
+                this.allLikeUserTab.push(
+                  this.getApiResponseAllLikes[index].id_Posts
+                );
+              }
+              // console.log("allLikeUserTab",this.allLikeUserTab);
+              localStorage.setItem(
+                "allLikedPost",
+                JSON.stringify(this.allLikeUserTab)
+              );
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
           this.$router.push("/"); //redirection vers /home
         })
         .catch((error) => {

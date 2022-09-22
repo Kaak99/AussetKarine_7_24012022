@@ -106,6 +106,14 @@ export default {
     // axios.get(this.url).then((response) => (this.commentApiResponse = response.data));
     this.getAllComments4OnePost();
   },
+  // updated() {
+  //   // axios.get(this.url).then((response) => (this.commentApiResponse = response.data));
+  //   this.getAllComments4OnePost();
+  // },
+  // beforeUpdate() {
+  //   // axios.get(this.url).then((response) => (this.commentApiResponse = response.data));
+  //   this.getAllComments4OnePost();
+  // },
   methods: {
     format(maDate) {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");

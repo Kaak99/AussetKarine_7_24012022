@@ -120,11 +120,13 @@
                 <i
                   class="fa-solid fa-heart like"
                   title="liker le message"
-                  :style="[false && { color: 'blue' }]"
+                  :style="[checkLike(post.idPosts) && { color: 'blue' }]"
                   v-on:click="likeUnlike(post.idPosts)"
                 ></i>
-                <!-- <p class="likeNumber">{{ post.like }}</p> -->
-                <p class="likeNumber" title="nombre de likes">5555</p>
+                <!-- <p class="likeNumber">{{ post.like }}</p> ----------------------- -->
+                <p class="likeNumber" title="nombre de likes">
+                  {{ (post.likeCounter = likeCount) }}
+                </p>
               </div>
               <i
                 class="fa-solid fa-pen-to-square modifyPost"
@@ -159,7 +161,7 @@
               :idFromPost="post.idPosts"
               @combiendecomment="
                 (comCount) => {
-                  getApiResponse[index].commentCount = comCount;
+                  getApiResponse[index].commentCount = comCount; //on defini le champ commentcount ici?
                 }
               "
               @atilCommenteCePost="aCommente = $event"
@@ -208,7 +210,7 @@ export default {
       text1: "texte de test",
       url: "http://localhost:3000/api/posts",
       urlLikes: "http://localhost:3000/api/likes",
-      getApiResponse: null,
+      getApiResponse: "", //reponse du getAllPost
       postApiResponse: "",
       getLikeResponse: "",
       messageRetour: "",
@@ -221,14 +223,15 @@ export default {
       postIdToComment: "5",
       showCommentsBoolean: false,
       commentShowTab: [],
+      allLikedPostTab: JSON.parse(localStorage.getItem("allLikedPost")),
       likeOnTab: [],
       likeCount: 0,
       aCommente: false,
     };
   },
 
-  created() {
-    //mounted() {
+  // created() {
+  mounted() {
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
     //this.getAllLikes4OnePost(145);
     this.getAllPost(); //recup tout (likes aussi)
@@ -236,6 +239,18 @@ export default {
   },
   computed: {},
   methods: {
+    checkLike(idpost) {
+      let test = 0;
+      let booleanResponse = false;
+      test = this.allLikedPostTab.indexOf(idpost);
+      if (test == -1) {
+        //si idpost pas trouvé dans la liste des idpost likés
+        booleanResponse = false; //like restera noir
+      } else {
+        booleanResponse = true; //sinon sera bleu
+      }
+      return booleanResponse;
+    },
     //! retourne le nombre de like d'un post//(non impl)
     getAllLikes4OnePost(idPosts) {
       //console.log(idPosts);
