@@ -161,7 +161,7 @@
               :idFromPost="post.idPosts"
               @combiendecomment="
                 (comCount) => {
-                  getApiResponse[index].commentCount = comCount; //on defini le champ commentcount ici?
+                  getApiResponse[index].commentCount = comCount;
                 }
               "
               @atilCommenteCePost="aCommente = $event"
@@ -234,15 +234,29 @@ export default {
   mounted() {
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
     //this.getAllLikes4OnePost(145);
-    this.getAllPost(); //recup tout (likes aussi)
+    this.getAllPost(true); //recup tout (likes aussi)
     //this.getAllLikes();
   },
   computed: {},
   methods: {
     checkLike(idpost) {
+      //regarde si user connecté a liké ce post
       let test = 0;
       let booleanResponse = false;
       test = this.allLikedPostTab.indexOf(idpost);
+      if (test == -1) {
+        //si idpost pas trouvé dans la liste des idpost likés
+        booleanResponse = false; //like restera noir
+      } else {
+        booleanResponse = true; //sinon sera bleu
+      }
+      return booleanResponse;
+    },
+    checkComment(idpost) {
+      //regarde si user connecté a commenté ce post
+      let test = 0;
+      let booleanResponse = false;
+      test = this.allLikedPostTab.indexOf(idpost); //a changer
       if (test == -1) {
         //si idpost pas trouvé dans la liste des idpost likés
         booleanResponse = false; //like restera noir
@@ -333,11 +347,36 @@ export default {
     //! on like (ou retire le like)
     likeUnlike(idPosts) {
       // console.log(idPosts);
-      //1/ on ajoute un like (mais faire test avant)
+      //si n'existe pas dans tableau des like allLikedPostTab , on le push, sinon on vire
+      const test = this.allLikedPostTab.indexOf(idPosts);
+      //console.log("start");
+      //console.log(this.commentShowTab);
+      //console.log(this.commentShowTab.indexOf(idpost));
+      let likeValueToSend;
+      if (test == -1) {
+        //pas de valeur retournée=cet idPost n'est pas stocké
+        //alors on l'ajoute au tableau et on enverra 1 au backend
+        this.allLikedPostTab.push(idPosts);
+        likeValueToSend = 1;
+      } else {
+        //si cet idpost etait stocké, on le retire
+        //(on ne garde que les elements qui ne sont pas idPost)
+        //et on enverra 0 au backend
+        this.allLikedPostTab = this.allLikedPostTab.filter(
+          (element) => element !== idPosts
+        );
+        likeValueToSend = 0;
+      }
+      //on ajuste local storage allLikedPostTab: JSON.parse(localStorage.getItem("allLikedPost"))
+      localStorage.setItem(
+        "allLikedPost",
+        JSON.stringify(this.allLikedPostTab)
+      );
+
       const config = null;
 
       let newLike = {
-        like: 0, //sera forcément 0 ou 1
+        like: likeValueToSend, //sera forcément 0(retire le like) ou 1(ajoute le like)
         id_Posts: idPosts,
         id_Users: this.idConnected,
       };
@@ -419,11 +458,22 @@ export default {
     // },
 
     //! on 📦 récupère tous les posts from backend
-    getAllPost() {
+    getAllPost(premierChargement = false) {
       axios
         .get(this.url)
         .then((response) => {
-          this.getApiResponse = response.data;
+          // this.getApiResponse = null;
+          if (premierChargement) {
+            this.getApiResponse = response.data.map((element) => {
+              element.commentCount = 0;
+              console.log("if");
+              return element;
+            });
+          } else {
+            console.log("else");
+            this.getApiResponse = [...this.getApiResponse, response.data];
+          }
+
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
           //console.log("getApiResponse from getAllPost");
           console.log("get", this.getApiResponse);
