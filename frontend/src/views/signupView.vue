@@ -167,17 +167,17 @@ export default {
     selectFile() {
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
-      console.log(this.inputFile);
+      //console.log(this.inputFile);
     },
     envoiInscription: function () {
       let formdata = new FormData();
-      console.log(this.inputPseudo);
-      console.log(this.inputPassword);
-      console.log(this.inputEmail);
+      //console.log(this.inputPseudo);
+      //console.log(this.inputPassword);
+      //console.log(this.inputEmail);
       formdata.append("pseudo", this.inputPseudo);
       formdata.append("password", this.inputPassword);
       formdata.append("email", this.inputEmail);
-      console.log(formdata);
+      //console.log(formdata);
       if (this.inputFile) {
         formdata.append("image", this.inputFile, this.inputFile.name);
         // } else {
@@ -192,7 +192,7 @@ export default {
       formdata.append("admin", 0);
       formdata.append("active", 1);
 
-      console.log(formdata);
+      //console.log(formdata);
       axios
         // .post(this.url, {
         //   pseudo: this.pseudo,
@@ -208,7 +208,7 @@ export default {
         .then((response) => {
           this.postApiResponse = response.data;
           this.messageRetour = "inscription...";
-          console.log(this.postApiResponse);
+          //console.log(this.postApiResponse);
           //console.log(this.postApiResponse.userId);
           //console.log(this.postApiResponse.token);
           this.loading = true;

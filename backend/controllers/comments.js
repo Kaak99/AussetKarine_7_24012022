@@ -13,11 +13,11 @@ exports.getAllComments = (req, res, next) => {
   db.promise()
     .query(" SELECT * FROM groupomania.comments_table ")
     .then(([results]) => {
-      console.log("affiche...");
+      //console.log("affiche...");
       res.status(200).json(results);
     })
     .catch((error) => {
-      console.log("---catch(getAllComments)---");
+      //console.log("---catch(getAllComments)---");
       res.status(400).json({ error: error });
     });
 };
@@ -37,11 +37,11 @@ exports.getAllComments4OnePost = (req, res, next) => {
       [req.params.id]
     )
     .then(([results]) => {
-      console.log("affiche...");
+      //console.log("affiche...");
       res.status(200).json(results);
     })
     .catch((error) => {
-      console.log("---catch(getAllComments4OnePost)---");
+      //console.log("---catch(getAllComments4OnePost)---");
       res.status(400).json({ error: error });
     });
 };
@@ -63,11 +63,11 @@ exports.getCommentsNumber4OnePost = (req, res, next) => {
       [req.params.id]
     )
     .then(([results]) => {
-      console.log("affiche...");
+      //console.log("affiche...");
       res.status(200).json(results);
     })
     .catch((error) => {
-      console.log("---catch(getAllComments4OnePost)---");
+      //console.log("---catch(getAllComments4OnePost)---");
       res.status(400).json({ error: error });
     });
 };
@@ -82,11 +82,11 @@ exports.deleteComments = (req, res, next) => {
       req.params.id,
     ])
     .then(([results]) => {
-      console.log("deleting...");
+      //console.log("deleting...");
       res.status(200).json(results);
     })
     .catch((error) => {
-      console.log("---catch(deleteComments)---");
+      //console.log("---catch(deleteComments)---");
       res.status(400).json({ error: error });
     });
 };
@@ -97,9 +97,9 @@ exports.deleteComments = (req, res, next) => {
 
 exports.createComments = (req, res, next) => {
   //console.log(req);
-  console.log(req.body.contenu);
-  console.log(req.body.id_Posts);
-  console.log(req.body.id_Users);
+  //console.log(req.body.contenu);
+  //console.log(req.body.id_Posts);
+  //console.log(req.body.id_Users);
 
   // const commentObject = JSON.parse(req.body.post);
   // console.log("commentObject");
@@ -113,14 +113,14 @@ exports.createComments = (req, res, next) => {
     id_Posts: req.body.id_Posts,
     id_Users: req.body.id_Users,
   };
-  console.log(newComment);
+  //console.log(newComment);
 
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
   db.promise()
     .query(" INSERT INTO `groupomania`.`comments_table` SET ? ", newComment)
 
     .then(([results]) => {
-      console.log(results);
+      //console.log(results);
       res.status(200).json(results);
     })
     .catch((error) => {
@@ -151,11 +151,11 @@ exports.modifyComments = (req, res, next) => {
       [req.body.contenu, req.params.id]
     )
     .then(([results]) => {
-      console.log("---modifing...---");
+      //console.log("---modifing...---");
       res.status(200).json(results);
     })
     .catch((error) => {
-      console.log("---catch (modify)---");
+      //console.log("---catch (modify)---");
       res.status(400).json({ error: error });
     });
 };

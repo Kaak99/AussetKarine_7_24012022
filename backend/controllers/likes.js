@@ -5,79 +5,7 @@ console.log(` --------> likes-ctrl`);
 const db = require("../db/db");
 const fs = require("fs"); //package fs de node
 
-//!__   get LIKE'S number for ONE POST(GET +id du like) __//
-//!__ recoit : -                             __//
-//!__ renvoie tableau de toutes les comments __//
-// Faux! compte le nombre d'entrée dans la bdd! donc compte les likes à zero comme à 1 !
-exports.getLikesNumber4OnePost = (req, res, next) => {
-  db.promise()
-    // .query(
-    //   " SELECT * FROM groupomania.comments_table  WHERE `id_Posts`=?  ORDER BY time DESC;",
-    //   [req.params.id]
-    // )
-    .query("SELECT COUNT(*) FROM groupomania.likes_table WHERE `id_Posts`=?;", [
-      req.params.id,
-    ])
-    .then(([results]) => {
-      console.log("affiche...");
-      res.status(200).json(results);
-    })
-    .catch((error) => {
-      console.log("---catch(getLikesNumber4OnePost)---");
-      res.status(400).json({ error: error });
-    });
-};
-
-//!__   get all LIKES (positif= à 1) from ONE POST(get + id du post)   __//
-//!__ recoit : -                             __//
-//!__ renvoie tableau d'objets tq {"idLikes": xx,"like": 1,"id_Users": xx,"id_Posts": xx }, __//
-
-exports.getAllLikes4OnePost = (req, res, next) => {
-  db.promise()
-    .query(
-      " SELECT * FROM groupomania.likes_table  WHERE `id_Posts`=? AND `like`=1 ;",
-      [req.params.id]
-    )
-    // .query(
-    //   "SELECT * FROM groupomania.likes_table as l left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
-    //   [req.params.id]
-    // )
-    .then(([results]) => {
-      console.log("like=" + results.length);
-      res.status(200).json(results);
-    })
-    .catch((error) => {
-      console.log("---catch(getAllComments4OnePost)---");
-      res.status(400).json({ error: error });
-    });
-};
-
-//!__       CREATE LIKEs  (POST+id likes)                     __//
-//!__ recoit : raw-JSON {"like":1,"id_Posts":x,"id_Users":x}  __//
-//!__ renvoie : { message: String }                           __//
-
-// exports.createLikes = (req, res, next) => {
-//   //console.log(req);
-//   console.log("createLike!");
-//   console.log(req.body);
-//   let newLike = {
-//     like: req.body.like, //sera forcément 0 ou 1 (tester!!)
-//     id_Posts: req.body.id_Posts,
-//     id_Users: req.body.id_Users,
-//   };
-//   db.promise()
-//     .query(" INSERT INTO `groupomania`.`likes_table` SET ? ", newLike)
-
-//     .then(([results]) => {
-//       console.log(results);
-//       res.status(200).json(results);
-//     })
-//     .catch((error) => {
-//       res.status(400).json({ error: error });
-//     });
-// };
-
-//!__   MODIFY LIKEs  (PUT+id likes= NON) (POST) (permet creer+modifier)   __//
+//!__   CREATE&MODIFY LIKEs  (PUT+id likes= NON) (POST) (permet creer+modifier)   __//
 //!__ recoit : raw-JSON                               __//
 //!__ renvoie : { message: String }                  __//
 
@@ -169,6 +97,100 @@ exports.modifyLikes = (req, res, next) => {
   //     res.status(400).json({ error: error });
   //   });
 };
+
+//!__   get LIKE'S number for ONE POST(GET /count/:id du post) __//
+//!__ recoit : -                             __//
+//!__ renvoie la somme des likes pour un post  __//
+// Faux! compte le nombre d'entrée dans la bdd! donc compte les likes à zero comme à 1 !
+exports.getLikesNumber4OnePost = (req, res, next) => {
+  db.promise()
+    // .query("SELECT COUNT(*) FROM groupomania.likes_table WHERE `id_Posts`=?;", [
+    //   req.params.id,
+    // ])
+    // non : compte le nombre d'entrée/d'élement dans la table des like (qu'ils soient à zero ou 1)
+    .query(
+      "SELECT SUM(groupomania.likes_table.like) FROM groupomania.likes_table WHERE `id_Posts`=?;",
+      [req.params.id]
+    )
+    //   "SELECT SUM(groupomania.likes_table.like) FROM groupomania.likes_table WHERE `id_Posts`=?;",
+    //   [req.params.id]
+    // )
+    .then(([results]) => {
+      //console.log("affiche...");
+      res.status(200).json(results);
+    })
+    .catch((error) => {
+      //console.log("---catch(getLikesNumber4OnePost)---");
+      res.status(400).json({ error: error });
+    });
+};
+//!__   get CountperPost :idpost et combien like (tableau d'bjet)
+//! ( GET /count ) __//
+//!__ recoit : -                             __//
+//!__ renvoie un tableau avec l id du post et le nombre de like pour ce post  __//
+exports.getCountperPost = (req, res, next) => {
+  db.promise()
+    .query(
+      "SELECT groupomania.likes_table.id_Posts, SUM(groupomania.likes_table.like) FROM groupomania.likes_table;"
+    )
+    .then(([results]) => {
+      //console.log("affiche...");
+      res.status(200).json(results);
+    })
+    .catch((error) => {
+      //console.log("---catch(getLikesNumber4OnePost)---");
+      res.status(400).json({ error: error });
+    });
+};
+
+//!__   get all LIKES (positif= à 1) from ONE POST(get + id du post)   __//
+//!__ recoit : -                             __//
+//!__ renvoie tableau d'objets tq {"idLikes": xx,"like": 1,"id_Users": xx,"id_Posts": xx }, __//
+
+exports.getAllLikes4OnePost = (req, res, next) => {
+  db.promise()
+    .query(
+      " SELECT * FROM groupomania.likes_table  WHERE `id_Posts`=? AND `like`=1 ;",
+      [req.params.id]
+    )
+    // .query(
+    //   "SELECT * FROM groupomania.likes_table as l left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
+    //   [req.params.id]
+    // )
+    .then(([results]) => {
+      //console.log("like=" + results.length);
+      res.status(200).json(results);
+    })
+    .catch((error) => {
+      //console.log("---catch(getAllComments4OnePost)---");
+      res.status(400).json({ error: error });
+    });
+};
+
+//!__       CREATE LIKEs  (POST+id likes)                     __//
+//!__ recoit : raw-JSON {"like":1,"id_Posts":x,"id_Users":x}  __//
+//!__ renvoie : { message: String }                           __//
+
+// exports.createLikes = (req, res, next) => {
+//   //console.log(req);
+//   console.log("createLike!");
+//   console.log(req.body);
+//   let newLike = {
+//     like: req.body.like, //sera forcément 0 ou 1 (tester!!)
+//     id_Posts: req.body.id_Posts,
+//     id_Users: req.body.id_Users,
+//   };
+//   db.promise()
+//     .query(" INSERT INTO `groupomania`.`likes_table` SET ? ", newLike)
+
+//     .then(([results]) => {
+//       console.log(results);
+//       res.status(200).json(results);
+//     })
+//     .catch((error) => {
+//       res.status(400).json({ error: error });
+//     });
+// };
 
 // exports.modifyLikes = (req, res, next) => {
 //   //console.log(req);

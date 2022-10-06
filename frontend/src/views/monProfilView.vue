@@ -128,28 +128,28 @@ export default {
   },
   methods: {
     showUser() {
-      console.log("affiche");
+      //console.log("affiche");
       this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
       // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
       //this.thisId = localStorage.getItem("userId");
-      console.log(this.thisId);
-      console.log(this.thisUrl);
-      console.log(this.url + `/users/` + this.thisId);
+      //console.log(this.thisId);
+      //console.log(this.thisUrl);
+      //console.log(this.url + `/users/` + this.thisId);
       axios.get(this.url + `/users/` + this.thisId).then((response) => {
         // axios.get(this.thisUrl).then((response) => {
         // axios.get(`${this.url}/4`).then((response) => {
         this.getApiResponse = response.data[0];
         //console.log(response);
-        console.log(this.getApiResponse);
-        console.log(this.getApiResponse.pseudo);
+        //console.log(this.getApiResponse);
+        //console.log(this.getApiResponse.pseudo);
         this.loading = true;
       });
     },
     modifyUser() {
-      console.log("je modifie");
+      //console.log("je modifie");
     },
     deleteUser() {
-      console.log("j'efface");
+      //console.log("j'efface");
       //console.log(this.thisId);
       let confirmDelete = prompt(
         "Utilisateur " +
@@ -160,7 +160,7 @@ export default {
         axios
           .delete(this.url + `/users/` + this.thisId)
           .then((res) => {
-            console.log(res);
+            //console.log(res);
             localStorage.clear();
             this.$emit("connection", false); //fait remonter (app.vue) l'action connection avec parametre false
             alert("Votre profil a été définitivement supprimé");

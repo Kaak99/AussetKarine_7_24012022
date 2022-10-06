@@ -63,11 +63,11 @@ export default {
     };
   },
   created() {
-    console.log(this.$route.params.id);
+    //console.log(this.$route.params.id);
     axios.get(this.url + `/users/` + this.$route.params.id).then((response) => {
       this.getApiResponse = response.data[0];
       // this.getApiResponse = response.data;
-      console.log(this.getApiResponse);
+      //console.log(this.getApiResponse);
       this.loading = true;
     });
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));

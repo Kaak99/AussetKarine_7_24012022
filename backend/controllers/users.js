@@ -18,7 +18,7 @@ exports.getAllUsers = (req, res, next) => {
   db.promise()
     .query("SELECT * FROM groupomania.users_table;")
     .then(([results]) => {
-      console.log(results);
+      //console.log(results);
       res.status(200).json(results);
     })
     .catch((error) => {
@@ -32,8 +32,8 @@ exports.getOneUsers = (req, res, next) => {
       req.params.id,
     ])
     .then(([results]) => {
-      console.log(results);
-      console.log(results[0].pseudo);
+      //console.log(results);
+      //console.log(results[0].pseudo);
 
       res.status(200).json(results);
     })
@@ -54,7 +54,7 @@ exports.changeUserActivity = (req, res, next) => {
     //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [changedPost, req.params.id])
 
     .then(([results]) => {
-      console.log(results);
+      //console.log(results);
       res.status(200).json(results);
     })
     .catch((error) => {
@@ -70,10 +70,10 @@ exports.deleteUsers = (req, res, next) => {
       req.params.id,
     ])
     .then(([results]) => {
-      console.log("---then-find---");
+      //console.log("---then-find---");
       //console.log(req);
-      console.log(results);
-      console.log(results[0].image);
+      //console.log(results);
+      //console.log(results[0].image);
       if (results[0].image) {
         const filename = results[0].image.split("/images/")[1];
         fs.unlink(`images/${filename}`, () => {
@@ -82,12 +82,12 @@ exports.deleteUsers = (req, res, next) => {
               req.params.id,
             ])
             .then(([results]) => {
-              console.log("---then1-efface---");
+              //console.log("---then1-efface---");
 
               res.status(200).json(results);
             })
             .catch((error) => {
-              console.log("---catch---");
+              //console.log("---catch---");
               res.status(400).json({ error: error });
               //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
             });
@@ -98,12 +98,12 @@ exports.deleteUsers = (req, res, next) => {
             req.params.id,
           ])
           .then(([results]) => {
-            console.log("---then2-efface---");
+            //console.log("---then2-efface---");
 
             res.status(200).json(results);
           })
           .catch((error) => {
-            console.log("---catch---");
+            //console.log("---catch---");
             res.status(400).json({ error: error });
           });
       }
@@ -239,11 +239,12 @@ exports.login = (req, res, next) => {
     });
 };
 
-//!__   get allLikesForOneUser (positif= à 1)(get + id user)   __//
-//!__ recoit : -                             __//
+//!__   get getAllLikes4OneUser (positif= à 1)(get + id user)   __//
+//! router.get("/allLikes/:id", usersController.getAllLikes4OneUser);
+//!__ recoit : -    (get)                         __//
 //!__ renvoie tableau d'objet {"id_Posts": xxx} où like=1   __//
 
-exports.getAllLikes4OneUsers = (req, res, next) => {
+exports.getAllLikes4OneUser = (req, res, next) => {
   db.promise()
     .query(
       " SELECT id_Posts FROM groupomania.likes_table WHERE `id_Users`=? AND `like`=1 ;",
@@ -258,11 +259,57 @@ exports.getAllLikes4OneUsers = (req, res, next) => {
     //   [req.params.id]
     // )
     .then(([results]) => {
-      console.log("allLlike for user " + req.params.id + "=" + results.length);
+      console.log(
+        "nombre allLike for user " + req.params.id + "=" + results.length
+      );
       res.status(200).json(results);
     })
     .catch((error) => {
       console.log("---catch(getAllLikes4OneUsers)---");
+      res.status(400).json({ error: error });
+    });
+};
+
+//!__   get getAllComments4OneUser (positif= à 1)(get + id user)   __//
+//! router.get("/allComments/:id", usersController.getAllComments4OneUser);
+//!__ recoit : -    (get)                         __//
+//!__ renvoie tableau d'objet d'idpost{"id_Posts": xxx} des comments de l'user
+//!__ attention doublon quand a commenté 2 fois le meme post     __//
+
+exports.getAllComments4OneUser = (req, res, next) => {
+  db.promise()
+    .query(
+      " SELECT id_Posts FROM groupomania.comments_table WHERE `id_Users`=?;",
+      [req.params.id]
+    )
+    // .query(
+    //   " SELECT idPosts FROM groupomania.posts_table as p left join groupomania.likes_table as l on p.id_Users=l.id_Users WHERE `id_Users`=? AND `like`=1 ;",
+    //   [req.params.id]
+    // )
+    // .query(
+    //   "SELECT * FROM groupomania.likes_table as l left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
+    //   [req.params.id]
+    // )
+    .then(([results]) => {
+      console.log("allcomments for user " + req.params.id + "=");
+      console.log(results);
+      console.log(
+        "nombre allcomments for user " + req.params.id + "=" + results.length
+      );
+      //on vire objets doublons dans le tableau
+      results = Array.from(new Set(results.map(JSON.stringify))).map(
+        JSON.parse
+      );
+      console.log("---puis sans doublon---");
+      console.log("allcomments for user " + req.params.id + "=");
+      console.log(results);
+      console.log(
+        "nombre allcomments for user " + req.params.id + "=" + results.length
+      );
+      res.status(200).json(results);
+    })
+    .catch((error) => {
+      console.log("---catch(getAllComments4OneUser)---");
       res.status(400).json({ error: error });
     });
 };

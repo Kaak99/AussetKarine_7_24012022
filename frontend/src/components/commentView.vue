@@ -132,7 +132,7 @@ export default {
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
           this.comCount = response.data.length;
           //console.log(this.getApiResponse);
-          console.log("test", this.comCount);
+          //console.log("test", this.comCount);
           for (let index = 0; index < this.getApiResponse.length; index++) {
             if (
               this.getApiResponse[index].idUsers ==
@@ -150,7 +150,7 @@ export default {
     },
     //! on 🗑️ supprime un commentaire
     deleteComment(idComment) {
-      console.log(idComment);
+      //console.log(idComment);
       if (
         confirm(
           "Voulez vous vraiment supprimer ce commentaire " + idComment + " ?"
@@ -159,7 +159,7 @@ export default {
         axios
           .delete(this.url + "/" + idComment)
           .then((res) => {
-            console.log(res);
+            //console.log(res);
             //alert("Votre message " + idComment + " a bien été supprimé");
             this.getAllComments4OnePost();
           })

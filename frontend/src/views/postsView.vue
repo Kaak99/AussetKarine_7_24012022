@@ -101,7 +101,7 @@
                 <i
                   class="fa-solid fa-comment addComment"
                   title="Commentaires"
-                  :style="[aCommente && { color: 'blue' }]"
+                  :style="[checkComment(post.idPosts) && { color: 'blue' }]"
                   v-on:click="showCommentsFunction(post.idPosts)"
                 ></i>
                 <p class="commentNumber" title="nombre de commentaires">
@@ -125,7 +125,7 @@
                 ></i>
                 <!-- <p class="likeNumber">{{ post.like }}</p> ----------------------- -->
                 <p class="likeNumber" title="nombre de likes">
-                  {{ (post.likeCounter = likeCount) }}
+                  {{ post.nbLike }}
                 </p>
               </div>
               <i
@@ -153,7 +153,9 @@
                 }
               :style="[true && { display: 'none' }]"
             ></comment-view> -->
-            {{ post.commentCount }}
+            {{ post.idPosts }}:{{ post.commentCount }}/{{ post.nbLike }}/{{
+              typeof post.nbLike
+            }}
 
             <comment-view
               v-show="commentShowTab.indexOf(post.idPosts) !== -1"
@@ -164,7 +166,6 @@
                   getApiResponse[index].commentCount = comCount;
                 }
               "
-              @atilCommenteCePost="aCommente = $event"
             ></comment-view>
             <!-- on aurait pu utiliser 
               :style="[true && { display: 'none' }]" à la place de vshow -->
@@ -210,9 +211,11 @@ export default {
       text1: "texte de test",
       url: "http://localhost:3000/api/posts",
       urlLikes: "http://localhost:3000/api/likes",
+      urlLikesCount: "http://localhost:3000/api/likes/count",
       getApiResponse: "", //reponse du getAllPost
       postApiResponse: "",
       getLikeResponse: "",
+      getCountLikeResponse: "",
       messageRetour: "",
       inputTitle: "",
       inputText: "",
@@ -224,23 +227,23 @@ export default {
       showCommentsBoolean: false,
       commentShowTab: [],
       allLikedPostTab: JSON.parse(localStorage.getItem("allLikedPost")),
+      allCommentedPostTab: JSON.parse(localStorage.getItem("allCommentedPost")),
       likeOnTab: [],
       likeCount: 0,
-      aCommente: false,
     };
   },
 
   // created() {
   mounted() {
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
-    //this.getAllLikes4OnePost(145);
     this.getAllPost(true); //recup tout (likes aussi)
-    //this.getAllLikes();
   },
+
   computed: {},
+
   methods: {
     checkLike(idpost) {
-      //regarde si user connecté a liké ce post
+      //regarde si user connecté a liké ce post, pour colorer le coeur en bleu ou non
       let test = 0;
       let booleanResponse = false;
       test = this.allLikedPostTab.indexOf(idpost);
@@ -253,49 +256,19 @@ export default {
       return booleanResponse;
     },
     checkComment(idpost) {
-      //regarde si user connecté a commenté ce post
+      //regarde si user connecté a commenté ce post, pour colorer le com en bleu ou non
       let test = 0;
       let booleanResponse = false;
-      test = this.allLikedPostTab.indexOf(idpost); //a changer
+      test = this.allCommentedPostTab.indexOf(idpost);
       if (test == -1) {
-        //si idpost pas trouvé dans la liste des idpost likés
-        booleanResponse = false; //like restera noir
+        //si idpost pas trouvé dans la liste des idpost commentés
+        booleanResponse = false; //comment restera noir
       } else {
         booleanResponse = true; //sinon sera bleu
       }
       return booleanResponse;
     },
-    //! retourne le nombre de like d'un post//(non impl)
-    getAllLikes4OnePost(idPosts) {
-      //console.log(idPosts);
 
-      const test = axios
-        .get(this.urlLikes + "/" + idPosts)
-        .then((response) => {
-          this.getLikeResponse = response.data;
-          //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
-          //console.log(this.getLikeResponse);
-          this.likeCount = response.data.length;
-          //console.log(this.likeCount);
-          return response.data.length;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      //console.log("test", test);
-      return test;
-    },
-    // showCommentsFunction(idpost) {
-    //   const test = this.commentShowTab.indexOf(idpost);
-    //   if (test == -1) {
-    //     //pas de valeur retournée
-    //     this.commentShowTab.push(idpost);
-    //   } else {
-    //     this.commentShowTab = this.commentShowTab.filter(
-    //       (element) => element !== idpost
-    //     );
-    //   }
-    // },
     showCommentsFunction(idpost) {
       //on va stocker dans un tableau les idpost des click pour afficher les Commentaires
       //dans le else, on retire les idpost si sont reclickés
@@ -328,6 +301,7 @@ export default {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
       // console.log();
     },
+
     selectFile() {
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
@@ -337,12 +311,6 @@ export default {
     //   this.inputFile = e.target.files[0];
     //   console.log(this.inputFile);
     // },
-
-    //!getAllLikes
-    getAllLikes() {
-      //console.log("getApiResponse  from getAllPost");
-      //console.log(this.getApiResponse);
-    },
 
     //! on like (ou retire le like)
     likeUnlike(idPosts) {
@@ -380,6 +348,7 @@ export default {
         id_Posts: idPosts,
         id_Users: this.idConnected,
       };
+      console.log(newLike);
       axios
         .post(
           this.urlLikes,
@@ -463,15 +432,33 @@ export default {
         .get(this.url)
         .then((response) => {
           // this.getApiResponse = null;
+
           if (premierChargement) {
+            //this.getApiResponse = response.data;
+            console.log("beforemap", response.data);
             this.getApiResponse = response.data.map((element) => {
               element.commentCount = 0;
-              console.log("if");
+              //console.log("if");
+              console.log("aftermap", response.data);
               return element;
             });
           } else {
-            console.log("else");
-            this.getApiResponse = [...this.getApiResponse, response.data];
+            //console.log("else");
+            console.log("beforeget", this.getApiResponse);
+            this.getApiResponse = [...this.getApiResponse, response.data]; //marchepas
+            //this.getApiResponse = response.data;
+            //this.getApiResponse = this.getApiResponse.concat(response.data);
+            //this.getApiResponse = [...this.getApiResponse, ...response.data];
+            // for (let index = 0; index < this.getApiResponse.length; index++) {
+            //   this.getApiResponse[index].commentCount =
+            //     response.data[index].commentCount;
+            // }
+          }
+          //on met à zero les nombres de like quand null (post jamais été liké-> sum=null)
+          for (let index = 0; index < this.getApiResponse.length; index++) {
+            if (this.getApiResponse[index].nbLike == null) {
+              this.getApiResponse[index].nbLike = 0;
+            }
           }
 
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
@@ -486,17 +473,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-
-      //creer un tableau likeOnTab contenant pour chaque entrée/post la liste des users ayant liké
-      // et dont index =idem celui de apiresponse entrée[0] = post le + recent, tout en haut
-
-      // console.log("getApiResponse");
-      // console.log(this.getApiResponse);
-      // for (let index = 0; index < this.getApiResponse.length; index++) {
-      //   this.likeOnTab.push(
-      //     this.getAllLikes4OnePost(this.getApiResponse[0].idPosts)
-      //   );
-      // }
     },
 
     //! on ✉️ envoie un post au backend
@@ -558,6 +534,27 @@ export default {
           //this.messageRetour = this.getApi.error;
           //this.loading = false;
         });
+    },
+
+    //! retourne le nombre de like d'un post//(non implémenté: à suppr)
+    getAllLikes4OnePost(idPosts) {
+      //console.log(idPosts);
+
+      const test = axios
+        .get(this.urlLikes + "/" + idPosts)
+        .then((response) => {
+          this.getLikeResponse = response.data;
+          //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
+          //console.log(this.getLikeResponse);
+          this.likeCount = response.data.length;
+          //console.log(this.likeCount);
+          return response.data.length;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      //console.log("test", test);
+      return test;
     },
   },
 };

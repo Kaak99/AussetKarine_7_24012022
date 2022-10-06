@@ -34,7 +34,9 @@ exports.getAllPosts = (req, res, next) => {
 
   db.promise()
     .query(
-      "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
+      "SELECT p.*,u.*,sum(l.like) as nbLike FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts GROUP BY l.id_Posts ORDER BY p.time DESC;"
+
+      // "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
     )
     // "SELECT *.p, *.u , COUNT(like) FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;")//notworking
     // "SELECT * FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.id_Users=l.id_Users ORDER BY p.time DESC;")//notworking
@@ -42,7 +44,7 @@ exports.getAllPosts = (req, res, next) => {
 
     .then(([results]) => {
       //renvoi un tableau d'objets results
-      console.log(results);
+      //console.log(results);
       // results = results.map((element) => {
       //   element.commentCount = 0;
       //   return element;

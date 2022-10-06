@@ -89,9 +89,12 @@ export default {
       loading: true,
       url: "http://localhost:3000/api/users/login",
       urlallLikes: "http://localhost:3000/api/users/allLikes",
+      urlallComments: "http://localhost:3000/api/users/allComments",
       postApiResponse: "",
       getApiResponseAllLikes: "",
+      getApiResponseAllComments: "",
       allLikeUserTab: [],
+      allCommentUserTab: [],
       messageRetour: "",
       pseudo: "",
       mdp: "",
@@ -108,10 +111,10 @@ export default {
           this.postApiResponse = response.data;
           this.userId = this.postApiResponse.userId;
           this.messageRetour = "Connexion";
-          console.log(this.postApiResponse);
-          console.log(this.postApiResponse.userId);
-          console.log(this.postApiResponse.token);
-          console.log(this.postApiResponse.admin);
+          //console.log(this.postApiResponse);
+          //console.log(this.postApiResponse.userId);
+          //console.log(this.postApiResponse.token);
+          //console.log(this.postApiResponse.admin);
           this.loading = true;
           localStorage.setItem("userId", this.postApiResponse.userId);
           localStorage.setItem("userToken", this.postApiResponse.token);
@@ -148,6 +151,33 @@ export default {
               localStorage.setItem(
                 "allLikedPost",
                 JSON.stringify(this.allLikeUserTab)
+              );
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+          //on stocke dans le storage un tableau avec tous les idpost commentés par cet userId
+          axios
+            .get(this.urlallComments + "/" + this.userId)
+            .then((response) => {
+              this.getApiResponseAllComments = response.data;
+              // console.log("likes", this.getApiResponseAllLikes);
+              for (
+                let index = 0;
+                index < this.getApiResponseAllComments.length;
+                index++
+              ) {
+                // console.log(index);
+                // console.log(this.getApiResponseAllLikes[index].id_Posts);
+                this.allCommentUserTab.push(
+                  this.getApiResponseAllComments[index].id_Posts
+                );
+              }
+              // console.log("allLikeUserTab",this.allLikeUserTab);
+              localStorage.setItem(
+                "allCommentedPost",
+                JSON.stringify(this.allCommentUserTab)
               );
             })
             .catch((error) => {
