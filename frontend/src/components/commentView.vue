@@ -161,7 +161,32 @@ export default {
           .then((res) => {
             //console.log(res);
             //alert("Votre message " + idComment + " a bien été supprimé");
-            this.getAllComments4OnePost();
+            //on met à jour la liste des idpost commentés par ce user
+            let allCommentedPostTab = JSON.parse(
+              localStorage.getItem("allCommentedPost")
+            );
+            const test = allCommentedPostTab.indexOf(this.idFromPost);
+            if (test == -1) {
+              //La fonction indexOf() renvoie l’index de la valeur donnée (sauf si absent: renvoie -1)
+              console.log(
+                "vous effacez un com pour idpost=" +
+                  this.idFromPost +
+                  " qui pourtant n'est pas dans la liste des idpost commenté par ce user"
+              );
+            } else {
+              //si cet idpost etait stocké, on le retire
+              //allCommentedPostTab.splice(test, 1);
+              allCommentedPostTab = allCommentedPostTab.filter(
+                (element) => element !== this.idFromPost
+              );
+              //on remet dans le localstorage la liste actualisée des post commentés par ce userId
+              localStorage.setItem(
+                "allCommentedPost",
+                JSON.stringify(allCommentedPostTab)
+              );
+              //puis on "refresh"
+              this.getAllComments4OnePost();
+            }
           })
           .catch((error) => {
             console.log(error);
@@ -191,8 +216,24 @@ export default {
       }
     },
 
-    //! on envoi un commentaire au backend
+    //! Création d'un commentaire (envoi au backend)
     envoiComment: function () {
+      //mais d'abord on rajoute l'idpost du commentaire à la liste des post commentés par ce user et
+      let allCommentedPostTab = JSON.parse(
+        localStorage.getItem("allCommentedPost")
+      );
+      const test = allCommentedPostTab.indexOf(this.idFromPost);
+      if (test == -1) {
+        //pas de valeur retournée=cet idPost n'est pas stocké
+        //alors on l'ajoute au tableau (s'il y etait déjà, rien à afire par contre)
+        allCommentedPostTab.push(this.idFromPost);
+      }
+      //on remet dans le localstorage la liste actualisée des post commentés par ce userId
+      localStorage.setItem(
+        "allCommentedPost",
+        JSON.stringify(allCommentedPostTab)
+      );
+      //puis on envoi le commentaire au backend (plutot envoyer d'abord et si reussi mettre à jour localstorage?)
       const config = null;
       // let id_Posts = "";
       // let id_Users = "";
