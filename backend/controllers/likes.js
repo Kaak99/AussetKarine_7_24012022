@@ -67,57 +67,7 @@ exports.modifyLikes = (req, res, next) => {
           )
           .then(([results0]) => {
             console.log(" on a bien update le like ");
-            //il faut aussi mettre à jour la valeur nombreLike
-            //soit on fait la modif dans la tableau
-            let variab = 1;
-            db.promise()
-              .query(
-                " select sum(l.like) as nbLike from groupomania.likes_table as l WHERE id_Posts=?;",
-                [idPosts]
-              )
-
-              .then(([results]) => {
-                console.log("on a fait la somme du nombre des likes");
-                console.log(results[0].nbLike);
-                db.promise()
-                  .query(
-                    " UPDATE `groupomania`.`posts_table` SET `nombreLike`=?  WHERE `idPosts`=? ",
-                    [results[0].nbLike, idPosts]
-                  )
-
-                  .then(([results]) => {
-                    console.log("on a update nombreLike (postsTable)");
-                    res.status(200).json(results);
-                  })
-                  .catch((error) => {
-                    console.log("probleme update de nombreLike ");
-                    res.status(400).json({ error: error });
-                  });
-              })
-              .catch((error) => {
-                console.log("probleme somme du nombre des likes");
-                res.status(400).json({ error: error });
-              });
-            // db.promise()
-            //   .query(
-            //     " UPDATE `groupomania`.`posts_table` SET `nombreLike`=`nombreLike`+?  WHERE `idPosts`=? ",
-            //     [variab, idPosts]
-            //   )
-
-            //   .then(([results]) => {
-            //     console.log("on ajuste le nombreLike");
-            //     res.status(200).json(results);
-            //   })
-            //   .catch((error) => {
-            //     console.log("probleme mise à jour nombreLike");
-            //     res.status(400).json({ error: error });
-            //   });
-
-            // " UPDATE `groupomania`.`posts_table` SET `nombreLike`+=?  WHERE `idLikes`=? ",
-            //   [likeUpdate, likeId];
-            //soit on fait une requete pour que nombreLike =somme avec SUM
-            //select l.id_Posts, sum(l.like) as nbLike from groupomania.likes_table as l GROUP BY l.id_Posts;
-            //res.status(200).json(results);
+            res.status(200).json(results);
           })
           .catch((error) => {
             console.log("on a eu un probleme quand update du like");
@@ -126,6 +76,56 @@ exports.modifyLikes = (req, res, next) => {
             res.status(400).json({ error: error });
           });
       }
+      //ensuite, la somme
+      //let variab = 1;
+      db.promise()
+        .query(
+          " select sum(l.like) as nbLike from groupomania.likes_table as l WHERE id_Posts=?;",
+          [idPosts]
+        )
+
+        .then(([results]) => {
+          console.log("on a fait la somme du nombre des likes");
+          console.log(results[0].nbLike);
+          db.promise()
+            .query(
+              " UPDATE `groupomania`.`posts_table` SET `nombreLike`=?  WHERE `idPosts`=? ",
+              [results[0].nbLike, idPosts]
+            )
+
+            .then(([results]) => {
+              console.log("on a update nombreLike (postsTable)");
+              res.status(200).json(results);
+            })
+            .catch((error) => {
+              console.log("probleme update de nombreLike ");
+              res.status(400).json({ error: error });
+            });
+        })
+        .catch((error) => {
+          console.log("probleme somme du nombre des likes");
+          res.status(400).json({ error: error });
+        });
+      // db.promise()
+      //   .query(
+      //     " UPDATE `groupomania`.`posts_table` SET `nombreLike`=`nombreLike`+?  WHERE `idPosts`=? ",
+      //     [variab, idPosts]
+      //   )
+
+      //   .then(([results]) => {
+      //     console.log("on ajuste le nombreLike");
+      //     res.status(200).json(results);
+      //   })
+      //   .catch((error) => {
+      //     console.log("probleme mise à jour nombreLike");
+      //     res.status(400).json({ error: error });
+      //   });
+
+      // " UPDATE `groupomania`.`posts_table` SET `nombreLike`+=?  WHERE `idLikes`=? ",
+      //   [likeUpdate, likeId];
+      //soit on fait une requete pour que nombreLike =somme avec SUM
+      //select l.id_Posts, sum(l.like) as nbLike from groupomania.likes_table as l GROUP BY l.id_Posts;
+      //res.status(200).json(results);
     })
     .catch((error) => {
       console.log("probleme lors recherche existence champ like");

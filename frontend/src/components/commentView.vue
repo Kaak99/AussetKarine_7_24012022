@@ -169,16 +169,17 @@ export default {
             if (test == -1) {
               //La fonction indexOf() renvoie l’index de la valeur donnée (sauf si absent: renvoie -1)
               console.log(
-                "vous effacez un com pour idpost=" +
+                "vous demander d'effacez un com pour le post " +
                   this.idFromPost +
-                  " qui pourtant n'est pas dans la liste des idpost commenté par ce user"
+                  " qui pourtant n'est pas dans la liste (allCommentedPostTab)"
               );
             } else {
-              //si cet idpost etait stocké, on le retire
-              //allCommentedPostTab.splice(test, 1);
-              allCommentedPostTab = allCommentedPostTab.filter(
-                (element) => element !== this.idFromPost
-              );
+              //si cet idpost etait stocké, on retire la 1ere occurence
+              //(car on peut avoir commenté pls fois un post et donc avoir pls fois son idpost ds sa liste)
+              allCommentedPostTab.splice(test, 1);
+              // allCommentedPostTab = allCommentedPostTab.filter(
+              //   (element) => element !== this.idFromPost
+              // );//non car retire touets les occurences
               //on remet dans le localstorage la liste actualisée des post commentés par ce userId
               localStorage.setItem(
                 "allCommentedPost",
@@ -223,11 +224,13 @@ export default {
         localStorage.getItem("allCommentedPost")
       );
       const test = allCommentedPostTab.indexOf(this.idFromPost);
-      if (test == -1) {
-        //pas de valeur retournée=cet idPost n'est pas stocké
-        //alors on l'ajoute au tableau (s'il y etait déjà, rien à afire par contre)
-        allCommentedPostTab.push(this.idFromPost);
-      }
+      // if (test == -1) {
+      //   //pas de valeur retournée=cet idPost n'est pas stocké
+      //   //alors on l'ajoute au tableau (s'il y etait déjà, rien à afire par contre)
+      //   allCommentedPostTab.push(this.idFromPost);
+      // }
+      allCommentedPostTab.push(this.idFromPost); //on push toujours (si deja un com pour ce post, pas grave, on met autant d'idPost commenté qu'il y a de com de ce user)
+
       //on remet dans le localstorage la liste actualisée des post commentés par ce userId
       localStorage.setItem(
         "allCommentedPost",

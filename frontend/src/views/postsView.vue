@@ -121,7 +121,7 @@
                   class="fa-solid fa-heart like"
                   title="liker le message"
                   :style="[checkLike(post.idPosts) && { color: 'blue' }]"
-                  v-on:click="likeUnlike(post.idPosts)"
+                  v-on:click="likeNolike(post.idPosts)"
                 ></i>
                 <!-- <p class="likeNumber">{{ post.like }}</p> ----------------------- -->
                 <p class="likeNumber" title="nombre de likes">
@@ -312,7 +312,7 @@ export default {
     // },
 
     //! on like (ou retire le like)
-    likeUnlike(idPosts) {
+    likeNolike(idPosts) {
       // console.log(idPosts);
       //si n'existe pas dans tableau des like allLikedPostTab , on le push, sinon on vire
       const test = this.allLikedPostTab.indexOf(idPosts);

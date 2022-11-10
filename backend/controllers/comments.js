@@ -86,15 +86,12 @@ exports.deleteComments = (req, res, next) => {
       //res.status(200).json(results);(=non, il faut le donner à la fin de tous les then)
       //il reste à mettre à jour le nombreComment dans tablePosts
       db.promise()
-        //on compte combien il y a de commentaires(idComments)
         .query(
           " SELECT count(c.idComments) as nbComment from groupomania.comments_table as c WHERE id_Posts=?;",
           [idPosts]
         )
         .then(([results]) => {
-          console.log(
-            "on compte le nombre de com(nbComment) pour ce post dans bdd"
-          );
+          console.log("on a compté le nombre de com(nbComment) pour ce post:");
           console.log(results[0].nbComment);
           db.promise()
             .query(
