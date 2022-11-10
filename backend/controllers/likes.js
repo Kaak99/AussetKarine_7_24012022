@@ -66,7 +66,7 @@ exports.modifyLikes = (req, res, next) => {
             [likeUpdate, likeId]
           )
           .then(([results0]) => {
-            console.log("---like updated---");
+            console.log(" on a bien update le like ");
             //il faut aussi mettre à jour la valeur nombreLike
             //soit on fait la modif dans la tableau
             let variab = 1;
@@ -77,6 +77,7 @@ exports.modifyLikes = (req, res, next) => {
               )
 
               .then(([results]) => {
+                console.log("on a fait la somme du nombre des likes");
                 console.log(results[0].nbLike);
                 db.promise()
                   .query(
@@ -85,16 +86,16 @@ exports.modifyLikes = (req, res, next) => {
                   )
 
                   .then(([results]) => {
-                    console.log("on ajuste le nombreLike");
+                    console.log("on a update nombreLike (postsTable)");
                     res.status(200).json(results);
                   })
                   .catch((error) => {
-                    console.log("probleme mise à jour nombreLike");
+                    console.log("probleme update de nombreLike ");
                     res.status(400).json({ error: error });
                   });
               })
               .catch((error) => {
-                console.log("probleme mise à jour nombreLike");
+                console.log("probleme somme du nombre des likes");
                 res.status(400).json({ error: error });
               });
             // db.promise()
@@ -119,7 +120,7 @@ exports.modifyLikes = (req, res, next) => {
             //res.status(200).json(results);
           })
           .catch((error) => {
-            console.log("--- echec likeUpdate (catch du modify)---");
+            console.log("on a eu un probleme quand update du like");
             console.log(typeof likeId);
             console.log(typeof likeUpdate);
             res.status(400).json({ error: error });
@@ -127,25 +128,9 @@ exports.modifyLikes = (req, res, next) => {
       }
     })
     .catch((error) => {
-      console.log("---catch---");
+      console.log("probleme lors recherche existence champ like");
       res.status(400).json({ error: error });
     });
-
-  // let newLike = {
-  //   like: req.body.like, //sera forcément 0 ou 1 (tester!!)
-  //   id_Posts: req.body.id_Posts,
-  //   id_Users: req.body.id_Users,
-  // };
-  // db.promise()
-  //   .query(" INSERT INTO `groupomania`.`likes_table` SET ? ", newLike)
-
-  //   .then(([results]) => {
-  //     console.log(results);
-  //     res.status(200).json(results);
-  //   })
-  //   .catch((error) => {
-  //     res.status(400).json({ error: error });
-  //   });
 };
 
 //!__   get LIKE'S number for ONE POST(GET /count/:id du post) __//

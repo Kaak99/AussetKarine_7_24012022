@@ -82,11 +82,41 @@ exports.deleteComments = (req, res, next) => {
       req.params.id,
     ])
     .then(([results]) => {
-      //console.log("deleting...");
-      res.status(200).json(results);
+      console.log("on a bien supprimé le commentaire");
+      //res.status(200).json(results);(=non, il faut le donner à la fin de tous les then)
+      //il reste à mettre à jour le nombreComment dans tablePosts
+      db.promise()
+        //on compte combien il y a de commentaires(idComments)
+        .query(
+          " SELECT count(c.idComments) as nbComment from groupomania.comments_table as c WHERE id_Posts=?;",
+          [idPosts]
+        )
+        .then(([results]) => {
+          console.log(
+            "on compte le nombre de com(nbComment) pour ce post dans bdd"
+          );
+          console.log(results[0].nbComment);
+          db.promise()
+            .query(
+              " UPDATE `groupomania`.`posts_table` SET `nombreComment`=?  WHERE `idPosts`=? ",
+              [results[0].nbComment, idPosts]
+            )
+            .then(([results]) => {
+              console.log("on a bien ajusté le nombreComment dans tablePosts");
+              res.status(200).json(results);
+            })
+            .catch((error) => {
+              console.log("erreur update nombreComment");
+              res.status(400).json({ error: error });
+            });
+        })
+        .catch((error) => {
+          console.log("erreur dans compte de nbComment");
+          res.status(400).json({ error: error });
+        });
     })
     .catch((error) => {
-      //console.log("---catch(deleteComments)---");
+      console.log("probleme lors suppression du commentaire");
       res.status(400).json({ error: error });
     });
 };
@@ -122,29 +152,42 @@ exports.createComments = (req, res, next) => {
 
     .then(([results]) => {
       //console.log(results);
-      //mettre à jour le nombreComment est sur
-      //soit en faisant la somme dans bdd
-      //soit en modifiant directement nombrecomment dans la table posts_table
+      //mettre à jour le nombreComment
       console.log(idPosts);
       db.promise()
+        //on compte combien il y a de commentaires(idComments)
         .query(
-          "  UPDATE `groupomania`.`posts_table` SET `nombreComment`=?  WHERE `idPosts`=? ",
-          [333, idPosts]
+          " SELECT count(c.idComments) as nbComment from groupomania.comments_table as c WHERE id_Posts=?;",
+          [idPosts]
         )
-
         .then(([results]) => {
-          //console.log(results);
-          res.status(200).json(results);
+          console.log(
+            "on compte le nombre de com(nbComment) pour ce post dans bdd"
+          );
+          console.log(results[0].nbComment);
+          db.promise()
+            .query(
+              " UPDATE `groupomania`.`posts_table` SET `nombreComment`=?  WHERE `idPosts`=? ",
+              [results[0].nbComment, idPosts]
+            )
+            .then(([results]) => {
+              console.log("on a bien ajusté le nombreComment dans tablePosts");
+              res.status(200).json(results);
+            })
+            .catch((error) => {
+              console.log("erreur update nombreComment");
+              res.status(400).json({ error: error });
+            });
         })
         .catch((error) => {
+          console.log("erreur dans compte de nbComment");
           res.status(400).json({ error: error });
         });
-      //res.status(200).json(results);
     })
     .catch((error) => {
+      console.log("erreur création commentaire");
       res.status(400).json({ error: error });
     });
-  //.then( () => db.end());
 };
 
 //!__       MODIFY COMMENTS  (PUT+id comment)          __//

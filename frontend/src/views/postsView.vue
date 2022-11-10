@@ -268,10 +268,11 @@ export default {
     },
 
     showCommentsFunction(idpost) {
-      //on va stocker dans un tableau les idpost des click pour afficher les Commentaires
-      //dans le else, on retire les idpost si sont reclickés
-      //car le vshow ne montrera que les idpost qui sont dans le tableau
-      //(et si on avait reclické, on avait refermé)
+      //Fonction qui ne fait que OUVRIR/FERMER la liste des commentaires pour x posts
+      this.getAllPost(); //pour maj du nbre com
+      //on va stocker dans tableau commentShowTab les idpost ou on a cliqué sur bulle des commentaires pour dire: voilza liste des post ou on deroule les com
+      //mais si bulle recliquée, il faut virer cet idpost (puisque utilisateur referme la liste des com quand reclic, donc faut plus dérouler les com de cet idpost)
+      //donc dans le else, on retire les idpost qui sont reclickés
       const test = this.commentShowTab.indexOf(idpost);
       //console.log("start");
       //console.log(this.commentShowTab);
@@ -285,7 +286,7 @@ export default {
         //console.log(this.commentShowTab.indexOf(idpost));
       } else {
         //si cet idpost etait stocké, on le retire
-        //(on ne garde que les elements qui ne sont pas idPost)
+        //(code=on ne garde que les elements qui ne sont pas idPost)
         this.commentShowTab = this.commentShowTab.filter(
           (element) => element !== idpost
         );
