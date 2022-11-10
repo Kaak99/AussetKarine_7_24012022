@@ -16,7 +16,7 @@ router.get("/count/:id", commentsController.getCommentsNumber4OnePost);
 router.post("/", commentsController.createComments);
 //router.get('/:id', postsController.getOnePostsComments);
 router.put("/:id", commentsController.modifyComments);
-router.delete("/:id", commentsController.deleteComments);
+router.delete("/:id/:idpost", commentsController.deleteComments);
 
 // router.posts('/:id/thumb', postsController.thumbPosts);
 

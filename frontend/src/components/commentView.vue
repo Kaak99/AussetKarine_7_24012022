@@ -59,7 +59,7 @@
               class="fa-solid fa-trash-can deletePost"
               title="supprimer le commentaire"
               v-if="comment.id_Users == idConnected || idConnected == 45"
-              v-on:click="deleteComment(comment.idComments)"
+              v-on:click="deleteComment(comment.idComments, comment.id_Posts)"
             ></i>
           </p>
           {{ idFromPost }}
@@ -149,7 +149,7 @@ export default {
         });
     },
     //! on 🗑️ supprime un commentaire
-    deleteComment(idComment) {
+    deleteComment(idComment, idPost) {
       //console.log(idComment);
       if (
         confirm(
@@ -157,7 +157,7 @@ export default {
         )
       ) {
         axios
-          .delete(this.url + "/" + idComment)
+          .delete(this.url + "/" + idComment + "/" + idPost)
           .then((res) => {
             //console.log(res);
             //alert("Votre message " + idComment + " a bien été supprimé");

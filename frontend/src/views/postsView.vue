@@ -64,7 +64,7 @@
         <!-- <modalPost toggleModal="Welcome here" /> -->
         <!-- ................📩 ici démarre la zone d'affichage des posts 📩......VFOR.......... -->
         <div
-          v-for="(post, index) in getApiResponse"
+          v-for="post in getApiResponse"
           :key="post.idPosts"
           :id="post.idPosts"
           class="postsCard"
@@ -159,11 +159,7 @@
               v-show="commentShowTab.indexOf(post.idPosts) !== -1"
               text="props!"
               :idFromPost="post.idPosts"
-              @combiendecomment="
-                (comCount) => {
-                  getApiResponse[index].commentCount = comCount;
-                }
-              "
+              @combiendecomment="getAllPost()"
             ></comment-view>
             <!-- on aurait pu utiliser 
               :style="[true && { display: 'none' }]" à la place de vshow -->

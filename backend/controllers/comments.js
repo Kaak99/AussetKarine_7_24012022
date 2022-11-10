@@ -81,14 +81,15 @@ exports.deleteComments = (req, res, next) => {
     .query(" DELETE FROM groupomania.comments_table WHERE `idComments`=? ;", [
       req.params.id,
     ])
-    .then(([results]) => {
+    .then(([results2]) => {
       console.log("on a bien supprimé le commentaire");
       //res.status(200).json(results);(=non, il faut le donner à la fin de tous les then)
       //il reste à mettre à jour le nombreComment dans tablePosts
+      console.log(req.params.idpost);
       db.promise()
         .query(
-          " SELECT count(c.idComments) as nbComment from groupomania.comments_table as c WHERE id_Posts=?;",
-          [idPosts]
+          " SELECT count(c.idComments) as nbComment from groupomania.comments_table as c WHERE id_Posts=? ;",
+          [req.params.idpost]
         )
         .then(([results]) => {
           console.log("on a compté le nombre de com(nbComment) pour ce post:");
@@ -96,7 +97,7 @@ exports.deleteComments = (req, res, next) => {
           db.promise()
             .query(
               " UPDATE `groupomania`.`posts_table` SET `nombreComment`=?  WHERE `idPosts`=? ",
-              [results[0].nbComment, idPosts]
+              [results[0].nbComment, req.params.idpost]
             )
             .then(([results]) => {
               console.log("on a bien ajusté le nombreComment dans tablePosts");
