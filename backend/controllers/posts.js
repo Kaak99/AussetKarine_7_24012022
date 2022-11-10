@@ -34,9 +34,13 @@ exports.getAllPosts = (req, res, next) => {
 
   db.promise()
     .query(
+      // "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
+
+      "SELECT p.idPosts, p.titre, p.contenu, p.image, p.time, p.nombreComment, p.nombreLike, u.pseudo, u.avatar, u.admin FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
+
       // "SELECT p.*,u.*,sum(l.like) as nbLike FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts GROUP BY l.id_Posts ORDER BY p.time DESC;"
 
-      "SELECT p.*,u.*, l.nbLike FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join (select t.id_Posts, sum(t.like) as nbLike from groupomania.likes_table as t GROUP BY t.id_Posts) as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;"
+      // "SELECT p.*,u.*, l.nbLike FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join (select t.id_Posts, sum(t.like) as nbLike from groupomania.likes_table as t GROUP BY t.id_Posts) as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;"//befor nblike&com ds bdd
 
       // "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
     )

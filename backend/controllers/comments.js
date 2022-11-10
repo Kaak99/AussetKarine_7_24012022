@@ -113,6 +113,7 @@ exports.createComments = (req, res, next) => {
     id_Posts: req.body.id_Posts,
     id_Users: req.body.id_Users,
   };
+  let idPosts = req.body.id_Posts;
   //console.log(newComment);
 
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
@@ -121,7 +122,24 @@ exports.createComments = (req, res, next) => {
 
     .then(([results]) => {
       //console.log(results);
-      res.status(200).json(results);
+      //mettre à jour le nombreComment est sur
+      //soit en faisant la somme dans bdd
+      //soit en modifiant directement nombrecomment dans la table posts_table
+      console.log(idPosts);
+      db.promise()
+        .query(
+          "  UPDATE `groupomania`.`posts_table` SET `nombreComment`=?  WHERE `idPosts`=? ",
+          [333, idPosts]
+        )
+
+        .then(([results]) => {
+          //console.log(results);
+          res.status(200).json(results);
+        })
+        .catch((error) => {
+          res.status(400).json({ error: error });
+        });
+      //res.status(200).json(results);
     })
     .catch((error) => {
       res.status(400).json({ error: error });

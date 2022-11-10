@@ -105,7 +105,7 @@
                   v-on:click="showCommentsFunction(post.idPosts)"
                 ></i>
                 <p class="commentNumber" title="nombre de commentaires">
-                  {{ post.commentCount }}
+                  {{ post.nombreComment }}
                 </p>
               </div>
               <!-- <i
@@ -125,7 +125,7 @@
                 ></i>
                 <!-- <p class="likeNumber">{{ post.like }}</p> ----------------------- -->
                 <p class="likeNumber" title="nombre de likes">
-                  {{ post.nbLike }}
+                  {{ post.nombreLike }}
                 </p>
               </div>
               <i
@@ -153,9 +153,7 @@
                 }
               :style="[true && { display: 'none' }]"
             ></comment-view> -->
-            {{ post.idPosts }}:{{ post.commentCount }}/{{ post.nbLike }}/{{
-              typeof post.nbLike
-            }}
+            {{ post.idPosts }}:{{ post.nombreComment }}/{{ post.nombreLike }}
 
             <comment-view
               v-show="commentShowTab.indexOf(post.idPosts) !== -1"
@@ -369,12 +367,12 @@ export default {
           );
           console.log("likeValueToSend", likeValueToSend);
           //likeValueToSend == 0 ? -1 : 1;
-          if (likeValueToSend == 0) {
-            likeValueToSend = -1;
-          }
-          console.log("likeValueToSend", likeValueToSend);
-          this.getApiResponse.find((elt) => elt.idPosts == idPosts).nbLike +=
-            likeValueToSend;
+          // if (likeValueToSend == 0) {
+          //   likeValueToSend = -1;
+          // }
+          // console.log("likeValueToSend", likeValueToSend);
+          // this.getApiResponse.find((elt) => elt.idPosts == idPosts).nbLike +=
+          //   likeValueToSend;
 
           //this.getApiResponse.find((elt) => elt.idPosts == idPosts)[0].nbLike = response.data.nbLike;
           //like n'existe pas, juste nblike pour un post donné
@@ -384,7 +382,7 @@ export default {
           this.loading = true;
           // console.log("j'ai liké !");
 
-          //this.getAllPost();
+          this.getAllPost();
           //this.$router.push("/");
         })
         .catch((error) => {
@@ -450,52 +448,55 @@ export default {
         .get(this.url)
         .then((response) => {
           // this.getApiResponse = null;
+          this.getApiResponse = response.data;
+          console.log("getApiResponse", this.getApiResponse);
 
-          if (premierChargement) {
-            //this.getApiResponse = response.data;
-            console.log("getApiResponse-beforemap1erChargemt", response.data);
-            this.getApiResponse = response.data.map((element) => {
-              element.commentCount = 0;
-              //console.log("if");
-              //console.log("aftermap", this.getApiResponse);
-              return element;
-            });
-          } else {
-            //console.log("else");
-            //console.log("beforeget", this.getApiResponse);
-            this.getApiResponse = response.data
-              .map(JSON.stringify)
-              .map(JSON.parse);
+          // if (premierChargement) {
+          //   //this.getApiResponse = response.data;
+          //   console.log("getApiResponse-beforemap1erChargemt", response.data);
+          //   this.getApiResponse = response.data.map((element) => {
+          //     element.commentCount = 0;
+          //     //console.log("if");
+          //     //console.log("aftermap", this.getApiResponse);
+          //     return element;
+          //   });
+          // } else {
+          //   //console.log("else");
+          //   //console.log("beforeget", this.getApiResponse);
+          //   this.getApiResponse = response.data
+          //     .map(JSON.stringify)
+          //     .map(JSON.parse);
 
-            // this.getApiResponse = Array.from(
-            //   new Set(response.data.map(JSON.stringify))
-            // ).map(JSON.parse);
-            // console.log("getApiResponse(pas1erchargemt)", this.getApiResponse);
-            //this.getApiResponse = [...this.getApiResponse, response.data]; //marchepas
-            //this.getApiResponse = response.data;
-            //this.getApiResponse = this.getApiResponse.concat(response.data);
-            //this.getApiResponse = [...this.getApiResponse, ...response.data];
-            // for (let index = 0; index < this.getApiResponse.length; index++) {
-            //   this.getApiResponse[index].commentCount =
-            //     response.data[index].commentCount;
-            // }
-          }
+          // this.getApiResponse = Array.from(
+          //   new Set(response.data.map(JSON.stringify))
+          // ).map(JSON.parse);
+          // console.log("getApiResponse(pas1erchargemt)", this.getApiResponse);
+          //this.getApiResponse = [...this.getApiResponse, response.data]; //marchepas
+          //this.getApiResponse = response.data;
+          //this.getApiResponse = this.getApiResponse.concat(response.data);
+          //this.getApiResponse = [...this.getApiResponse, ...response.data];
+          // for (let index = 0; index < this.getApiResponse.length; index++) {
+          //   this.getApiResponse[index].commentCount =
+          //     response.data[index].commentCount;
+          // }
+          // }
           //console.log("1/aftermap ou ensuite/afterspread", this.getApiResponse);
           //on met à zero les nombres de like quand null (post jamais été liké-> sum=null)
-          for (let index = 0; index < this.getApiResponse.length; index++) {
-            if (this.getApiResponse[index].nbLike == null) {
-              this.getApiResponse[index].nbLike = 0;
-            } else {
-              this.getApiResponse[index].nbLike = parseInt(
-                this.getApiResponse[index].nbLike
-              );
-            }
-          }
-          console.log(
-            "getApiResponse(apresCorrectionLikeNullenZero)",
-            this.getApiResponse
-          );
+          // for (let index = 0; index < this.getApiResponse.length; index++) {
+          //   if (this.getApiResponse[index].nbLike == null) {
+          //     this.getApiResponse[index].nbLike = 0;
+          //   } else {
+          //     this.getApiResponse[index].nbLike = parseInt(
+          //       this.getApiResponse[index].nbLike
+          //     );
+          //   }
+          // }
+          // console.log(
+          //   "getApiResponse(apresCorrectionLikeNullenZero)",
+          //   this.getApiResponse
+          // );
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
+
           this.timeDayjs = dayjs(this.getApiResponse.time).format(
             "DD/MM/YYYY HH:mm"
           );

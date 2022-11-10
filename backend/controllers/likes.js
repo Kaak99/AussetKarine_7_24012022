@@ -30,6 +30,7 @@ exports.modifyLikes = (req, res, next) => {
       //console.log(results);
       let likeId; //id du like, à trouver dans bdd (si existe déjà) grace à id_user/post fourni dans req
       let likeUpdate = req.body.like; //la valeur qu'on veut donner au like d'apres req
+      let idPosts = req.body.id_Posts;
       if (results.length === 0) {
         //si aucun resultat, alors on va creer ce champ like (verifier avant que user et post id existant bien?de toute facon erreur sinon->catch du create)
         console.log("pas de resultats, on crée!");
@@ -64,9 +65,58 @@ exports.modifyLikes = (req, res, next) => {
             " UPDATE `groupomania`.`likes_table` SET `like`=?  WHERE `idLikes`=? ",
             [likeUpdate, likeId]
           )
-          .then(([results]) => {
+          .then(([results0]) => {
             console.log("---like updated---");
-            res.status(200).json(results);
+            //il faut aussi mettre à jour la valeur nombreLike
+            //soit on fait la modif dans la tableau
+            let variab = 1;
+            db.promise()
+              .query(
+                " select sum(l.like) as nbLike from groupomania.likes_table as l WHERE id_Posts=?;",
+                [idPosts]
+              )
+
+              .then(([results]) => {
+                console.log(results[0].nbLike);
+                db.promise()
+                  .query(
+                    " UPDATE `groupomania`.`posts_table` SET `nombreLike`=?  WHERE `idPosts`=? ",
+                    [results[0].nbLike, idPosts]
+                  )
+
+                  .then(([results]) => {
+                    console.log("on ajuste le nombreLike");
+                    res.status(200).json(results);
+                  })
+                  .catch((error) => {
+                    console.log("probleme mise à jour nombreLike");
+                    res.status(400).json({ error: error });
+                  });
+              })
+              .catch((error) => {
+                console.log("probleme mise à jour nombreLike");
+                res.status(400).json({ error: error });
+              });
+            // db.promise()
+            //   .query(
+            //     " UPDATE `groupomania`.`posts_table` SET `nombreLike`=`nombreLike`+?  WHERE `idPosts`=? ",
+            //     [variab, idPosts]
+            //   )
+
+            //   .then(([results]) => {
+            //     console.log("on ajuste le nombreLike");
+            //     res.status(200).json(results);
+            //   })
+            //   .catch((error) => {
+            //     console.log("probleme mise à jour nombreLike");
+            //     res.status(400).json({ error: error });
+            //   });
+
+            // " UPDATE `groupomania`.`posts_table` SET `nombreLike`+=?  WHERE `idLikes`=? ",
+            //   [likeUpdate, likeId];
+            //soit on fait une requete pour que nombreLike =somme avec SUM
+            //select l.id_Posts, sum(l.like) as nbLike from groupomania.likes_table as l GROUP BY l.id_Posts;
+            //res.status(200).json(results);
           })
           .catch((error) => {
             console.log("--- echec likeUpdate (catch du modify)---");
