@@ -36,7 +36,7 @@ exports.getAllPosts = (req, res, next) => {
     .query(
       // "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
 
-      "SELECT p.idPosts, p.titre, p.contenu, p.image, p.time, p.nombreComment, p.nombreLike, u.pseudo, u.avatar, u.admin FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
+      "SELECT p.idPosts, p.titre, p.contenu, p.image, p.time, p.nombreComment, p.nombreLike, p.id_Users, u.pseudo, u.avatar, u.admin FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
 
       // "SELECT p.*,u.*,sum(l.like) as nbLike FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts GROUP BY l.id_Posts ORDER BY p.time DESC;"
 

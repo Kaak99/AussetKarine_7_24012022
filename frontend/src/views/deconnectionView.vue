@@ -3,8 +3,8 @@
 <template>
   <div class="containAll d-flex">
     <div class="users container" v-if="loading === true">
-      <h1>Vous partez déjà ?</h1>
-      <h2 class="centerTxt">Cliquez pour vous déconnecter</h2>
+      <h1>Pour vous déconnecter</h1>
+      <p class="centerTxt">Cliquez ci-dessous</p>
       <div class="d-flex">
         <!-- <button class="buttonValid" v-on:click.prevent="localStorage.clear()">
           Je me déconnecte !
@@ -59,6 +59,10 @@ export default {
 <style></style>
 
 <style scoped>
+* {
+  padding: 4px 4px;
+}
+
 .main {
   padding-bottom: 10px;
 }
@@ -72,8 +76,24 @@ export default {
   padding: 5px;
   border: solid 2px red;
 }
-button {
-  margin: 10px;
+
+.buttonValid {
+  margin: 10px auto;
   padding: 5px;
+  width: 50%;
+}
+@media all and (max-width: 400px) /* <300w*/ {
+  .buttonValid {
+    margin: 6px auto;
+    padding: 3px;
+    width: 100%;
+  }
+}
+@media all and (min-width: 1000px) /* >1000w*/ {
+  .buttonValid {
+    margin: 10px auto;
+    padding: 5px;
+    width: 30%;
+  }
 }
 </style>

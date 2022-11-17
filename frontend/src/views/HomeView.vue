@@ -29,8 +29,16 @@
 <style></style>
 
 <style scoped>
+* {
+  padding: 8px 4px;
+}
+
 img {
-  width: 300px;
+  width: 50%;
+  max-width: 800px;
+  min-width: 80px;
+  max-height: 1000px;
+  object-fit: contain;
 }
 </style>
 

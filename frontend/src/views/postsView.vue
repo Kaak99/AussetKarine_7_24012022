@@ -3,8 +3,7 @@
 <template>
   <div>
     <div class="posts container" v-if="loading === true">
-      <h1>Voici la liste de tous les messages</h1>
-      <h2 class="centerTxt">Tous les posts</h2>
+      <h1 class="centerTxt">Tous les messages</h1>
       <div class="postContainer d-flex">
         <!-- ............✍️ ici démarre la zone d'input "new post" ✍️.............. -->
         <div class="writeBox">
@@ -20,7 +19,7 @@
               class="centerTxt input-title"
               name="inputTitle"
               id="inputTitle"
-              placeholder="votre titre"
+              placeholder="maximum 50 caractères"
               required
             />
 
@@ -35,7 +34,7 @@
               class="centerTxt input-text"
               name="inputText"
               id="inputText"
-              placeholder="votre message"
+              placeholder="maximum 500 caractères"
               required
             ></textarea>
 
@@ -58,7 +57,7 @@
             </div>
           </div>
         </div>
-        {{ idConnected }}{{ isAdmin }}{{ typeof isAdmin }}
+        {{ idConnected }}{{ isAdmin }}{{ typeof idConnected }}
         <!-- .................. modale .................. -->
         <!-- <modal-post></modal-post> -->
         <!-- <modalPost toggleModal="Welcome here" /> -->
@@ -159,7 +158,7 @@
               v-show="commentShowTab.indexOf(post.idPosts) !== -1"
               text="props!"
               :idFromPost="post.idPosts"
-              @combiendecomment="getAllPost()"
+              @combiendecomment="refreshAll()"
             ></comment-view>
             <!-- on aurait pu utiliser 
               :style="[true && { display: 'none' }]" à la place de vshow -->
@@ -215,7 +214,7 @@ export default {
       inputText: "",
       inputFile: "",
       timeDayjs: [],
-      idConnected: localStorage.getItem("userId"),
+      idConnected: JSON.parse(localStorage.getItem("userId")),
       isAdmin: localStorage.getItem("admin") == 1 ? true : false,
       postIdToComment: "5",
       showCommentsBoolean: false,
@@ -236,6 +235,12 @@ export default {
   computed: {},
 
   methods: {
+    refreshAll() {
+      this.getAllPost();
+      this.allCommentedPostTab = JSON.parse(
+        localStorage.getItem("allCommentedPost")
+      );
+    },
     checkLike(idpost) {
       //regarde si user connecté a liké ce post, pour colorer le coeur en bleu ou non
       let test = 0;
@@ -265,7 +270,7 @@ export default {
 
     showCommentsFunction(idpost) {
       //Fonction qui ne fait que OUVRIR/FERMER la liste des commentaires pour x posts
-      this.getAllPost(); //pour maj du nbre com
+      //this.getAllPost(); //pour maj du nbre com
       //on va stocker dans tableau commentShowTab les idpost ou on a cliqué sur bulle des commentaires pour dire: voilza liste des post ou on deroule les com
       //mais si bulle recliquée, il faut virer cet idpost (puisque utilisateur referme la liste des com quand reclic, donc faut plus dérouler les com de cet idpost)
       //donc dans le else, on retire les idpost qui sont reclickés
@@ -595,13 +600,16 @@ export default {
 <style></style>
 
 <style scoped>
+* {
+  padding: 0.5% 1%;
+}
 .main {
   padding-bottom: 10px;
 }
 .inputContainer {
   /* background-color: var(--main-color2); */
   background-color: #919ba7;
-  border-radius: 25px;
+  border-radius: 10px;
   /* margin: 1vw 6vw; */
   width: 100%;
   /* margin: 10px auto; */
@@ -618,15 +626,13 @@ export default {
   color: #ffd7d7;
   /* font-size: 5vw; */
 }
-.envoiPost {
-  padding: 10px;
-}
+
 .postContainer {
   padding: 10px;
   border: solid 1px blue;
 }
 .writeBox {
-  padding: 10px 0;
+  padding: 5%;
   border: solid 1px blue;
   margin-bottom: 10px;
 }
@@ -664,8 +670,8 @@ export default {
 }
 .fa-solid:hover {
   /*box-shadow: 10px 5px 5px black;*/
-  /*transform: scale(1.01);*/
-  filter: brightness(1.5);
+  transform: scale(1.02);
+  /* filter: brightness(1.5); */
 }
 .modifyPost,
 .deletePost {
@@ -698,10 +704,28 @@ export default {
   cursor: default;
   /* width: 30px; */
 }
-.fa-heart:hover {
-  color: #3b46eb;
-}
+
 .blue {
   color: #3b46eb;
+}
+.envoiPost:hover {
+  color: #3b46eb;
+  /* transform: scale(1.02); */
+}
+.envoiPost {
+  padding: 1%;
+  font-size: 3.5vw;
+}
+@media all and (max-width: 400px) /* <300w*/ {
+  .envoiPost {
+    padding: 1%;
+    font-size: 6vw;
+  }
+}
+@media all and (min-width: 1000px) /* >1000w*/ {
+  .envoiPost {
+    padding: 1%;
+    font-size: 2vw;
+  }
 }
 </style>

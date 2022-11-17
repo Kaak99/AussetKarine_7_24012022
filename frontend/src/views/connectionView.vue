@@ -4,10 +4,10 @@
   <div class="containAll">
     <div class="users container" v-if="loading === true">
       <form class="formLogin">
-        <h1>Connectez vous ici</h1>
-        <h2 class="centerTxt">
+        <h1>Connection</h1>
+        <p class="centerTxt">
           Veuillez rentrer votre pseudo et votre mot de passe
-        </h2>
+        </p>
         <div class="userContainer d-flex">
           <!--ici démarre la zone de création de posts-->
           <!-- <div class="usersCard">
@@ -16,13 +16,13 @@
             <p class="user-bio">presentation</p>
           </div>
          </div> -->
-          <label for="userPseudo" title="au moins 5 lettres">Pseudo :</label>
+          <label for="userPseudo" title="au moins 5 lettres"></label>
           <input
             v-model="pseudo"
             type="text"
             size="10"
             maxlength="20"
-            class="centerTxt"
+            class="centerTxt inputTxt"
             name="pseudo"
             id="pseudo"
             placeholder="votre pseudo"
@@ -35,15 +35,13 @@
             <i class="fas fa-check-circle"></i>Pseudo accepté
           </p>
 
-          <label for="userPassword" title="au moins 6 caractères"
-            >Mot de passe :</label
-          >
+          <label for="userPassword" title="au moins 6 caractères"></label>
           <input
             v-model="mdp"
             type="password"
             size="10"
             maxlength="16"
-            class="centerTxt cart"
+            class="centerTxt inputTxt"
             name="userPassword"
             id="userPassword"
             placeholder="mot de passe"
@@ -199,23 +197,12 @@ export default {
 </script>
 
 //! ............................... STYLE ............................... //
-<style>
-.user {
-  padding: 5px;
-  border: solid 1px cyan;
-  margin-bottom: 5px;
-}
-.main {
-  padding-bottom: 10px;
-}
-
-.userContainer {
-  padding: 10px;
-  border: solid 1px blue;
-}
-</style>
+<style></style>
 
 <style scoped>
+* {
+  padding: 4px 4px;
+}
 .main {
   padding-bottom: 10px;
 }
@@ -228,5 +215,35 @@ export default {
 .user {
   padding: 5px;
   border: solid 2px red;
+}
+.inputTxt {
+  margin: 10px auto;
+  padding: 5px;
+  width: 75%;
+}
+.buttonValid {
+  margin: 10px auto;
+  padding: 5px;
+  width: 50%;
+}
+@media all and (max-width: 400px) /* <300w*/ {
+  .inputTxt,
+  .buttonValid {
+    margin: 6px auto;
+    padding: 3px;
+    width: 100%;
+  }
+}
+@media all and (min-width: 1000px) /* >1000w*/ {
+  .inputTxt {
+    margin: 10px auto;
+    padding: 5px;
+    width: 50%;
+  }
+  .buttonValid {
+    margin: 10px auto;
+    padding: 5px;
+    width: 30%;
+  }
 }
 </style>

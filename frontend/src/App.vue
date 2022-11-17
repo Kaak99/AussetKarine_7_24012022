@@ -2,22 +2,42 @@
 
 <template>
   <div id="app">
+    <div class="logoContainer">
+      <img class="logo" src="./assets/Groupomania_Logos/icon-left-font.png" />
+    </div>
     <nav>
       <!-- router-link = les liens pour la navigation via le routeur -->
-      <router-link to="/">Home</router-link>
-      <router-link to="/posts" v-if="isConnected">Posts</router-link>
-      <router-link to="/users" v-if="isConnected">Utilisateurs</router-link>
-      <router-link to="/monProfil" v-if="isConnected">Mon profil</router-link>
+      <router-link to="/"
+        ><i class="fa-sharp fa-solid fa-house navicon" title="Home"></i
+      ></router-link>
+      <router-link to="/posts" v-if="isConnected"
+        ><i
+          class="fa-sharp fa-solid fa-envelopes-bulk navicon"
+          title="Tous les messages"
+        ></i
+      ></router-link>
+      <router-link to="/users" v-if="isConnected"
+        ><i class="fa-solid fa-users navicon" title="Membres"></i
+      ></router-link>
+      <router-link to="/monProfil" v-if="isConnected"
+        ><i class="fa-regular fa-address-card navicon" title="Mon profil"></i
+      ></router-link>
       <router-link to="/deconnection" v-if="isConnected"
-        >Déconnection</router-link
-      >
-      <router-link to="/connection" v-if="!isConnected"
+        ><i
+          class="fa-sharp fa-solid fa-door-open navicon"
+          title="Se déconnecter"
+        ></i
+      ></router-link>
+      <router-link to="/connection" v-if="!isConnected" title="Se connecter"
         >Se connecter</router-link
       >
-      <router-link to="/signup" v-if="isConnected === false"
+      <router-link
+        to="/signup"
+        v-if="isConnected === false"
+        title="Créer un compte"
         >S'inscrire</router-link
       >
-      {{ isConnected }}
+      <!-- {{ isConnected }} -->
     </nav>
     <!-- <router-view /> -->
     <!-- router-view = là ou le routeur doit afficher la route choisie -->
@@ -91,7 +111,7 @@ export default {
   --primaryColor2: #d11421;
   --primaryColor3: #3b46eb;
   --primaryColor50: #2c3e50;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 * {
@@ -100,7 +120,7 @@ export default {
   box-sizing: border-box;
 }
 nav {
-  padding: 1vw 2vw;
+  padding: 0.5vw 2vw;
   display: flex;
   justify-content: center;
   flex-direction: row;
@@ -120,9 +140,9 @@ nav a.router-link-exact-active {
   color: #3b46eb;
 }
 
-/* .centerTxt {
+.centerTxt {
   text-align: center;
-} */
+}
 h1 {
   /* color: var(--main-color1); */
   color: #fd2d01;
@@ -160,6 +180,16 @@ p {
   margin: 0px auto;
   max-width: 1400px;
 }
+/* .logoContainer {
+  width: 100%;
+  height: 300px;
+} */
+
+.logo {
+  width: 30%;
+  height: 5vw;
+  object-fit: cover;
+}
 /*_______________________________________________________*/
 /*_____________responsive___@media______________________*/
 /*_____________________________________________________*/
@@ -167,7 +197,7 @@ p {
 @media all and (max-width: 300px) /* <300w*/ {
   a,
   h2 {
-    font-size: 4vw;
+    font-size: 6vw;
   }
   h1 {
     font-size: 4vw;
@@ -201,7 +231,6 @@ p {
   a,
   h2 {
     font-size: 2.8vw;
-    color: darkviolet;
   }
   h1 {
     font-size: 2.8vw;
@@ -295,3 +324,5 @@ p {
   }
 }
 </style>
+
+<style scoped></style>

@@ -43,24 +43,68 @@ exports.getOneUsers = (req, res, next) => {
   //.then( () => db.end());
 };
 
-exports.changeUserActivity = (req, res, next) => {
-  // let userTochangeActivity = { pseudo: req.body.pseudo, password: req.body.password, avatar: req.body.avatar, email: req.body.email, bio: req.body.bio, admin: req.body.admin, active: req.body.active };
-  // console.log(userTochangeActivity);
+exports.modifyUser = (req, res, next) => {
   db.promise()
-    .query(
-      " UPDATE `groupomania`.`users_table` SET active=? WHERE `idUsers`=? ",
-      [req.body.active, req.params.id]
-    )
-    //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [changedPost, req.params.id])
-
+    .query(" SELECT * FROM groupomania.users_table WHERE `idUsers`=? ", [
+      req.params.id,
+    ])
     .then(([results]) => {
-      //console.log(results);
-      res.status(200).json(results);
+      // console.log("---req---");
+      // console.log(req);
+      console.log("---req.body---");
+      console.log(req.body);
+      // console.log("---results---");
+      // console.log(results);
+      // console.log("---results[0].image---");
+      // console.log(results[0].image);
+
+      const postObject = req.file
+        ? {
+            ...req.body,
+            avatar: `${req.protocol}://${req.get("host")}/images/${
+              req.file.filename
+            }`,
+          }
+        : { ...req.body };
+      //console.log(postObject);
+      db.promise()
+        .query(
+          " UPDATE `groupomania`.`users_table` SET ?  WHERE `idUsers`=? ",
+          [postObject, req.params.id]
+        )
+        .then(([results]) => {
+          //console.log("---then1-modify---");
+          res.status(200).json(results);
+        })
+        .catch((error) => {
+          //console.log("---catch---");
+          res.status(400).json({ error: error });
+        });
     })
     .catch((error) => {
+      //console.log("---catch---");
       res.status(400).json({ error: error });
     });
 };
+
+// exports.changeUserActivity = (req, res, next) => {
+//   // let userTochangeActivity = { pseudo: req.body.pseudo, password: req.body.password, avatar: req.body.avatar, email: req.body.email, bio: req.body.bio, admin: req.body.admin, active: req.body.active };
+//   // console.log(userTochangeActivity);
+//   db.promise()
+//     .query(
+//       " UPDATE `groupomania`.`users_table` SET active=? WHERE `idUsers`=? ",
+//       [req.body.active, req.params.id]
+//     )
+//     //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [changedPost, req.params.id])
+
+//     .then(([results]) => {
+//       //console.log(results);
+//       res.status(200).json(results);
+//     })
+//     .catch((error) => {
+//       res.status(400).json({ error: error });
+//     });
+// };
 
 exports.deleteUsers = (req, res, next) => {
   //pour admin

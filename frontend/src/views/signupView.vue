@@ -192,7 +192,7 @@ export default {
       formdata.append("admin", 0);
       formdata.append("active", 1);
 
-      //console.log(formdata);
+      console.log(formdata);
       axios
         // .post(this.url, {
         //   pseudo: this.pseudo,
@@ -231,23 +231,12 @@ export default {
 </script>
 
 //! ............................... STYLE ............................... //
-<style>
-.user {
-  padding: 5px;
-  border: solid 1px cyan;
-  margin-bottom: 5px;
-}
-.main {
-  padding-bottom: 10px;
-}
-
-.userContainer {
-  padding: 10px;
-  border: solid 1px blue;
-}
-</style>
+<style></style>
 
 <style scoped>
+* {
+  padding: 0.5% 1%;
+}
 .main {
   padding-bottom: 10px;
 }

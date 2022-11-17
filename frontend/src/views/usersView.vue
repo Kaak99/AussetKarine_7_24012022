@@ -3,11 +3,11 @@
 <template>
   <div>
     <div class="users container" v-show="loading === true">
-      <h1>Tous nos utilisateurs</h1>
+      <h1>Liste de nos membres</h1>
       <!-- <p>{{ monToken }}</p> -->
-      <h2 class="centerTxt">
+      <p class="centerTxt">
         Cliquez sur un utilisateur pour détailler sa fiche
-      </h2>
+      </p>
       <div class="userContainer d-flex">
         <!--ici démarre la zone de users-->
         <!-- <div class="usersCard">
@@ -82,6 +82,9 @@ export default {
 //! ............................... STYLE ............................... //
 
 <style scoped>
+* {
+  padding: 0.5% 1%;
+}
 .main {
   padding-bottom: 1vw;
 }

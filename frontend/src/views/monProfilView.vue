@@ -8,24 +8,30 @@
         <p class="user-pseudo">{{ getApiResponse.pseudo }}</p>
 
         <img alt="avatar" class="avatar" v-bind:src="getApiResponse.avatar" />
-        <p class="user-email">Adresse email : {{ getApiResponse.email }}</p>
+        <p class="user-email">Email : {{ getApiResponse.email }}</p>
 
-        <p class="user-bio">Bio : {{ getApiResponse.bio }}</p>
-        <p class="user-time">Profil créé le : {{ getApiResponse.time }}</p>
+        <!-- <p class="user-bio">Bio : {{ getApiResponse.bio }}</p> -->
+        <p class="user-time">
+          Profil créé le : {{ format(getApiResponse.time) }}
+        </p>
 
-        <div class="profil-card-icons d-flex2s">
-          <i
+        <div class="profil-card-icons d-flex2c">
+          <!-- <i
             class="fa-solid fa-pen-to-square modifyUser"
             title="modifier le profil"
             v-on:click="modifyUser"
-          ></i>
+          ></i> -->
+          <p>Supprimer le profil :</p>
           <i
             class="fa-solid fa-trash-can deleteUser"
             title="supprimer le profil"
             v-on:click="deleteUser"
           ></i>
         </div>
-        <div class="editProfil-card">
+
+        <div class="profil-modifier d-flex">
+          <p>-- Modifier le profil --</p>
+
           <label for="userPseudo" title="au moins 5 lettres">Pseudo :</label>
           <input
             v-model="inputPseudo"
@@ -74,17 +80,6 @@
             @change="selectFile()"
             accept=".jpg,.jpeg,.png,.gif,.webp"
           />
-          <!-- <input
-            v-model="avatar"
-            type="text"
-            size="20"
-            maxlength="50"
-            class="centerTxt"
-            name="avatar"
-            id="avatar"
-            placeholder="votre avatar"
-            default="avatarAnonyme"
-          /> -->
           <p id="avatarAlert" class="userAvatarAlert">
             <i class="fas fa-times-circle"></i>Avatar incorrect
           </p>
@@ -92,11 +87,13 @@
             <i class="fas fa-check-circle"></i>Avatar accepté
           </p>
 
-          <i
-            class="fa-solid fa-paper-plane envoiPost"
-            title="envoyer le message"
-            v-on:click.prevent="envoiPost"
-          ></i>
+          <button
+            class="buttonValid envoiProfil"
+            v-on:click.prevent="modifyUser"
+          >
+            Je valide !
+          </button>
+          <p>{{ messageRetour }}</p>
         </div>
       </div>
     </section>
@@ -107,6 +104,7 @@
 <script>
 // @ is an alias to /src
 import axios from "axios";
+import dayjs from "dayjs";
 
 export default {
   name: "postsView",
@@ -119,14 +117,23 @@ export default {
       text1: "texte de test",
       thisId: localStorage.getItem("userId"),
       url: "http://localhost:3000/api",
-      urlGod: "http://localhost:3000/api/users/4",
       thisUrl: "",
       getApiResponse: {},
       inputPseudo: "",
       inputBio: "",
+      messageRetour: "",
     };
   },
   methods: {
+    format(maDate) {
+      return dayjs(maDate).format("DD/MM/YYYY HH:mm");
+      // console.log();
+    },
+    selectFile() {
+      //console.log(this.$refs.file.files[0].name);
+      this.inputFile = this.$refs.file.files[0];
+      //console.log(this.inputFile);
+    },
     showUser() {
       //console.log("affiche");
       this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
@@ -145,8 +152,63 @@ export default {
         this.loading = true;
       });
     },
-    modifyUser() {
-      //console.log("je modifie");
+
+    modifyUser: function () {
+      console.log("je modifie");
+      this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
+      let formdata = new FormData();
+      //console.log(this.inputPseudo);
+      //console.log(this.inputPassword);
+      //console.log(this.inputEmail);
+      formdata.append("pseudo", this.inputPseudo);
+      //console.log(formdata);
+      if (this.inputFile) {
+        console.log(this.inputFile);
+        formdata.append("image", this.inputFile, this.inputFile.name);
+        // } else {
+        //   formdata.append(
+        //     "image",
+        //     "http://localhost:3000/images/default.jpg",
+        //     "default.jpg"
+        //   );
+      }
+
+      formdata.append("bio", this.inputBio);
+
+      console.log(formdata);
+      axios
+        // .post(this.url, {
+        //   pseudo: this.pseudo,
+        //   password: this.mdp,
+        //   image: this.avatar,
+        //   email: this.email,
+        //   bio: this.bio,
+        //   admin: 0,
+        //   active: 1,
+        // })
+        .put(this.thisUrl, formdata)
+        // .post(this.url, { pseudo: "user60", password: "mdp" })
+        .then((response) => {
+          this.postApiResponse = response.data;
+          this.messageRetour = "profil modifié !";
+          //console.log(this.postApiResponse);
+          //console.log(this.postApiResponse.userId);
+          //console.log(this.postApiResponse.token);
+          this.loading = true;
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log(error.response.status);
+          if (error.response.status == 500) {
+            this.messageRetour = "fichier trop gros (3Mo max)!";
+          } else {
+            this.messageRetour = "une erreur est survenue";
+          }
+          //this.messageRetour = error.response.data.erreur;
+          // console.log(error.response.data);
+          //this.messageRetour = this.postApiResponse.error;
+          //this.loading = false;
+        });
     },
     deleteUser() {
       //console.log("j'efface");
@@ -184,6 +246,9 @@ export default {
 //! ............................... STYLE ............................... //
 
 <style scoped>
+* {
+  padding: 0.5% 1%;
+}
 .main {
   padding-bottom: 10px;
 }
@@ -193,12 +258,20 @@ export default {
   border: solid 1px cyan;
 }
 .avatar {
-  width: 50%;
+  width: 20%;
   max-width: 600px;
   min-width: 80px;
 }
-.main {
-  padding-bottom: 10px;
+.profil-card-icons {
+  margin: 8px;
+  padding: 5px;
+  color: red;
+  /* font-size: 2vw; */
+}
+.profil-card-icons p {
+  font-style: oblique;
+  /* font-size: 2vw; */
+  text-decoration: underline dotted red;
 }
 
 .userContainer {
@@ -216,5 +289,34 @@ export default {
 }
 .user-time {
   font-style: italic;
+}
+.profil-modifier {
+  padding: 5px;
+  border: solid 2px red;
+  width: 90%;
+  margin: 5px auto;
+}
+.envoiProfil:hover {
+  cursor: pointer;
+  color: #3b46eb;
+  /* transform: scale(1.02); */
+}
+.envoiProfil {
+  padding: 1%;
+  font-size: 2.7vw;
+  width: 50%;
+  margin: 1% auto;
+}
+@media all and (max-width: 400px) /* <300w*/ {
+  .envoiProfil {
+    padding: 1%;
+    font-size: 5vw;
+  }
+}
+@media all and (min-width: 1000px) /* >1000w*/ {
+  .envoiProfil {
+    padding: 1%;
+    font-size: 2vw;
+  }
 }
 </style>

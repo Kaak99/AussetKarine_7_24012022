@@ -3,8 +3,7 @@
 <template>
   <div>
     <div class="users container" v-show="loading === true">
-      <h1>Présentation de nos utilisateurs</h1>
-      <h2 class="centerTxt">voici la fiche de :</h2>
+      <h1>La fiche du membre :</h1>
       <div class="OneUserContainer d-flex">
         <!--ici démarre la zone de users-->
         <!-- <div class="usersCard">
@@ -120,6 +119,9 @@ export default {
 //! ............................... STYLE ............................... //
 
 <style scoped>
+* {
+  padding: 8px 4px;
+}
 .main {
   padding-bottom: 10px;
 }
@@ -139,5 +141,13 @@ export default {
 }
 .user-time {
   font-style: italic;
+}
+
+.avatar {
+  width: 20%;
+  max-width: 800px;
+  min-width: 80px;
+  max-height: 1000px;
+  object-fit: contain;
 }
 </style>
