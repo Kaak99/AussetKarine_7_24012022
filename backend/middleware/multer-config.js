@@ -31,5 +31,5 @@ const storage = multer.diskStorage({
 //on veut limiter la taille max du fichier à 3 Mo (3*1024*1024):
 module.exports = multer({
   storage: storage,
-  limits: { fileSize: 3 },
+  limits: { fileSize: 3 * 1024 * 1024 },
 }).single("image");

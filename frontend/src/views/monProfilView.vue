@@ -7,7 +7,12 @@
       <div class="profil-card">
         <p class="user-pseudo">{{ getApiResponse.pseudo }}</p>
 
-        <img alt="avatar" class="avatar" v-bind:src="getApiResponse.avatar" />
+        <img
+          alt="avatar"
+          class="avatar"
+          v-bind:src="this.inputAvatar"
+          :title="this.inputAvatar"
+        />
         <p class="user-email">Email : {{ getApiResponse.email }}</p>
 
         <!-- <p class="user-bio">Bio : {{ getApiResponse.bio }}</p> -->
@@ -21,7 +26,7 @@
             title="modifier le profil"
             v-on:click="modifyUser"
           ></i> -->
-          <p>Supprimer le profil :</p>
+          <p class="deleteProfil-text">Supprimer le profil :</p>
           <i
             class="fa-solid fa-trash-can deleteUser"
             title="supprimer le profil"
@@ -41,7 +46,6 @@
             class="centerTxt"
             name="pseudo"
             id="pseudo"
-            placeholder="votre pseudo"
             required
           />
           <p id="pseudoAlert" class="userPseudoAlert">
@@ -56,7 +60,6 @@
             v-model="inputBio"
             name="bio"
             id="bio"
-            placeholder="votre bio"
             rows="3"
             cols="30"
             maxlength="120"
@@ -68,9 +71,11 @@
             <i class="fas fa-check-circle"></i>Bio acceptée
           </p>
 
-          <label for="userAvatar" title="fichier jpg/webp/gif/png <50mo"
+          <label for="userAvatar" title="fichier jpg/webp/gif/png <3mo"
             >Avatar :</label
           >
+
+          <!-- <p class="user-avatar">{{ inputAvatar }}</p> -->
           <input
             type="file"
             class="fileButton"
@@ -80,6 +85,7 @@
             @change="selectFile()"
             accept=".jpg,.jpeg,.png,.gif,.webp"
           />
+
           <p id="avatarAlert" class="userAvatarAlert">
             <i class="fas fa-times-circle"></i>Avatar incorrect
           </p>
@@ -121,8 +127,16 @@ export default {
       getApiResponse: {},
       inputPseudo: "",
       inputBio: "",
+      inputAvatar: "",
       messageRetour: "",
     };
+  },
+  created() {
+    //console.log("hook created");
+    this.showUser();
+  },
+  mounted() {
+    //console.log("hook mounted");
   },
   methods: {
     format(maDate) {
@@ -132,29 +146,46 @@ export default {
     selectFile() {
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
-      //console.log(this.inputFile);
+      console.log("$refs.file", this.$refs.file);
+      //console.log("file", this.inputFile);
+      //this.inputAvatar = this.inputFile;
     },
+
     showUser() {
       //console.log("affiche");
-      this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
+      //this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
       // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
       //this.thisId = localStorage.getItem("userId");
       //console.log(this.thisId);
       //console.log(this.thisUrl);
       //console.log(this.url + `/users/` + this.thisId);
-      axios.get(this.url + `/users/` + this.thisId).then((response) => {
-        // axios.get(this.thisUrl).then((response) => {
-        // axios.get(`${this.url}/4`).then((response) => {
-        this.getApiResponse = response.data[0];
-        //console.log(response);
-        //console.log(this.getApiResponse);
-        //console.log(this.getApiResponse.pseudo);
-        this.loading = true;
-      });
+      axios
+        .get(this.url + `/users/` + this.thisId)
+        .then((response) => {
+          // axios.get(this.thisUrl).then((response) => {
+          // axios.get(`${this.url}/4`).then((response) => {
+          this.getApiResponse = response.data[0];
+          this.inputPseudo = this.getApiResponse.pseudo;
+          this.inputBio = this.getApiResponse.bio;
+          this.inputAvatar = this.getApiResponse.avatar;
+          // this.$refs.file.value = "123456";
+          //console.log(response);
+          //console.log(this.getApiResponse);
+          //console.log(this.getApiResponse);
+          //console.log(this.inputPseudo, this.inputBio, this.inputFile);
+          this.loading = true;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.messageRetour = error.response.data.erreur;
+          //console.log(error.response.data);
+          //this.messageRetour = this.getApi.error;
+          //this.loading = false;
+        });
     },
 
     modifyUser: function () {
-      console.log("je modifie");
+      // console.log("je modifie");
       this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
       let formdata = new FormData();
       //console.log(this.inputPseudo);
@@ -175,7 +206,7 @@ export default {
 
       formdata.append("bio", this.inputBio);
 
-      console.log(formdata);
+      // console.log(formdata);
       axios
         // .post(this.url, {
         //   pseudo: this.pseudo,
@@ -195,6 +226,7 @@ export default {
           //console.log(this.postApiResponse.userId);
           //console.log(this.postApiResponse.token);
           this.loading = true;
+          this.showUser();
         })
         .catch((error) => {
           console.log(error);
@@ -236,9 +268,6 @@ export default {
         this.showUser();
       }
     },
-  },
-  created() {
-    this.showUser();
   },
 };
 </script>
@@ -295,6 +324,10 @@ export default {
   border: solid 2px red;
   width: 90%;
   margin: 5px auto;
+}
+.fa-trash-can:hover {
+  cursor: pointer;
+  transform: scale(1.02);
 }
 .envoiProfil:hover {
   cursor: pointer;

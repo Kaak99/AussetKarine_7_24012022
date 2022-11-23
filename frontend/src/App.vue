@@ -55,9 +55,9 @@
     <!--on a défini dans routerView des props, v-bind_token et l'action connection qui recoit un parametre booelen(true à la connection, false à la deco)-->
     <nav>
       <router-link to="/about">About</router-link>
-      <router-link to="/#">Règlement interne</router-link>
+      <router-link to="/#">Rules</router-link>
       <router-link to="/#">RGPD</router-link>
-      <router-link to="/#">Nous contacter</router-link>
+      <router-link to="/#">Contact</router-link>
     </nav>
   </div>
 </template>

@@ -166,6 +166,9 @@ exports.signup = (req, res, next) => {
   console.log(req.body.password);
   console.log(" =============== pause =============== ");
   let newUser;
+  //pour createUser(=signUp), requete tout en formdata
+  // avec pseudo/password/email/bio/active/admin/image
+  // (ou rawjson possible si pas de file)
   if (!req.file) {
     console.log({ cas1noImag: req.body });
     newUser = {

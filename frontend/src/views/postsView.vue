@@ -58,9 +58,16 @@
           </div>
         </div>
         {{ idConnected }}{{ isAdmin }}{{ typeof idConnected }}
+
         <!-- .................. modale .................. -->
-        <!-- <modal-post></modal-post> -->
-        <!-- <modalPost toggleModal="Welcome here" /> -->
+        <modal-post
+          v-bind:revele="revele"
+          v-bind:toggleModale="toggleModale"
+          modalString="Welcome here"
+          @retourModalPost="refreshAll()"
+        ></modal-post>
+        <!-- <modalPost toggleModal="Welcome here" v-bind:revele="revele" /> -->
+
         <!-- ................📩 ici démarre la zone d'affichage des posts 📩......VFOR.......... -->
         <div
           v-for="post in getApiResponse"
@@ -128,13 +135,13 @@
                 </p>
               </div>
               <i
-                class="fa-solid fa-pen-to-square modifyPost"
+                class="fa-solid fa-pen-to-square modifyPostIcon"
                 title="modifier le message"
                 v-if="post.id_Users == idConnected || isAdmin === true"
                 v-on:click="modifyPost(post.idPosts)"
               ></i>
               <i
-                class="fa-solid fa-trash-can deletePost"
+                class="fa-solid fa-trash-can deletePostIcon"
                 title="supprimer le message"
                 v-if="post.id_Users == idConnected || isAdmin === true"
                 v-on:click="deletePost(post.idPosts)"
@@ -193,7 +200,10 @@ import dayjs from "dayjs";
 
 export default {
   name: "postsView",
-  components: { "comment-view": commentView },
+  components: {
+    "comment-view": commentView,
+    "modal-post": modalPost,
+  },
   // components: { "modal-post": modalPost },
 
   data() {
@@ -223,11 +233,13 @@ export default {
       allCommentedPostTab: JSON.parse(localStorage.getItem("allCommentedPost")),
       likeOnTab: [],
       likeCount: 0,
+      revele: false,
     };
   },
 
   // created() {
   mounted() {
+    // console.log("hook mounted");
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
     this.getAllPost(true); //recup tout (likes aussi)
   },
@@ -241,6 +253,21 @@ export default {
         localStorage.getItem("allCommentedPost")
       );
     },
+
+    format(maDate) {
+      return dayjs(maDate).format("DD/MM/YYYY HH:mm");
+      // console.log();
+    },
+    selectFile() {
+      //console.log(this.$refs.file.files[0].name);
+      this.inputFile = this.$refs.file.files[0];
+      //console.log(this.inputFile);
+    },
+    // selectFile: function (e) {
+    //   this.inputFile = e.target.files[0];
+    //   console.log(this.inputFile);
+    // },
+
     checkLike(idpost) {
       //regarde si user connecté a liké ce post, pour colorer le coeur en bleu ou non
       let test = 0;
@@ -297,21 +324,6 @@ export default {
       }
     },
 
-    format(maDate) {
-      return dayjs(maDate).format("DD/MM/YYYY HH:mm");
-      // console.log();
-    },
-
-    selectFile() {
-      //console.log(this.$refs.file.files[0].name);
-      this.inputFile = this.$refs.file.files[0];
-      //console.log(this.inputFile);
-    },
-    // selectFile: function (e) {
-    //   this.inputFile = e.target.files[0];
-    //   console.log(this.inputFile);
-    // },
-
     //! on like (ou retire le like)
     likeNolike(idPosts) {
       // console.log(idPosts);
@@ -348,7 +360,7 @@ export default {
         id_Posts: idPosts,
         id_Users: this.idConnected,
       };
-      console.log("newLike", newLike);
+      // console.log("newLike", newLike);
       axios
         .post(
           this.urlLikes,
@@ -362,12 +374,10 @@ export default {
           this.postApiResponse = response.data;
           this.messageRetour = "Message envoyé !";
           //console.log(this.postApiResponse);
-          console.log("getApiResponse", this.getApiResponse);
+          // console.log("getApiResponse", this.getApiResponse);
 
-          console.log(
-            this.getApiResponse.find((elt) => elt.idPosts == idPosts)
-          );
-          console.log("likeValueToSend", likeValueToSend);
+          // console.log(this.getApiResponse.find((elt) => elt.idPosts == idPosts));
+          // console.log("likeValueToSend", likeValueToSend);
           //likeValueToSend == 0 ? -1 : 1;
           // if (likeValueToSend == 0) {
           //   likeValueToSend = -1;
@@ -428,7 +438,18 @@ export default {
       }
     },
 
+    //fait apparaitre/disparaitre la modale onclick
+    toggleModale: function () {
+      this.revele = !this.revele;
+    },
     // //! on ✍️ modifie un post
+    modifyPost(idPosts) {
+      // console.log(idPosts);
+      // localStorage.setItem("modifyPost", JSON.stringify(idPosts));
+      // alert("Voulez vous vraiment modifier le message " + idPosts + " ?");
+      localStorage.setItem("modifyPostId", idPosts);
+      this.toggleModale();
+    },
     // //faire cas image ou non ; faire via modale?
     // modifyPost(idPosts) {
     //   console.log(idPosts);
@@ -451,53 +472,7 @@ export default {
         .then((response) => {
           // this.getApiResponse = null;
           this.getApiResponse = response.data;
-          console.log("getApiResponse", this.getApiResponse);
-
-          // if (premierChargement) {
-          //   //this.getApiResponse = response.data;
-          //   console.log("getApiResponse-beforemap1erChargemt", response.data);
-          //   this.getApiResponse = response.data.map((element) => {
-          //     element.commentCount = 0;
-          //     //console.log("if");
-          //     //console.log("aftermap", this.getApiResponse);
-          //     return element;
-          //   });
-          // } else {
-          //   //console.log("else");
-          //   //console.log("beforeget", this.getApiResponse);
-          //   this.getApiResponse = response.data
-          //     .map(JSON.stringify)
-          //     .map(JSON.parse);
-
-          // this.getApiResponse = Array.from(
-          //   new Set(response.data.map(JSON.stringify))
-          // ).map(JSON.parse);
-          // console.log("getApiResponse(pas1erchargemt)", this.getApiResponse);
-          //this.getApiResponse = [...this.getApiResponse, response.data]; //marchepas
-          //this.getApiResponse = response.data;
-          //this.getApiResponse = this.getApiResponse.concat(response.data);
-          //this.getApiResponse = [...this.getApiResponse, ...response.data];
-          // for (let index = 0; index < this.getApiResponse.length; index++) {
-          //   this.getApiResponse[index].commentCount =
-          //     response.data[index].commentCount;
-          // }
-          // }
-          //console.log("1/aftermap ou ensuite/afterspread", this.getApiResponse);
-          //on met à zero les nombres de like quand null (post jamais été liké-> sum=null)
-          // for (let index = 0; index < this.getApiResponse.length; index++) {
-          //   if (this.getApiResponse[index].nbLike == null) {
-          //     this.getApiResponse[index].nbLike = 0;
-          //   } else {
-          //     this.getApiResponse[index].nbLike = parseInt(
-          //       this.getApiResponse[index].nbLike
-          //     );
-          //   }
-          // }
-          // console.log(
-          //   "getApiResponse(apresCorrectionLikeNullenZero)",
-          //   this.getApiResponse
-          // );
-          //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
+          // console.log("getApiResponse", this.getApiResponse);
 
           this.timeDayjs = dayjs(this.getApiResponse.time).format(
             "DD/MM/YYYY HH:mm"
@@ -569,27 +544,6 @@ export default {
           //this.messageRetour = this.getApi.error;
           //this.loading = false;
         });
-    },
-
-    //! retourne le nombre de like d'un post//(non implémenté: à suppr)
-    getAllLikes4OnePost(idPosts) {
-      //console.log(idPosts);
-
-      const test = axios
-        .get(this.urlLikes + "/" + idPosts)
-        .then((response) => {
-          this.getLikeResponse = response.data;
-          //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
-          //console.log(this.getLikeResponse);
-          this.likeCount = response.data.length;
-          //console.log(this.likeCount);
-          return response.data.length;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      //console.log("test", test);
-      return test;
     },
   },
 };
@@ -673,8 +627,8 @@ export default {
   transform: scale(1.02);
   /* filter: brightness(1.5); */
 }
-.modifyPost,
-.deletePost {
+.modifyPostIcon,
+.deletePostIcon {
   color: #d11421;
 }
 .postImage {

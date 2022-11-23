@@ -211,9 +211,11 @@ exports.createPosts = (req, res, next) => {
       image: "",
       id_Users: postObject.id_Users,
     };
+    //si pas d'image, rawjson(ou formdata3/3) avec titre/contenu/id_Users
     //console.log({ cas1noImag: newPost });
   } else {
     //sinon (image présente)
+    //alors req= formdata4/4) avec titre/contenu/id_Users/image
     newPost = {
       titre: postObject.titre,
       contenu: postObject.contenu,
@@ -247,39 +249,6 @@ exports.createPosts = (req, res, next) => {
   //.then( () => db.end());
 };
 
-// exports.createSauce = (req, res, next) => {
-//   const sauceObject = JSON.parse(req.body.sauce);
-//   console.log("userId de demande");
-//   console.log(sauceObject.userId);
-//   console.log("idToken");
-//   console.log(req.token.userId);
-
-//   const sauce = new Sauce({
-//     userId : sauceObject.userId,
-//     name : sauceObject.name,
-//     manufacturer : sauceObject.manufacturer,
-//     description : sauceObject.description,
-//     mainPepper : sauceObject.mainPepper,
-//     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-//     heat : sauceObject.heat,
-//     likes : 0,
-//     dislikes : 0,
-//     usersLiked : [],
-//     usersDisliked : []
-//   });
-//   console.log(sauce);
-//   if (sauce.userId === req.token.userId){
-//     sauce.save()
-//     .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
-//     .catch(error => res.status(400).json(error.message));
-//     //.catch(error => res.status(400).json({error}));
-//     //.catch(error => res.status(400).json(sauce));
-//   }
-//   else{
-//     res.status(403).json({ error: "userId usurpé : impossible de créer" });
-//   }
-// };
-
 //!__         MODIFY POSTS  (PUT+id post)                    __//
 //!__ recoit : Post as raw-JSON(sans img) OR form-data { post:String,image: File }  __//
 //!__ renvoie : { message: String }                           __//
@@ -294,10 +263,10 @@ exports.modifyPosts = (req, res, next) => {
       //console.log(req);
       //console.log(results);
       //console.log(results[0].image);
-
+      // console.log(req.body);
       const postObject = req.file
         ? {
-            ...JSON.parse(req.body.post),
+            ...req.body,
             image: `${req.protocol}://${req.get("host")}/images/${
               req.file.filename
             }`,
