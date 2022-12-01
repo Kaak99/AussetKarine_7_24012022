@@ -264,14 +264,38 @@ exports.modifyPosts = (req, res, next) => {
       //console.log(results);
       //console.log(results[0].image);
       // console.log(req.body);
-      const postObject = req.file
-        ? {
-            ...req.body,
-            image: `${req.protocol}://${req.get("host")}/images/${
-              req.file.filename
-            }`,
-          }
-        : { ...req.body };
+      //suppr fichier:
+      // unlink('/tmp/hello', (err) => {
+      // if (err) throw err;
+      // console.log('successfully deleted /tmp/hello');
+      // });
+
+      // const postObject = req.file
+      //   ? {
+      //       ...req.body,
+      //       image: `${req.protocol}://${req.get("host")}/images/${
+      //         req.file.filename
+      //       }`,
+      //     }
+      //   : { ...req.body };
+
+      let postObject = {};
+      if (req.file) {
+        postObject = {
+          ...req.body,
+          image: `${req.protocol}://${req.get("host")}/images/${
+            req.file.filename
+          }`,
+        };
+      } else {
+        postObject = { ...req.body };
+        // if (results[0].image) {
+        //   const filename = results[0].image.split("/images/")[1];
+        //   fs.unlink(`images/${filename}`, () => {
+
+        //   })
+      }
+
       //console.log(postObject);
       db.promise()
         .query(

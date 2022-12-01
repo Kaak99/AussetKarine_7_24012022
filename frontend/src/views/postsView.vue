@@ -63,6 +63,7 @@
         <modal-post
           v-bind:revele="revele"
           v-bind:toggleModale="toggleModale"
+          v-bind:idPosttoModify="idPosttoModify"
           modalString="Welcome here"
           @retourModalPost="refreshAll()"
         ></modal-post>
@@ -226,7 +227,6 @@ export default {
       timeDayjs: [],
       idConnected: JSON.parse(localStorage.getItem("userId")),
       isAdmin: localStorage.getItem("admin") == 1 ? true : false,
-      postIdToComment: "5",
       showCommentsBoolean: false,
       commentShowTab: [],
       allLikedPostTab: JSON.parse(localStorage.getItem("allLikedPost")),
@@ -234,6 +234,7 @@ export default {
       likeOnTab: [],
       likeCount: 0,
       revele: false,
+      idPosttoModify: 0,
     };
   },
 
@@ -252,6 +253,7 @@ export default {
       this.allCommentedPostTab = JSON.parse(
         localStorage.getItem("allCommentedPost")
       );
+      this.idPosttoModify = 0; //on réinitialise pour forcer le watch si on click 2 fois de suite sur meme post pour modifier
     },
 
     format(maDate) {
@@ -412,8 +414,6 @@ export default {
       // this.showCommentsBoolean = true;
       this.showCommentsBoolean = !this.showCommentsBoolean;
       //console.log(this.showCommentsBoolean);
-      // this.postIdToComment = idPosts;
-      // localStorage.setItem("postId2comment", idPosts);
     },
 
     //! on 🗑️ supprime un post
@@ -447,23 +447,10 @@ export default {
       // console.log(idPosts);
       // localStorage.setItem("modifyPost", JSON.stringify(idPosts));
       // alert("Voulez vous vraiment modifier le message " + idPosts + " ?");
-      localStorage.setItem("modifyPostId", idPosts);
+      // localStorage.setItem("modifyPostId", idPosts);
+      this.idPosttoModify = idPosts;
       this.toggleModale();
     },
-    // //faire cas image ou non ; faire via modale?
-    // modifyPost(idPosts) {
-    //   console.log(idPosts);
-    //   axios
-    //     .put(this.url + "/" + idPosts)
-    //     .then((res) => {
-    //       console.log(res);
-    //       //alert("Votre message " + idPosts + " a bien été supprimé");
-    //       this.getAllPost();
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
 
     //! on 📦 récupère tous les posts from backend
     getAllPost(premierChargement = false) {
@@ -639,7 +626,7 @@ export default {
   object-fit: contain;
 }
 .postAvatar {
-  width: 2%;
+  width: 5%;
   max-width: 100px;
   min-width: 20px;
   object-fit: contain;
