@@ -80,7 +80,7 @@
             <!-- <router-link to="/posts">Posts</router-link> -->
             <!-- <p>Ecrit par {{ post.id_Users }} le {{ post.time }}</p> -->
             <div class="d-flex2c postOrigin">
-              <p>Ecrit par {{ post.pseudo }}</p>
+              <p>Par {{ post.pseudo }}</p>
               <img alt="avatar" class="postAvatar" v-bind:src="post.avatar" />
               <!-- <p>le {{ dayjs(post.time).format("DD/MM/YYYY") }}</p> 
               -->
@@ -274,27 +274,31 @@ export default {
       //regarde si user connecté a liké ce post, pour colorer le coeur en bleu ou non
       let test = 0;
       let booleanResponse = false;
-      test = this.allLikedPostTab.indexOf(idpost);
-      if (test == -1) {
-        //si idpost pas trouvé dans la liste des idpost likés
-        booleanResponse = false; //like restera noir
-      } else {
-        booleanResponse = true; //sinon sera bleu
+      if (this.allLikedPostTab) {
+        test = this.allLikedPostTab.indexOf(idpost);
+        if (test == -1) {
+          //si idpost pas trouvé dans la liste des idpost likés
+          booleanResponse = false; //like restera noir
+        } else {
+          booleanResponse = true; //sinon sera bleu
+        }
+        return booleanResponse;
       }
-      return booleanResponse;
     },
     checkComment(idpost) {
       //regarde si user connecté a commenté ce post, pour colorer le com en bleu ou non
       let test = 0;
       let booleanResponse = false;
-      test = this.allCommentedPostTab.indexOf(idpost);
-      if (test == -1) {
-        //si idpost pas trouvé dans la liste des idpost commentés
-        booleanResponse = false; //comment restera noir
-      } else {
-        booleanResponse = true; //sinon sera bleu
+      if (this.allCommentedPostTab) {
+        test = this.allCommentedPostTab.indexOf(idpost);
+        if (test == -1) {
+          //si idpost pas trouvé dans la liste des idpost commentés
+          booleanResponse = false; //comment restera noir
+        } else {
+          booleanResponse = true; //sinon sera bleu
+        }
+        return booleanResponse;
       }
-      return booleanResponse;
     },
 
     showCommentsFunction(idpost) {
@@ -330,82 +334,85 @@ export default {
     likeNolike(idPosts) {
       // console.log(idPosts);
       //si n'existe pas dans tableau des like allLikedPostTab , on le push, sinon on vire
-      const test = this.allLikedPostTab.indexOf(idPosts);
-      //console.log("start");
-      //console.log(this.commentShowTab);
-      //console.log(this.commentShowTab.indexOf(idpost));
-      let likeValueToSend;
-      if (test == -1) {
-        //pas de valeur retournée=cet idPost n'est pas stocké
-        //alors on l'ajoute au tableau et on enverra 1 au backend
-        this.allLikedPostTab.push(idPosts);
-        likeValueToSend = 1; //quand a liké
-      } else {
-        //si cet idpost etait stocké, on le retire
-        //(on ne garde que les elements qui ne sont pas idPost)
-        //et on enverra 0 au backend
-        this.allLikedPostTab = this.allLikedPostTab.filter(
-          (element) => element !== idPosts
+      if (this.allLikedPostTab) {
+        const test = this.allLikedPostTab.indexOf(idPosts);
+        //console.log("start");
+        //console.log(this.commentShowTab);
+        //console.log(this.commentShowTab.indexOf(idpost));
+        let likeValueToSend;
+        if (test == -1) {
+          //pas de valeur retournée=cet idPost n'est pas stocké
+          //alors on l'ajoute au tableau et on enverra 1 au backend
+          this.allLikedPostTab.push(idPosts);
+          likeValueToSend = 1; //quand a liké
+        } else {
+          //si cet idpost etait stocké, on le retire
+          //(on ne garde que les elements qui ne sont pas idPost)
+          //et on enverra 0 au backend
+          this.allLikedPostTab = this.allLikedPostTab.filter(
+            (element) => element !== idPosts
+          );
+          likeValueToSend = 0; //quand a retiré le like
+        }
+        //on ajuste local storage allLikedPostTab: JSON.parse(localStorage.getItem("allLikedPost"))
+        localStorage.setItem(
+          "allLikedPost",
+          JSON.stringify(this.allLikedPostTab)
         );
-        likeValueToSend = 0; //quand a retiré le like
+
+        //maintenant on envoi au back
+        const config = null;
+
+        let newLike = {
+          like: likeValueToSend, //sera forcément 0(retire le like) ou 1(ajoute le like)
+          id_Posts: idPosts,
+          id_Users: this.idConnected,
+        };
+        // console.log("newLike", newLike);
+        axios
+          .post(
+            this.urlLikes,
+            newLike,
+            config
+            // { headers: { Authorization: "Bearer " + token } }
+            // { headers: { Authorization: `Bearer ${token}` } }
+          )
+          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .then((response) => {
+            this.postApiResponse = response.data;
+            this.messageRetour = "Message envoyé !";
+            //console.log(this.postApiResponse);
+            // console.log("getApiResponse", this.getApiResponse);
+
+            // console.log(this.getApiResponse.find((elt) => elt.idPosts == idPosts));
+            // console.log("likeValueToSend", likeValueToSend);
+            //likeValueToSend == 0 ? -1 : 1;
+            // if (likeValueToSend == 0) {
+            //   likeValueToSend = -1;
+            // }
+            // console.log("likeValueToSend", likeValueToSend);
+            // this.getApiResponse.find((elt) => elt.idPosts == idPosts).nbLike +=
+            //   likeValueToSend;
+
+            //this.getApiResponse.find((elt) => elt.idPosts == idPosts)[0].nbLike = response.data.nbLike;
+            //like n'existe pas, juste nblike pour un post donné
+
+            // console.log(this.postApiResponse.userId);
+            // console.log(this.postApiResponse.token);
+            this.loading = true;
+            // console.log("j'ai liké !");
+
+            this.getAllPost();
+            //this.$router.push("/");
+          })
+          .catch((error) => {
+            console.log(error);
+            this.messageRetour = error.response.data.erreur;
+            //console.log(error.response.data);
+            //this.messageRetour = this.getApi.error;
+            //this.loading = false;
+          });
       }
-      //on ajuste local storage allLikedPostTab: JSON.parse(localStorage.getItem("allLikedPost"))
-      localStorage.setItem(
-        "allLikedPost",
-        JSON.stringify(this.allLikedPostTab)
-      );
-      //maintenant on envoi au back
-      const config = null;
-
-      let newLike = {
-        like: likeValueToSend, //sera forcément 0(retire le like) ou 1(ajoute le like)
-        id_Posts: idPosts,
-        id_Users: this.idConnected,
-      };
-      // console.log("newLike", newLike);
-      axios
-        .post(
-          this.urlLikes,
-          newLike,
-          config
-          // { headers: { Authorization: "Bearer " + token } }
-          // { headers: { Authorization: `Bearer ${token}` } }
-        )
-        // .post(this.url, { pseudo: "user60", password: "mdp" })
-        .then((response) => {
-          this.postApiResponse = response.data;
-          this.messageRetour = "Message envoyé !";
-          //console.log(this.postApiResponse);
-          // console.log("getApiResponse", this.getApiResponse);
-
-          // console.log(this.getApiResponse.find((elt) => elt.idPosts == idPosts));
-          // console.log("likeValueToSend", likeValueToSend);
-          //likeValueToSend == 0 ? -1 : 1;
-          // if (likeValueToSend == 0) {
-          //   likeValueToSend = -1;
-          // }
-          // console.log("likeValueToSend", likeValueToSend);
-          // this.getApiResponse.find((elt) => elt.idPosts == idPosts).nbLike +=
-          //   likeValueToSend;
-
-          //this.getApiResponse.find((elt) => elt.idPosts == idPosts)[0].nbLike = response.data.nbLike;
-          //like n'existe pas, juste nblike pour un post donné
-
-          // console.log(this.postApiResponse.userId);
-          // console.log(this.postApiResponse.token);
-          this.loading = true;
-          // console.log("j'ai liké !");
-
-          this.getAllPost();
-          //this.$router.push("/");
-        })
-        .catch((error) => {
-          console.log(error);
-          this.messageRetour = error.response.data.erreur;
-          //console.log(error.response.data);
-          //this.messageRetour = this.getApi.error;
-          //this.loading = false;
-        });
     },
 
     //! on montre les commentaires
@@ -441,6 +448,7 @@ export default {
     //fait apparaitre/disparaitre la modale onclick
     toggleModale: function () {
       this.revele = !this.revele;
+      !this.revele ? (this.idPosttoModify = 0) : null;
     },
     // //! on ✍️ modifie un post
     modifyPost(idPosts) {

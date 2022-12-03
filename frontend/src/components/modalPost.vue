@@ -50,19 +50,19 @@
           >
           <div class="imgSelectContainer d-flex2c">
             <img
-              v-if="this.image"
+              v-if="image"
               alt="illustration"
               class="illustration"
-              v-bind:src="this.image"
-              :title="this.image"
+              v-bind:src="image"
+              :title="image"
             />
             <button
               class="deleteImgButton"
               v-on:click="deleteImage()"
               v-if="image || inputFile"
             >
-              Aucune image</button
-            >{{ deleteImageBoolean }}
+              Aucune image
+            </button>
           </div>
           <!-- <i
             class="fa-sharp fa-solid fa-circle-xmark delImg"
@@ -131,6 +131,7 @@ export default {
     idPosttoModify: function (val) {
       this.getOnePost(val);
       console.log("watch", val);
+      this.messageRetour = "";
       //this.idPosttoModify = 0;
     },
   },
@@ -141,6 +142,7 @@ export default {
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
       console.log("this.inputFile", this.inputFile);
+      this.image = URL.createObjectURL(this.inputFile);
       // this.image = "http://localhost:3000/images/" + this.inputFile.name;
       // this.image = this.inputFile.name;
       // console.log(this.image);

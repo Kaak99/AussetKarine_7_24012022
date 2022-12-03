@@ -182,7 +182,7 @@ export default {
               console.log(error);
             });
 
-          this.$router.push("/"); //redirection vers /home
+          this.$router.push("/posts"); //redirection vers /home
         })
         .catch((error) => {
           console.log(error);

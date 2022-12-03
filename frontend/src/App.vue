@@ -54,10 +54,10 @@
     <!-- ou bien on peut appeler la fonction qui retourne isConnected = booleanTransmi au leiu de cette ronction fléchée -->
     <!--on a défini dans routerView des props, v-bind_token et l'action connection qui recoit un parametre booelen(true à la connection, false à la deco)-->
     <nav>
-      <router-link to="/about">About</router-link>
+      <router-link to="/#">About</router-link>
       <router-link to="/#">Rules</router-link>
       <router-link to="/#">RGPD</router-link>
-      <router-link to="/#">Contact</router-link>
+      <router-link to="/contact" title="nous contacter">Contact</router-link>
     </nav>
   </div>
 </template>
