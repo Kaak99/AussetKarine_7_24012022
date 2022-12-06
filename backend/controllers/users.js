@@ -14,6 +14,7 @@ const db = require("../db/db");
 
 //-----exports-----//
 
+// ! --------- getAllUsers ----------- ! //
 exports.getAllUsers = (req, res, next) => {
   //pour admin
   db.promise()
@@ -27,6 +28,7 @@ exports.getAllUsers = (req, res, next) => {
     });
 };
 
+// ! --------- getOneUsers ----------- ! //
 exports.getOneUsers = (req, res, next) => {
   db.promise()
     .query(" SELECT * FROM groupomania.users_table WHERE `idUsers`=? ", [
@@ -44,6 +46,7 @@ exports.getOneUsers = (req, res, next) => {
   //.then( () => db.end());
 };
 
+// ! --------- modifyUser ----------- ! //
 exports.modifyUser = (req, res, next) => {
   db.promise()
     .query(" SELECT * FROM groupomania.users_table WHERE `idUsers`=? ", [
@@ -53,23 +56,49 @@ exports.modifyUser = (req, res, next) => {
       // console.log("---req---");
       // console.log(req);
       console.log("---req.body---");
-      console.log("avatar dsrequete", req.file.path);
       console.log("avatar ds bdd", results[0].avatar);
-      // console.log("---results---");
-      // console.log(results);
-      // console.log("---results[0].image---");
-      // console.log(results[0].image);
+      // console.log("results[0].avatar",results[0].avatar);
+      let oldfilename = "rien";
+      if (results[0].avatar) {
+        oldfilename = results[0].avatar.split("/images/")[1];
+        console.log("oldfilename=", oldfilename);
+      }
+      //maintenant filename contient le nom du fichier de l'avatar ou "rien" s'il n'y en avait pas pas
 
-      //on definit postObject(nouveau profil à envoyer à bdd selon que fichier (req.file) ou non)
-      const postObject = req.file
-        ? {
-            ...req.body,
-            avatar: `${req.protocol}://${req.get("host")}/images/${
-              req.file.filename
-            }`,
-          }
-        : { ...req.body };
-      //console.log(postObject);
+      //on definit postObject(nouveau profil à envoyer à bdd)
+      let postObject = {};
+
+      if (req.file) {
+        console.log("cas1=user a changé son avatar (+/-texte)");
+        console.log("new avatar path(dsrequete):", req.file.path);
+        console.log("new avatar(dsrequete):", req.file.filename);
+        postObject = {
+          ...req.body,
+          avatar: `${req.protocol}://${req.get("host")}/images/${
+            req.file.filename
+          }`,
+        };
+        console.log("postObject(cas1)", postObject);
+
+        if (oldfilename === "rien" || oldfilename === "default.gif") {
+          console.log("pas de fichier à effacer");
+        } else {
+          console.log("fichier de l'avatar précédent à effacer");
+          fs.unlink(`images/${oldfilename}`, (error) => {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log("old avatar effacé");
+            }
+          });
+        }
+      } else {
+        console.log("cas2=user n'a changé que du texte");
+        postObject = { ...req.body };
+        console.log("postObject(cas2)", postObject);
+      }
+
+      //console.log("postObject",postObject);
       db.promise()
         .query(
           " UPDATE `groupomania`.`users_table` SET ?  WHERE `idUsers`=? ",
@@ -85,30 +114,12 @@ exports.modifyUser = (req, res, next) => {
         });
     })
     .catch((error) => {
-      //console.log("---catch---");
-      res.status(400).json({ error: error });
+      //console.log("---user pas trouvé---");
+      res.status(404).json({ error: error });
     });
 };
 
-// exports.changeUserActivity = (req, res, next) => {
-//   // let userTochangeActivity = { pseudo: req.body.pseudo, password: req.body.password, avatar: req.body.avatar, email: req.body.email, bio: req.body.bio, admin: req.body.admin, active: req.body.active };
-//   // console.log(userTochangeActivity);
-//   db.promise()
-//     .query(
-//       " UPDATE `groupomania`.`users_table` SET active=? WHERE `idUsers`=? ",
-//       [req.body.active, req.params.id]
-//     )
-//     //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [changedPost, req.params.id])
-
-//     .then(([results]) => {
-//       //console.log(results);
-//       res.status(200).json(results);
-//     })
-//     .catch((error) => {
-//       res.status(400).json({ error: error });
-//     });
-// };
-
+// ! --------- deleteUsers ----------- ! //
 exports.deleteUsers = (req, res, next) => {
   //pour admin
 
@@ -301,6 +312,8 @@ exports.login = (req, res, next) => {
     });
 };
 
+/* ---recuperer pour un user tous les likes & comments---*/
+
 //!__   get getAllLikes4OneUser (positif= à 1)(get + id user)   __//
 //! router.get("/allLikes/:id", usersController.getAllLikes4OneUser);
 //!__ recoit : -    (get)                         __//
@@ -377,3 +390,24 @@ exports.getAllComments4OneUser = (req, res, next) => {
 };
 
 /* ---------------fin-----------------*/
+
+/* --- user: changer droits/actif (non implémenté) ---*/
+
+// exports.changeUserActivity = (req, res, next) => {
+//   // let userTochangeActivity = { pseudo: req.body.pseudo, password: req.body.password, avatar: req.body.avatar, email: req.body.email, bio: req.body.bio, admin: req.body.admin, active: req.body.active };
+//   // console.log(userTochangeActivity);
+//   db.promise()
+//     .query(
+//       " UPDATE `groupomania`.`users_table` SET active=? WHERE `idUsers`=? ",
+//       [req.body.active, req.params.id]
+//     )
+//     //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [changedPost, req.params.id])
+
+//     .then(([results]) => {
+//       //console.log(results);
+//       res.status(200).json(results);
+//     })
+//     .catch((error) => {
+//       res.status(400).json({ error: error });
+//     });
+// };

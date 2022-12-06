@@ -236,7 +236,7 @@ p {
     font-size: 3.5vw;
   }
   .fileButton {
-    font-size: 1.4vw !important;
+    font-size: 1.9vw !important;
   }
 }
 @media all and (min-width: 300px) and (max-width: 400px) /* 300-400w*/ {
@@ -251,7 +251,7 @@ p {
     font-size: 2.8vw;
   }
   .fileButton {
-    font-size: 1.6vw !important;
+    font-size: 2.9vw !important;
   }
 }
 @media all and (min-width: 400px) and (max-width: 500px) /* 400-500w*/ {

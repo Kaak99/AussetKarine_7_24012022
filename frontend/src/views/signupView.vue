@@ -70,9 +70,12 @@
             <i class="fas fa-check-circle"></i>Bio acceptée
           </p>
 
-          <label for="userAvatar" title="fichier jpg/webp/gif/png <50mo"
+          <label for="userAvatar" title="fichier jpg/webp/gif/png <3mo"
             >Avatar :</label
           >
+          <!-- <img src="../../../backend/images/default.gif" /> -->
+          <img v-if="!image" class="avatar" src="../assets/default.gif" />
+          <img alt="avatar" class="avatar" v-bind:src="image" :title="image" />
           <input
             type="file"
             class="fileButton"
@@ -169,6 +172,7 @@ export default {
       this.messageRetour = "";
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
+      this.image = URL.createObjectURL(this.inputFile);
       //console.log(this.inputFile);
     },
     envoiInscription: function () {
@@ -259,5 +263,11 @@ export default {
 .user {
   padding: 5px;
   border: solid 2px red;
+}
+.avatar {
+  width: 20%;
+  max-width: 600px;
+  min-width: 80px;
+  margin: 2px auto;
 }
 </style>

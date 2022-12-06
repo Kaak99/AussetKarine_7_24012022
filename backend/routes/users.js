@@ -13,11 +13,12 @@ router.get("/", usersController.getAllUsers);
 router.get("/:id", usersController.getOneUsers);
 router.get("/allLikes/:id", usersController.getAllLikes4OneUser);
 router.get("/allComments/:id", usersController.getAllComments4OneUser);
-// router.put("/:id", usersController.changeUserActivity);
 
 router.post("/signup", multer, usersController.signup);
 router.post("/login", usersController.login);
-router.put("/:id", multer, usersController.modifyUser);
 router.delete("/:id", usersController.deleteUsers);
+router.put("/:id", multer, usersController.modifyUser);
+// router.put("/activity/:id", usersController.changeUserActivity);
+// router.put("/rights/:id", usersController.changeRights);
 
 module.exports = router;

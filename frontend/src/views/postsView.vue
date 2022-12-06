@@ -37,7 +37,9 @@
               placeholder="maximum 500 caractères"
               required
             ></textarea>
-
+            <label for="post-image" title="fichier jpg/webp/gif/png <3mo"
+              >Image :</label
+            >
             <div class="input-button d-flex">
               <!-- <i class="fa-solid fa-image"></i> -->
               <input
@@ -54,6 +56,7 @@
                 title="envoyer le message"
                 v-on:click.prevent="envoiPost"
               ></i>
+              <p class="messageRetour">{{ messageRetour }}</p>
             </div>
           </div>
         </div>
@@ -533,8 +536,14 @@ export default {
           //this.$router.push("/");
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
           this.messageRetour = error.response.data.erreur;
+          console.log(error.response.status);
+          if (error.response.status == 500) {
+            this.messageRetour = "fichier trop gros (3Mo max)!";
+          } else {
+            this.messageRetour = "une erreur est survenue";
+          }
           //console.log(error.response.data);
           //this.messageRetour = this.getApi.error;
           //this.loading = false;
@@ -557,11 +566,20 @@ export default {
 }
 .inputContainer {
   /* background-color: var(--main-color2); */
-  background-color: #919ba7;
+  /* background-color: #919ba7; */
+  background-color: #fbeded;
+  /* box-shadow: 1px 1px 2px 1px rgb(250, 102, 102); */
   border-radius: 10px;
   /* margin: 1vw 6vw; */
   width: 100%;
   /* margin: 10px auto; */
+}
+.writeBox {
+  padding: 5%;
+  /*border: solid 1px blue;*/
+  box-shadow: 0px 0px 10px 1px #ff0000;
+  margin-bottom: 10px;
+  background-color: #ffd7d7;
 }
 .input-button {
   align-items: center;
@@ -572,7 +590,7 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  color: #ffd7d7;
+  color: blue;
   /* font-size: 5vw; */
 }
 
@@ -580,11 +598,7 @@ export default {
   padding: 10px;
   border: solid 1px blue;
 }
-.writeBox {
-  padding: 5%;
-  border: solid 1px blue;
-  margin-bottom: 10px;
-}
+
 .post-icon {
   flex-direction: row;
   justify-content: space-evenly;

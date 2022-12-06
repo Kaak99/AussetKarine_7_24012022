@@ -305,6 +305,7 @@ export default {
   width: 20%;
   max-width: 600px;
   min-width: 80px;
+  margin: 2px auto;
 }
 .profil-card-icons {
   margin: 8px;
