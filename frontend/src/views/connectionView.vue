@@ -56,7 +56,7 @@
           <button class="buttonValid" v-on:click.prevent="envoi">
             Je me connecte !
           </button>
-          <p>{{ messageRetour }}</p>
+          <p class="messageRetour">{{ messageRetour }}</p>
         </div>
       </form>
     </div>
@@ -100,6 +100,16 @@ export default {
     };
   },
   // emits: ["update:isConnected"],
+  watch: {
+    pseudo: function (val) {
+      console.log("watch", val);
+      this.messageRetour = "";
+    },
+    mdp: function (val) {
+      console.log("watch", val);
+      this.messageRetour = "";
+    },
+  },
   methods: {
     envoi: function () {
       axios

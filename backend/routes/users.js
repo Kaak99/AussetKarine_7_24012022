@@ -6,6 +6,7 @@ const router = express.Router();
 //const checksignUp = require('../middleware/checksignUp');
 
 const multer = require("../middleware/multer-config");
+//multer necessaire si utilisation selecteur de fichier
 const usersController = require("../controllers/users");
 
 router.get("/", usersController.getAllUsers);

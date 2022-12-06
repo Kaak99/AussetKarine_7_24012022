@@ -270,6 +270,7 @@ exports.modifyPosts = (req, res, next) => {
       // console.log('successfully deleted /tmp/hello');
       // });
 
+      //Ecriture condensée ( opérateur ternaire)
       // const postObject = req.file
       //   ? {
       //       ...req.body,
@@ -279,6 +280,7 @@ exports.modifyPosts = (req, res, next) => {
       //     }
       //   : { ...req.body };
 
+      //Ecriture classique (else if)
       let postObject = {};
       if (req.file) {
         postObject = {

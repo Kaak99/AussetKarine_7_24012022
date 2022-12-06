@@ -10,8 +10,8 @@
         <img
           alt="avatar"
           class="avatar"
-          v-bind:src="this.inputAvatar"
-          :title="this.inputAvatar"
+          v-bind:src="inputAvatar"
+          :title="inputAvatar"
         />
         <p class="user-email">Email : {{ getApiResponse.email }}</p>
 
@@ -99,7 +99,7 @@
           >
             Je valide !
           </button>
-          <p>{{ messageRetour }}</p>
+          <p class="messageRetour">{{ messageRetour }}</p>
         </div>
       </div>
     </section>
@@ -138,15 +138,28 @@ export default {
   mounted() {
     //console.log("hook mounted");
   },
+  watch: {
+    inputPseudo: function (val) {
+      console.log("watch", val);
+      this.messageRetour = "";
+    },
+    inputBio: function (val) {
+      console.log("watch", val);
+      this.messageRetour = "";
+    },
+  },
   methods: {
     format(maDate) {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
       // console.log();
     },
     selectFile() {
-      //console.log(this.$refs.file.files[0].name);
+      // console.log("j'ai cliqué sur selecteur de fichier");
+      this.messageRetour = "";
       this.inputFile = this.$refs.file.files[0];
+      //console.log(this.$refs.file.files[0].name);
       console.log("$refs.file", this.$refs.file);
+      this.inputAvatar = URL.createObjectURL(this.inputFile);
       //console.log("file", this.inputFile);
       //this.inputAvatar = this.inputFile;
     },
@@ -185,7 +198,8 @@ export default {
     },
 
     modifyUser: function () {
-      // console.log("je modifie");
+      // console.log("j'ai validé les modif");
+      this.messageRetour = "";
       this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
       let formdata = new FormData();
       //console.log(this.inputPseudo);
@@ -243,8 +257,9 @@ export default {
         });
     },
     deleteUser() {
-      //console.log("j'efface");
+      //console.log("j'ai clické bouton effacer user");
       //console.log(this.thisId);
+      this.messageRetour = "";
       let confirmDelete = prompt(
         "Utilisateur " +
           this.thisId +

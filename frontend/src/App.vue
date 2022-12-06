@@ -190,6 +190,33 @@ p {
   height: 5vw;
   object-fit: cover;
 }
+.messageRetour {
+  color: red;
+  animation: insiste 800ms ease infinite;
+}
+@keyframes insiste {
+  0% {
+    opacity: 100%;
+    transform: scale(1.04);
+  }
+  25% {
+    opacity: 90%;
+    transform: scale(1.02);
+  }
+  50% {
+    opacity: 80%;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 90%;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 100%;
+    transform: scale(1.04);
+  }
+}
+
 /*_______________________________________________________*/
 /*_____________responsive___@media______________________*/
 /*_____________________________________________________*/

@@ -4,6 +4,7 @@ console.log(` --------> user-ctrl`);
 //-----imports-----//
 
 //const User = require('../models/User');//importe le modele
+const fs = require("fs"); //package fs de node(fichiers)
 const bcrypt = require("bcrypt"); //(hash mdp)
 const cryptojs = require("crypto-js"); //(chiffrage pour emails)
 const jwt = require("jsonwebtoken");
@@ -52,12 +53,14 @@ exports.modifyUser = (req, res, next) => {
       // console.log("---req---");
       // console.log(req);
       console.log("---req.body---");
-      console.log(req.body);
+      console.log("avatar dsrequete", req.file.path);
+      console.log("avatar ds bdd", results[0].avatar);
       // console.log("---results---");
       // console.log(results);
       // console.log("---results[0].image---");
       // console.log(results[0].image);
 
+      //on definit postObject(nouveau profil à envoyer à bdd selon que fichier (req.file) ou non)
       const postObject = req.file
         ? {
             ...req.body,
@@ -118,39 +121,51 @@ exports.deleteUsers = (req, res, next) => {
       //console.log(req);
       //console.log(results);
       //console.log(results[0].image);
-      if (results[0].image) {
-        const filename = results[0].image.split("/images/")[1];
+      let filename = "rien";
+      if (results[0].avatar) {
+        console.log("avatar ds bdd=", results[0].avatar);
+        filename = results[0].avatar.split("/images/")[1];
+        console.log("filename=", filename);
+      }
+      //maintenant filename contient le nom du fichier de l'avatar ou "rien" s'il n'y en a pas
+      if (filename === "rien" || filename === "default.gif") {
+        db.promise()
+          .query(" DELETE FROM groupomania.users_table WHERE `idUsers`=? ;", [
+            req.params.id,
+          ])
+          .then(([results]) => {
+            console.log("---j'efface juste le user---");
+            res.status(200).json(results);
+          })
+          .catch((error) => {
+            //console.log("---catch---");
+            res.status(500).json({ error: error });
+          });
+      } else {
+        //s'il y a bien un fichier pour l'avatar et que ce n'est pas default.gif, alors on supprime le fichier (+le user)
         fs.unlink(`images/${filename}`, () => {
           db.promise()
             .query(" DELETE FROM groupomania.users_table WHERE `idUsers`=? ;", [
               req.params.id,
             ])
             .then(([results]) => {
-              //console.log("---then1-efface---");
-
+              console.log("---j'efface fichier+user---");
               res.status(200).json(results);
             })
             .catch((error) => {
               //console.log("---catch---");
-              res.status(400).json({ error: error });
-              //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
+              res.status(500).json({ error: error });
+              //attention: ne dit rien si adresse d'une image inexistante, changer par :
+              //fs.unlink("example_file.txt", (err => {
+              //   if (err) console.log(err);
+              //   else {}
             });
         });
-      } else {
-        db.promise()
-          .query(" DELETE FROM groupomania.users_table WHERE `idUsers`=? ;", [
-            req.params.id,
-          ])
-          .then(([results]) => {
-            //console.log("---then2-efface---");
-
-            res.status(200).json(results);
-          })
-          .catch((error) => {
-            //console.log("---catch---");
-            res.status(400).json({ error: error });
-          });
       }
+    })
+    .catch((error) => {
+      //console.log("---pas trouvé cet user---");
+      res.status(404).json({ error: error });
     });
 };
 
@@ -175,7 +190,7 @@ exports.signup = (req, res, next) => {
       pseudo: req.body.pseudo,
       password: req.body.password,
       // avatar: req.body.avatar,
-      avatar: "http://localhost:3000/images/default.jpg",
+      avatar: "http://localhost:3000/images/default.gif",
       email: req.body.email,
       bio: req.body.bio,
       admin: req.body.admin,
@@ -362,64 +377,3 @@ exports.getAllComments4OneUser = (req, res, next) => {
 };
 
 /* ---------------fin-----------------*/
-
-// //! 1.signup : on va enregistrer l'utilisateur dans la bdd
-// //--------------------------------------------------------//
-// exports.signup = (req, res, next) => {
-//   // ! chiffrage email ! //
-//   const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, process.env.CRYPTOJS_EMAIL).toString();//si chiffrage mail!
-//   //console.log(process.env.CRYPTOJS_EMAIL);
-//   // ! hashage mdp ! //
-//   bcrypt.hash(req.body.password, 10)
-//     .then(hash => {
-//       const user = new User({
-//         email: emailCryptoJs,//si chiffrage mail!
-//         //email: req.body.email,//si pas de chiffrage mail!
-//         password: hash
-//       });
-//       user.save()
-//         .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-//         .catch(error => res.status(400).json({ error }));
-//     })
-//     .catch(error => res.status(500).json({ error }));
-// };
-
-// //! 2.login :
-// //---------//
-// exports.login = (req, res, next) => {
-//   // ! chiffrage email ! //
-//   const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, process.env.CRYPTOJS_EMAIL).toString();//si chiffrage mail!
-//   //console.log(emailCryptoJs);
-//   // ! chercher si email existe dans bdd ! //
-//   User.findOne({email:emailCryptoJs})//si chiffrage mail!
-//   //User.findOne({ email: req.body.email })//si pas de chiffrage mail!
-//     .then(user => {
-//       if (!user) {//si pas trouvé
-//         return res.status(401).json({ error: 'Utilisateur non trouvé !' });
-//       }
-//       // ! si trouvé //
-//       bcrypt.compare(req.body.password, user.password)
-//         .then(valid => {
-//           if (!valid) {//si mdp pas valide
-//             return res.status(401).json({ error: 'Mot de passe incorrect !' });
-//           }
-//           // ! si mdp valide //
-//           console.log("welcome back user "+user._id+" !");
-//           res.status(200).json({
-//             userId: user._id,
-//             token: jwt.sign(
-//               { userId: user._id },
-//               process.env.JWT_SECRET_TOKEN,
-//               { expiresIn: '24h' }
-//               //token contenant userId+expiration est envoyé au front lors login (= le "payload")
-//               //token contiendra avec le payload(=info à transmettre) un header et une signature
-//               // (signature=issue de [header+payload], au moyen de clé privé JWT_SECRET_TOKEN )
-//               //ainsi toute modif de [header+payload] va changer la signature
-//               //(token controle 1/ l'authentification (remplace login/mdp) 2/son intégrité)
-//             )
-//           });
-//         })
-//         .catch(error => res.status(500).json({ error }));
-//     })
-//     .catch(error => res.status(500).json({ error }));
-// };

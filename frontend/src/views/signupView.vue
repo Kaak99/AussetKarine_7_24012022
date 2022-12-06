@@ -123,7 +123,7 @@
           <button class="buttonValid" v-on:click.prevent="envoiInscription">
             Je m'inscris !
           </button>
-          <p>{{ messageRetour }}</p>
+          <p class="messageRetour">{{ messageRetour }}</p>
         </div>
       </form>
     </div>
@@ -165,11 +165,15 @@ export default {
   },
   methods: {
     selectFile() {
+      // console.log("j'ai cliqué sur selecteur de fichier");
+      this.messageRetour = "";
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
       //console.log(this.inputFile);
     },
     envoiInscription: function () {
+      // console.log("j'ai cliqué sur bouton inscription");
+      this.messageRetour = "";
       let formdata = new FormData();
       //console.log(this.inputPseudo);
       //console.log(this.inputPassword);
@@ -187,7 +191,7 @@ export default {
         //     "default.jpg"
         //   );
       }
-      formdata.append("id_Users", localStorage.getItem("userId"));
+      //formdata.append("id_Users", localStorage.getItem("userId"));
       formdata.append("bio", this.inputBio);
       formdata.append("admin", 0);
       formdata.append("active", 1);
@@ -221,7 +225,13 @@ export default {
         .catch((error) => {
           console.log(error);
           this.messageRetour = error.response.data.erreur;
-          console.log(error.response.data);
+          //console.log(error.response.data);
+          console.log(error.response.status);
+          if (error.response.status == 500) {
+            this.messageRetour = "fichier trop gros (3Mo max)!";
+          } else {
+            this.messageRetour = "une erreur est survenue";
+          }
           //this.messageRetour = this.postApiResponse.error;
           //this.loading = false;
         });

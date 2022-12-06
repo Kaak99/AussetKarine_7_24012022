@@ -87,7 +87,7 @@
           >
             Validez
           </button>
-          <p>{{ messageRetour }}</p>
+          <p class="messageRetour">{{ messageRetour }}</p>
         </div>
       </div>
     </div>
