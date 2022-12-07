@@ -34,19 +34,8 @@ exports.getAllPosts = (req, res, next) => {
 
   db.promise()
     .query(
-      // "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
-
       "SELECT p.idPosts, p.titre, p.contenu, p.image, p.time, p.nombreComment, p.nombreLike, p.id_Users, u.pseudo, u.avatar, u.admin FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
-
-      // "SELECT p.*,u.*,sum(l.like) as nbLike FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts GROUP BY l.id_Posts ORDER BY p.time DESC;"
-
-      // "SELECT p.*,u.*, l.nbLike FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join (select t.id_Posts, sum(t.like) as nbLike from groupomania.likes_table as t GROUP BY t.id_Posts) as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;"//befor nblike&com ds bdd
-
-      // "SELECT * FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
     )
-    // "SELECT *.p, *.u , COUNT(like) FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;")//notworking
-    // "SELECT * FROM groupomania.posts_table  as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.id_Users=l.id_Users ORDER BY p.time DESC;")//notworking
-    // "SELECT p.idPosts p.titre p.contenu p.image p.time u.pseudo u.avatar u.active u.admin l.like  FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers left join groupomania.likes_table as l on p.idPosts=l.id_Posts ORDER BY p.time DESC;")
 
     .then(([results]) => {
       //renvoi un tableau d'objets results
@@ -259,43 +248,65 @@ exports.modifyPosts = (req, res, next) => {
       req.params.id,
     ])
     .then(([results]) => {
-      //console.log("---then-find---");
-      //console.log(req);
-      //console.log(results);
-      //console.log(results[0].image);
-      // console.log(req.body);
-      //suppr fichier:
-      // unlink('/tmp/hello', (err) => {
-      // if (err) throw err;
-      // console.log('successfully deleted /tmp/hello');
-      // });
-
-      //Ecriture condensée ( opérateur ternaire)
-      // const postObject = req.file
-      //   ? {
-      //       ...req.body,
-      //       image: `${req.protocol}://${req.get("host")}/images/${
-      //         req.file.filename
-      //       }`,
-      //     }
-      //   : { ...req.body };
-
-      //Ecriture classique (else if)
+      //console.log("req", req);
+      console.log("req.file", req.file);
+      console.log("req.body", req.body);
+      console.log("req.params", req.params);
+      let oldfilename = "rien";
+      if (results[0].image) {
+        oldfilename = results[0].image.split("/images/")[1];
+        console.log("oldfilename=", oldfilename);
+      }
+      //maintenant filename contient le nom du fichier de l'image (ou "rien" si pas d'image")
       let postObject = {};
       if (req.file) {
+        console.log("cas1:fichier image reçu");
         postObject = {
           ...req.body,
           image: `${req.protocol}://${req.get("host")}/images/${
             req.file.filename
           }`,
         };
+        console.log("postObject", postObject);
+        //console.log("fichier de l'image précédente à effacer");
+        if (oldfilename !== "rien") {
+          fs.unlink(`images/${oldfilename}`, (error) => {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log("old image effacée");
+            }
+          });
+        }
+      } else if (req.body.noImg === "") {
+        console.log("cas2:virer toute image");
+        postObject = {
+          titre: req.body.titre,
+          contenu: req.body.contenu,
+          id_Users: req.body.id_Users,
+          image: req.body.noImg,
+        };
+        console.log("postObject", postObject);
+        console.log("fichier de l'image précédente à effacer");
+        if (oldfilename !== "rien") {
+          console.log("oldfilename", oldfilename);
+          fs.unlink(`images/${oldfilename}`, (error) => {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log("old image effacée");
+            }
+          });
+        }
       } else {
-        postObject = { ...req.body };
-        // if (results[0].image) {
-        //   const filename = results[0].image.split("/images/")[1];
-        //   fs.unlink(`images/${filename}`, () => {
-
-        //   })
+        console.log("cas3:juste texte modifié");
+        // postObject = { ...req.body };
+        postObject = {
+          titre: req.body.titre,
+          contenu: req.body.contenu,
+          id_Users: req.body.id_Users,
+        };
+        console.log("postObject", postObject);
       }
 
       //console.log(postObject);
@@ -312,6 +323,10 @@ exports.modifyPosts = (req, res, next) => {
           //console.log("---catch---");
           res.status(400).json({ error: error });
         });
+    })
+    .catch((error) => {
+      //console.log("---post pas trouvé---");
+      res.status(404).json({ error: error });
     });
 };
 

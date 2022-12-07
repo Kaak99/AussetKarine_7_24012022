@@ -56,10 +56,12 @@
               v-bind:src="image"
               :title="image"
             />
+
             <button
               class="deleteImgButton"
               v-on:click="deleteImage()"
               v-if="image || inputFile"
+              title="supprimer image de profil"
             >
               Aucune image
             </button>
@@ -143,8 +145,7 @@ export default {
       this.inputFile = this.$refs.file.files[0];
       console.log("this.inputFile", this.inputFile);
       this.image = URL.createObjectURL(this.inputFile);
-      // this.image = "http://localhost:3000/images/" + this.inputFile.name;
-      // this.image = this.inputFile.name;
+      //this.inputFile = URL.createObjectURL(this.inputFile);
       // console.log(this.image);
     },
     deleteImage() {
@@ -152,7 +153,7 @@ export default {
       console.log("passe dans methode deleteImage()");
       this.deleteImageBoolean = true;
       this.image = ""; //suppr affichage image initiale
-      this.inputFile = ""; //suppr envoi image choisie
+      this.inputFile = null; //suppr envoi image choisie
       this.$refs.file.value = ""; //suppr texte de image choisie
       //effacer image et selection fichier?
     },
@@ -192,13 +193,14 @@ export default {
       formdata.append("titre", this.modifiedTitle);
       formdata.append("contenu", this.modifiedPostContent);
       console.log("inputFile", this.inputFile);
+      console.log("type inputFile", typeof this.inputFile);
       if (this.inputFile) {
         console.log("dans if this.inputFile");
         formdata.append("image", this.inputFile, this.inputFile.name);
       }
       if (this.deleteImageBoolean) {
         console.log("dans if this.deleteImageBoolean");
-        formdata.append("image", "");
+        formdata.append("noImg", ""); //pour dire d'effacer le fichier image d'avant
         this.deleteImageBoolean = false;
         console.log(this.deleteImageBoolean);
         this.$refs.file.value = "";
@@ -230,6 +232,7 @@ export default {
           this.putApiResponse = response.data;
           console.log(this.putApiResponse);
           this.messageRetour = "Message envoyé !";
+          this.inputFile = null;
           //this.$emit("retourModalPost", this.revele);
           //this.$emit("retourModalPost", this.toggleModale());
           this.toggleModale();
