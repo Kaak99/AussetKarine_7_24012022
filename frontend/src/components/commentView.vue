@@ -8,7 +8,7 @@
       <label for="comment-write" title="maximum 500 caractères"></label>
       <textarea
         v-model="inputComment"
-        rows="4"
+        rows="5"
         cols="1"
         maxlength="500"
         class="centerTxt input-text"
@@ -295,16 +295,25 @@ export default {
   margin: 1vw 3vw;
 }
 .envoiComment {
-  padding: 1vw 1vw 1.2vw 1vw;
+  /* padding: 1vw 1vw 1.2vw 1vw; */
+  transform: scale(1.02);
   color: #3b46eb;
+}
+.newComment {
+  background-color: #fbeded;
+  border-radius: 8px;
+  margin: 15px;
+  padding: 2px;
 }
 .bloc-comments {
   width: 96%;
   margin: 2px auto;
 }
 .comment {
-  border: solid 1px green;
+  /* border: solid 1px blue; */
   margin-bottom: 1vw;
+  border-radius: 4px;
+  box-shadow: 0px 0px 5px 1px rgb(255, 129, 129);
 }
 .commentOrigin {
   margin: 5px 0;

@@ -46,4 +46,11 @@ img {
 
 <script>
 // @ is an alias to /src
+
+// export default {
+//   name: "HomeView",
+//   created() {
+//     this.$router.push("/posts"); //redirection vers /home
+//   },
+// };
 </script>

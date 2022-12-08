@@ -241,7 +241,7 @@ export default {
     };
   },
 
-  // created() {
+  // created() {},
   mounted() {
     // console.log("hook mounted");
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
@@ -383,7 +383,7 @@ export default {
           // .post(this.url, { pseudo: "user60", password: "mdp" })
           .then((response) => {
             this.postApiResponse = response.data;
-            this.messageRetour = "Message envoyé !";
+            //this.messageRetour = "Message envoyé !";
             //console.log(this.postApiResponse);
             // console.log("getApiResponse", this.getApiResponse);
 
@@ -596,7 +596,8 @@ export default {
 
 .postContainer {
   padding: 10px;
-  border: solid 1px blue;
+  /* border: solid 1px blue; */
+  /* box-shadow: 0px 0px 2px 1px blue; */
 }
 
 .post-icon {
@@ -605,8 +606,9 @@ export default {
   margin-bottom: 1.6vw;
 }
 .post {
-  border: solid 1px red;
+  /* border: solid 1px red; */
   margin: 1.4vw 0;
+  box-shadow: 0px 0px 5px 1px #ff0000;
 }
 .postOrigin {
   margin: 5px 0;

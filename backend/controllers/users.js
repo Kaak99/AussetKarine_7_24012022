@@ -227,10 +227,11 @@ exports.signup = (req, res, next) => {
   // let newUserHashedPassword="";
 
   //*si chiffrage mail!//
-  newUser.email = cryptojs
-    .HmacSHA256(req.body.email, process.env.CRYPTOJS_EMAIL)
-    .toString();
+  // newUser.email = cryptojs
+  //   .HmacSHA256(req.body.email, process.env.CRYPTOJS_EMAIL)
+  //   .toString();
   //newUserHashedPassword=bcrypt.hash(req.body.password, 10);//marche pas (promise returned)
+
   //* hashage mdp ET sav dans bdd (non dissociable) //
   bcrypt
     .hash(req.body.password, 10)

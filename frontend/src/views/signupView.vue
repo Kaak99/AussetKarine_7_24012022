@@ -24,7 +24,7 @@
             class="centerTxt"
             name="email"
             id="email"
-            placeholder="votre email"
+            placeholder="votre email d'entreprise"
             required
           />
           <p id="emailAlert" class="userEmailAlert">
@@ -43,7 +43,7 @@
             class="centerTxt"
             name="pseudo"
             id="pseudo"
-            placeholder="votre pseudo"
+            placeholder="choisissez un pseudo"
             required
           />
           <p id="pseudoAlert" class="userPseudoAlert">
@@ -58,7 +58,8 @@
             v-model="inputBio"
             name="bio"
             id="bio"
-            placeholder="votre bio"
+            placeholder="parlez de vous..."
+            class="centerTxt"
             rows="3"
             cols="30"
             maxlength="120"
@@ -74,8 +75,19 @@
             >Avatar :</label
           >
           <!-- <img src="../../../backend/images/default.gif" /> -->
-          <img v-if="!image" class="avatar" src="../assets/default.gif" />
-          <img alt="avatar" class="avatar" v-bind:src="image" :title="image" />
+          <img
+            v-if="!image"
+            class="avatar"
+            src="../assets/default.gif"
+            title="changez le maintenant ou plus tard"
+          />
+          <img
+            v-if="image"
+            alt="avatar"
+            class="avatar"
+            v-bind:src="image"
+            :title="image"
+          />
           <input
             type="file"
             class="fileButton"

@@ -111,11 +111,11 @@ export default {
     },
   },
   methods: {
-    envoi: function () {
-      axios
+    async envoi() {
+      await axios
         .post(this.url, { pseudo: this.pseudo, password: this.mdp })
         // .post(this.url, { pseudo: "user60", password: "mdp" })
-        .then((response) => {
+        .then(async (response) => {
           this.postApiResponse = response.data;
           this.userId = this.postApiResponse.userId;
           this.messageRetour = "Connexion";
@@ -139,7 +139,7 @@ export default {
           this.$emit("connection", true); //fait remonter à app.vue l'action connection avec le parametre true
 
           //on stocke dans le storage un tableau avec tous les idpost likés par cet userId
-          axios
+          await axios
             .get(this.urlallLikes + "/" + this.userId)
             .then((response) => {
               this.getApiResponseAllLikes = response.data;
@@ -166,7 +166,7 @@ export default {
             });
 
           //on stocke dans le storage un tableau avec tous les idpost commentés par cet userId
-          axios
+          await axios
             .get(this.urlallComments + "/" + this.userId)
             .then((response) => {
               this.getApiResponseAllComments = response.data;
