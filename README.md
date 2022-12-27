@@ -1,4 +1,4 @@
-#Projet 7 : Groupomania
+# Projet 7 : Groupomania
 Création d'un réseau social d'entreprise
 Formation developpeur web d'OpenClassrooms  
   
@@ -13,37 +13,37 @@ Utilisation de NodeJs, Express et Mysql pour le backend
 ![mit](https://img.shields.io/apm/l/aa)
 
 -----------
-##Pour installer le projet :
+## Pour installer le projet :
 
 Installer  @vue/cli
 Installer le Systême de gestion de base de données mySql
 installer la version xxx de node js 
 installer la version xxx du gestionnaire de paquets npm
 
-###Frontend:
+### Frontend:
 AussetKarine_7_24012022 > frontend
 ```npm install```
 
-###Backend:
+### Backend:
 AussetKarine_7_24012022 > backend
 ```npm install```
 
 -----------
-##Pour lancer le projet :
+## Pour lancer le projet :
 
-###Frontend:
+### Frontend:
 AussetKarine_7_24012022 > frontend
 Pour lancer le server, tapez ```npm run serve```
 
-###Backend:
+### Backend:
 AussetKarine_7_24012022 > backend
 Pour lancer le server, tapez ```npm run start```
 
-###Base de donnée :
+### Base de donnée :
 
 
 -----------
-##Présentation du projet :
+## Présentation du projet :
 
 Le projet consiste à construire un réseau social interne pour les employés de Groupomania. Le but de cet outil est de faciliter les interactions entre collègues. 
 
