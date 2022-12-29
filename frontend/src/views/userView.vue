@@ -56,9 +56,11 @@ export default {
     return {
       loading: false,
       getApiResponse: "",
-      url: "http://localhost:3000/api",
+      // url: "http://localhost:3000/api",
+      url: `${process.env.VUE_APP_URL_SERVEUR}/api`,
       urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
-      oneUrl: "http://localhost:3000/api/user/{{getApiResponse.idUsers}}",
+      //oneUrl: "http://localhost:3000/api/user/{{getApiResponse.idUsers}}",
+      oneUrl: `${process.env.VUE_APP_URL_SERVEUR}/api/user/{{getApiResponse.idUsers}}`,
     };
   },
   created() {

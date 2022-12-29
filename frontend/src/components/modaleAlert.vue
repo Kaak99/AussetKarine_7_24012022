@@ -114,9 +114,7 @@ export default {
       messageRetour: "",
       idConnected: JSON.parse(localStorage.getItem("userId")),
       postId: JSON.parse(localStorage.getItem("modifyPostId")),
-      //url: "http://localhost:3000/api",
       url: `${process.env.VUE_APP_URL_SERVEUR}/api`,
-      //oneUrl: "http://localhost:3000/api/posts/postId",
       oneUrl: `${process.env.VUE_APP_URL_SERVEUR}/api/posts/postId`,
       getApiResponse: "", //recupere le getOnePost
       putApiResponse: "", //recupere le modifyPost

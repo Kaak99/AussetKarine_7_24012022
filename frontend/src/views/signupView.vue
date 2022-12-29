@@ -15,7 +15,9 @@
             <p class="user-bio">presentation</p>
           </div>
          </div> -->
-          <label for="userEmail" title="format email & >5car">Email :</label>
+          <label for="userEmail" title="format email & 5-50 caractères"
+            >Email :</label
+          >
           <input
             v-model="inputEmail"
             type="text"
@@ -34,7 +36,9 @@
             <i class="fas fa-check-circle"></i>Email accepté
           </p>
 
-          <label for="userPseudo" title="au moins 5 lettres">Pseudo :</label>
+          <label for="userPseudo" title="chiffres et lettres (3-25)"
+            >Pseudo :</label
+          >
           <input
             v-model="inputPseudo"
             type="text"
@@ -44,6 +48,7 @@
             name="pseudo"
             id="pseudo"
             placeholder="choisissez un pseudo"
+            pattern="\w*"
             required
           />
           <p id="pseudoAlert" class="userPseudoAlert">
@@ -53,7 +58,9 @@
             <i class="fas fa-check-circle"></i>Pseudo accepté
           </p>
 
-          <label for="userBio" title="au moins 5 lettres">Bio :</label>
+          <label for="userBio" title="chiffres et lettres (200 max)"
+            >Bio :</label
+          >
           <textarea
             v-model="inputBio"
             name="bio"
@@ -115,7 +122,9 @@
             <i class="fas fa-check-circle"></i>Avatar accepté
           </p>
 
-          <label for="userPassword" title="au moins 6 caractères"
+          <label
+            for="userPassword"
+            title="Au moins 8 caractères dont chiffre et lettre"
             >Mot de passe :</label
           >
           <input
@@ -167,7 +176,8 @@ export default {
     return {
       compteur: 0,
       loading: true,
-      url: "http://localhost:3000/api/users/signup",
+      //url: "http://localhost:3000/api/users/signup",
+      url: `${process.env.VUE_APP_URL_SERVEUR}/api/users/signup`,
       postApiResponse: "",
       messageRetour: "",
       inputEmail: "",

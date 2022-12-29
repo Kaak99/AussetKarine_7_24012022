@@ -106,32 +106,32 @@ exports.modifyLikes = (req, res, next) => {
           console.log("probleme somme du nombre des likes");
           res.status(400).json({ error: error });
         });
-      // db.promise()
-      //   .query(
-      //     " UPDATE `groupomania`.`posts_table` SET `nombreLike`=`nombreLike`+?  WHERE `idPosts`=? ",
-      //     [variab, idPosts]
-      //   )
-
-      //   .then(([results]) => {
-      //     console.log("on ajuste le nombreLike");
-      //     res.status(200).json(results);
-      //   })
-      //   .catch((error) => {
-      //     console.log("probleme mise à jour nombreLike");
-      //     res.status(400).json({ error: error });
-      //   });
-
-      // " UPDATE `groupomania`.`posts_table` SET `nombreLike`+=?  WHERE `idLikes`=? ",
-      //   [likeUpdate, likeId];
-      //soit on fait une requete pour que nombreLike =somme avec SUM
-      //select l.id_Posts, sum(l.like) as nbLike from groupomania.likes_table as l GROUP BY l.id_Posts;
-      //res.status(200).json(results);
     })
     .catch((error) => {
       console.log("probleme lors recherche existence champ like");
       res.status(400).json({ error: error });
     });
 };
+// db.promise()
+//   .query(
+//     " UPDATE `groupomania`.`posts_table` SET `nombreLike`=`nombreLike`+?  WHERE `idPosts`=? ",
+//     [variab, idPosts]
+//   )
+
+//   .then(([results]) => {
+//     console.log("on ajuste le nombreLike");
+//     res.status(200).json(results);
+//   })
+//   .catch((error) => {
+//     console.log("probleme mise à jour nombreLike");
+//     res.status(400).json({ error: error });
+//   });
+
+// " UPDATE `groupomania`.`posts_table` SET `nombreLike`+=?  WHERE `idLikes`=? ",
+//   [likeUpdate, likeId];
+//soit on fait une requete pour que nombreLike =somme avec SUM
+//select l.id_Posts, sum(l.like) as nbLike from groupomania.likes_table as l GROUP BY l.id_Posts;
+//res.status(200).json(results);
 
 //!__   get LIKE'S number for ONE POST(GET /count/:id du post) __//
 //!__ recoit : -                             __//

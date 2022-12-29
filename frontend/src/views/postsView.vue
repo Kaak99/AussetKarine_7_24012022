@@ -186,6 +186,7 @@
       <p class="problemeServeur centerTxt">
         Il semble que le serveur soit indisponible.
       </p>
+      {{ url }}
       <p class="problemeServeur centerTxt">
         Ou bien qu'il y ait un problème sur votre connexion internet
       </p>
@@ -216,9 +217,12 @@ export default {
       loading: false,
       compteur: 0,
       text1: "texte de test",
-      url: "http://localhost:3000/api/posts",
-      urlLikes: "http://localhost:3000/api/likes",
-      urlLikesCount: "http://localhost:3000/api/likes/count",
+      // url: "http://localhost:3000/api/posts",
+      url: `${process.env.VUE_APP_URL_SERVEUR}/api/posts`,
+      // urlLikes: "http://localhost:3000/api/likes",
+      urlLikes: `${process.env.VUE_APP_URL_SERVEUR}/api/likes`,
+      // urlLikesCount: "http://localhost:3000/api/likes/count",
+      urlLikesCount: `${process.env.VUE_APP_URL_SERVEUR}/api/likes/count`,
       getApiResponse: "", //reponse du getAllPost
       postApiResponse: "", //ce qu'on envoi au back(new post)
       getLikeResponse: "", //recup like

@@ -55,8 +55,9 @@ export default {
       loading: false,
       getApi: "",
       number1: 2,
-      url: "http://localhost:3000/api/users",
-      urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
+      // url: "http://localhost:3000/api/users",
+      url: `${process.env.VUE_APP_URL_SERVEUR}/api/users`,
+      // urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
       monImport: "",
       monToken: this.token,
     };

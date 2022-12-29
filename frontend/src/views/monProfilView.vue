@@ -37,7 +37,9 @@
         <div class="profil-modifier d-flex">
           <p>-- Modifier le profil --</p>
 
-          <label for="userPseudo" title="au moins 5 lettres">Pseudo :</label>
+          <label for="userPseudo" title="chiffres et lettres (3-25)"
+            >Pseudo :</label
+          >
           <input
             v-model="inputPseudo"
             type="text"
@@ -55,7 +57,9 @@
             <i class="fas fa-check-circle"></i>Pseudo accepté
           </p>
 
-          <label for="userBio" title="au moins 5 lettres">Bio :</label>
+          <label for="userBio" title="chiffres et lettres (200 max)"
+            >Bio :</label
+          >
           <textarea
             v-model="inputBio"
             name="bio"
@@ -122,7 +126,8 @@ export default {
       compteur: 0,
       text1: "texte de test",
       thisId: localStorage.getItem("userId"),
-      url: "http://localhost:3000/api",
+      //url: "http://localhost:3000/api",
+      url: `${process.env.VUE_APP_URL_SERVEUR}/api`,
       thisUrl: "",
       getApiResponse: {},
       inputPseudo: "",
@@ -200,7 +205,8 @@ export default {
     modifyUser: function () {
       // console.log("j'ai validé les modif");
       this.messageRetour = "";
-      this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
+      // this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
+      this.thisUrl = `${process.env.VUE_APP_URL_SERVEUR}/${this.thisId}`;
       let formdata = new FormData();
       //console.log(this.inputPseudo);
       //console.log(this.inputPassword);
