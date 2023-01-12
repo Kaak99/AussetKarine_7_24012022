@@ -16,6 +16,72 @@ const fs = require("fs"); //package fs de node
 //tout faire en mode post du coté de la requete front/postman?? (pas de put, il faut choisir)
 //autre solution : à chaque nouveau user ou nouveau post, la base sql cree un champ like à valeur à zero par defaut (e tdans ce cas là, juste un put necessaire; mais va gonfler++ la bdd inutilement pour des likes qui ne seraient jamais créés sans ça)
 
+exports.modifyLikes = async (req, res, next) => {
+  try {
+    const [results1] = await db
+      .promise()
+      .query(
+        " SELECT * FROM groupomania.likes_table WHERE `id_Users`=? AND `id_Posts`=?",
+        [req.body.id_Users, req.body.id_Posts]
+      );
+    console.log("blabla");
+    let likeId; //id du like, à trouver dans bdd (si existe déjà) grace à id_user/post fourni dans req
+    let likeUpdate = req.body.like; //la valeur qu'on veut donner au like d'apres req
+    let idPosts = req.body.id_Posts;
+    if (results1.length === 0) {
+      //si aucun resultat, alors on va creer ce champ like (verifier avant que user et post id existant bien?de toute facon erreur sinon->catch du create)
+      console.log("pas de resultats, on crée!");
+      // CREATION du champ like
+      let newLike = {
+        like: likeUpdate, //sera forcément 0 ou 1 (tester!!)
+        id_Posts: req.body.id_Posts,
+        id_Users: req.body.id_Users,
+      };
+      await db
+        .promise()
+        .query(" INSERT INTO `groupomania`.`likes_table` SET ? ", newLike);
+      console.log("on crée le like");
+    } else {
+      console.log(results1);
+      //si ce champ like existe, alors on recup l'idLikes et on peut update notre like
+      likeId = results1[0].idLikes; //il ne doit en trouver qu'un mais ma requete renvoie toujours un tableau d'ou le [0] pour prendrer le 1er
+      console.log("l'id du like est :");
+      console.log(likeId);
+      console.log("la nouvelle valeur du like est :");
+      console.log(likeUpdate);
+      //MODIFICATION de notre champ like
+      await db
+        .promise()
+        .query(
+          " UPDATE `groupomania`.`likes_table` SET `like`=?  WHERE `idLikes`=? ",
+          [likeUpdate, likeId]
+        );
+      console.log(" on a bien update le like ");
+    }
+    const [results2] = await db
+      .promise()
+      .query(
+        " select sum(l.like) as nbLike from groupomania.likes_table as l WHERE id_Posts=?;",
+        [idPosts]
+      );
+    console.log("on a fait la somme du nombre des likes");
+    console.log(results2[0].nbLike);
+    const [results3] = await db
+      .promise()
+      .query(
+        " UPDATE `groupomania`.`posts_table` SET `nombreLike`=?  WHERE `idPosts`=? ",
+        [results2[0].nbLike, idPosts]
+      );
+    console.log("on a (créé/modifié puis) update nombreLike (postsTable)");
+    res.status(200).json(results3);
+  } catch (error) {
+    console.log("probleme pour crer le like");
+    res.status(400).json({ error: error });
+  }
+};
+
+/*
+//-ex modifyLikes-  
 exports.modifyLikes = (req, res, next) => {
   //console.log(req);
   //console.log("modifyLike!");
@@ -45,7 +111,8 @@ exports.modifyLikes = (req, res, next) => {
 
           .then(([results]) => {
             console.log("on crée le like");
-            res.status(200).json(results);
+            //res.status(200).json(results);
+            //next();
           })
           .catch((error) => {
             console.log("probleme pour crer le like");
@@ -67,7 +134,8 @@ exports.modifyLikes = (req, res, next) => {
           )
           .then(([results0]) => {
             console.log(" on a bien update le like ");
-            res.status(200).json(results);
+            // res.status(200).json(results);
+            // next();
           })
           .catch((error) => {
             console.log("on a eu un probleme quand update du like");
@@ -94,7 +162,9 @@ exports.modifyLikes = (req, res, next) => {
             )
 
             .then(([results]) => {
-              console.log("on a update nombreLike (postsTable)");
+              console.log(
+                "on a (créé/modifié puis) update nombreLike (postsTable)"
+              );
               res.status(200).json(results);
             })
             .catch((error) => {
@@ -112,6 +182,10 @@ exports.modifyLikes = (req, res, next) => {
       res.status(400).json({ error: error });
     });
 };
+
+*/
+//-ex modifyLikes-
+
 // db.promise()
 //   .query(
 //     " UPDATE `groupomania`.`posts_table` SET `nombreLike`=`nombreLike`+?  WHERE `idPosts`=? ",

@@ -1,22 +1,12 @@
 // tests (à retirer)
 console.log(` --------> posts-ctrl`);
 
-//const Sauce = require('../models/Sauce');
 const db = require("../db/db");
 const fs = require("fs"); //package fs de node
 
 //!__          GET ALL POSTS (GET)            __//
 //!__ recoit : -                              __//
 //!__ renvoie : tableau de toutes les posts  __//
-// exports.getAllSauces = (req, res, next) => {
-//   Sauce.find()
-//   .then((sauce) => {
-//     res.status(200).json(sauce);
-//   })
-//   .catch((error) => {
-//     res.status(400).json({ error: error });
-//   });
-// };
 
 exports.getAllPosts = (req, res, next) => {
   /*db.query(
@@ -108,38 +98,62 @@ exports.deletePosts = (req, res, next) => {
       //console.log(req);
       //console.log(results);
       //console.log(results[0].image);
-      if (results[0].image) {
-        const filename = results[0].image.split("/images/")[1];
-        fs.unlink(`images/${filename}`, () => {
+      const useridDuPost = results[0].id_Users;
+      db.promise()
+        .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
+          useridDuPost,
+        ])
+        .then(([results]) => {
+          const useridDuPostAdminStatus = results[0];
+          console.log("results[0]", results[0]);
+        })
+        .catch((error) => {
+          error: "admin pas trouvé";
+        });
+
+      console.log("results[0].id_Users", results[0].id_Users);
+      console.log("req.token.userId", req.token.userId);
+      if (results[0].id_Users === req.token.userId) {
+        console.log(
+          "l'id de la requete correspond à l'id du createur du post (ou est un admin)"
+        );
+        if (results[0].image) {
+          const filename = results[0].image.split("/images/")[1];
+          fs.unlink(`images/${filename}`, () => {
+            db.promise()
+              .query(
+                " DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;",
+                [req.params.id]
+              )
+              .then(([results]) => {
+                //console.log("---then1-efface---");
+
+                res.status(200).json(results);
+              })
+              .catch((error) => {
+                //console.log("---catch---");
+                res.status(400).json({ error: error });
+                //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
+              });
+          });
+        } else {
           db.promise()
             .query(" DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;", [
               req.params.id,
             ])
             .then(([results]) => {
-              //console.log("---then1-efface---");
+              //console.log("---then2-efface---");
 
               res.status(200).json(results);
             })
             .catch((error) => {
               //console.log("---catch---");
               res.status(400).json({ error: error });
-              //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
             });
-        });
+        }
       } else {
-        db.promise()
-          .query(" DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;", [
-            req.params.id,
-          ])
-          .then(([results]) => {
-            //console.log("---then2-efface---");
-
-            res.status(200).json(results);
-          })
-          .catch((error) => {
-            //console.log("---catch---");
-            res.status(400).json({ error: error });
-          });
+        console.log("! pas autorisé (vous n'etes pas l'auteur ni admin) !");
+        res.status(401).json({ error: "unauthorized" });
       }
     });
 };

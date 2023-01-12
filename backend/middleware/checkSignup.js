@@ -4,10 +4,14 @@ console.log(` --------> checksignUp`);
 // (et checker l'entrée mail)
 
 module.exports = (req, res, next) => {
-  const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  // const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const regexEmail = /^\w+([\.-]?\w+)*@gpm.fr$/;
+  const regexPseudo = /\w{2,25}$/;
+  const regexBio = /\w{0,200}$/;
+  //const regexAvatar = /\w{0,25}$/;
   const regexPassword =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
+  console.log("req.body", req.body);
   if (regexEmail.test(req.body.email)) {
     if (regexPassword.test(req.body.password)) {
       console.log("email match et password aussi");

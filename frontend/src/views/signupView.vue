@@ -15,7 +15,7 @@
             <p class="user-bio">presentation</p>
           </div>
          </div> -->
-          <label for="userEmail" title="format email & 5-50 caractères"
+          <label for="userEmail" title="identifiant@gpm.fr (30 caractères max)"
             >Email :</label
           >
           <input

@@ -255,6 +255,17 @@ export default {
   computed: {},
 
   methods: {
+    configAxios() {
+      let jwtoken = localStorage.getItem("userToken");
+      //console.log(jwtoken);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtoken}`,
+        },
+      };
+      return config;
+    },
     refreshAll() {
       this.getAllPost();
       this.allCommentedPostTab = JSON.parse(
@@ -380,9 +391,8 @@ export default {
           .post(
             this.urlLikes,
             newLike,
-            config
+            this.configAxios()
             // { headers: { Authorization: "Bearer " + token } }
-            // { headers: { Authorization: `Bearer ${token}` } }
           )
           // .post(this.url, { pseudo: "user60", password: "mdp" })
           .then((response) => {
@@ -436,8 +446,15 @@ export default {
       if (
         confirm("Voulez vous vraiment supprimer le message " + idPosts + " ?")
       ) {
+        let jwtoken = localStorage.getItem("userToken");
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtoken}`,
+          },
+        };
         axios
-          .delete(this.url + "/" + idPosts)
+          .delete(this.url + "/" + idPosts, config)
           //url: http://localhost:3000/api/posts
           .then((res) => {
             //console.log(res);
@@ -469,8 +486,17 @@ export default {
 
     //! on 📦 récupère tous les posts from backend
     getAllPost(premierChargement = false) {
+      // let jwtoken = localStorage.getItem("userToken");
+      // //console.log(jwtoken);
+      // const config = {
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${jwtoken}`,
+      //   },
+      // };
+      // //console.log(config);
       axios
-        .get(this.url)
+        .get(this.url, this.configAxios())
         .then((response) => {
           // this.getApiResponse = null;
           this.getApiResponse = response.data;
@@ -505,21 +531,13 @@ export default {
       }
       formdata.append("id_Users", this.idConnected);
       //console.log(formdata);
-
-      // const config = {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // };
-      // console.log(config);
-      const config = null;
+      //const config = null;
 
       axios
         .post(
           this.url,
           formdata,
-          config
+          this.configAxios()
           // { headers: { Authorization: "Bearer " + token } }
           // { headers: { Authorization: `Bearer ${token}` } }
         )

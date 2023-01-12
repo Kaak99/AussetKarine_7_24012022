@@ -14,7 +14,7 @@ router.get("/:id", usersController.getOneUsers);
 router.get("/allLikes/:id", usersController.getAllLikes4OneUser);
 router.get("/allComments/:id", usersController.getAllComments4OneUser);
 
-router.post("/signup", checksignUp, multer, usersController.signup);
+router.post("/signup", multer, checksignUp, usersController.signup);
 router.post("/login", usersController.login);
 router.delete("/:id", usersController.deleteUsers);
 router.put("/:id", multer, usersController.modifyUser);
