@@ -67,7 +67,7 @@ export default {
 
   mounted() {
     axios
-      .get(this.url)
+      .get(this.url, this.configAxios())
       .then((response) => {
         this.getApi = response.data;
         this.loading = true;
@@ -76,6 +76,20 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+  },
+
+  methods: {
+    configAxios() {
+      let jwtoken = localStorage.getItem("userToken");
+      //console.log(jwtoken);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtoken}`,
+        },
+      };
+      return config;
+    },
   },
 };
 </script>

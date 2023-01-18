@@ -13,7 +13,9 @@
           v-bind:src="inputAvatar"
           :title="inputAvatar"
         />
-        <p class="user-email">Email : {{ getApiResponse.email }}</p>
+        <p class="user-email" title="identifiant@gpm.fr (30 caractères max)">
+          Email : {{ getApiResponse.email }}
+        </p>
 
         <!-- <p class="user-bio">Bio : {{ getApiResponse.bio }}</p> -->
         <p class="user-time">
@@ -154,6 +156,17 @@ export default {
     },
   },
   methods: {
+    configAxios() {
+      let jwtoken = localStorage.getItem("userToken");
+      //console.log(jwtoken);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtoken}`,
+        },
+      };
+      return config;
+    },
     format(maDate) {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
       // console.log();
@@ -178,7 +191,7 @@ export default {
       //console.log(this.thisUrl);
       //console.log(this.url + `/users/` + this.thisId);
       axios
-        .get(this.url + `/users/` + this.thisId)
+        .get(this.url + `/users/` + this.thisId, this.configAxios())
         .then((response) => {
           // axios.get(this.thisUrl).then((response) => {
           // axios.get(`${this.url}/4`).then((response) => {
@@ -237,7 +250,7 @@ export default {
         //   admin: 0,
         //   active: 1,
         // })
-        .put(this.thisUrl, formdata)
+        .put(this.thisUrl, formdata, this.configAxios())
         // .post(this.url, { pseudo: "user60", password: "mdp" })
         .then((response) => {
           this.postApiResponse = response.data;
@@ -273,7 +286,7 @@ export default {
       );
       if (confirmDelete === "oui") {
         axios
-          .delete(this.url + `/users/` + this.thisId)
+          .delete(this.url + `/users/` + this.thisId, this.configAxios())
           .then((res) => {
             //console.log(res);
             localStorage.clear();

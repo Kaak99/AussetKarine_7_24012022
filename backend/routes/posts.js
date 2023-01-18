@@ -8,6 +8,7 @@ const auth = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 //multer necessaire si utilisation selecteur de fichier
 const postsController = require("../controllers/posts");
+const checkPost = require("../middleware/checkPost");
 
 /*
 router.get("/", postsController.getAllPosts);
@@ -18,9 +19,9 @@ router.delete("/:id", postsController.deletePosts);
 */
 
 router.get("/", auth, postsController.getAllPosts);
-router.post("/", auth, multer, postsController.createPosts); //multer ici
+router.post("/", auth, multer, checkPost, postsController.createPosts); //multer ici
 router.get("/:id", auth, postsController.getOnePosts);
-router.put("/:id", auth, multer, postsController.modifyPosts); //multer ici
+router.put("/:id", auth, multer, checkPost, postsController.modifyPosts); //multer ici
 router.delete("/:id", auth, postsController.deletePosts);
 
 // router.posts('/:id/thumb', postsController.thumbPosts);

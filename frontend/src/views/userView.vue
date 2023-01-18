@@ -67,10 +67,21 @@ export default {
     this.getOneUser();
   },
   methods: {
+    configAxios() {
+      let jwtoken = localStorage.getItem("userToken");
+      //console.log(jwtoken);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtoken}`,
+        },
+      };
+      return config;
+    },
     getOneUser() {
       //console.log(this.$route.params.id);
       axios
-        .get(this.url + `/users/` + this.$route.params.id)
+        .get(this.url + `/users/` + this.$route.params.id, this.configAxios())
         .then((response) => {
           this.getApiResponse = response.data[0];
           // this.getApiResponse = response.data;

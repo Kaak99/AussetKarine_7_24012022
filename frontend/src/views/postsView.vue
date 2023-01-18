@@ -454,7 +454,7 @@ export default {
           },
         };
         axios
-          .delete(this.url + "/" + idPosts, config)
+          .delete(this.url + "/" + idPosts, this.configAxios())
           //url: http://localhost:3000/api/posts
           .then((res) => {
             //console.log(res);

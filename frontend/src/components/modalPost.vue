@@ -141,6 +141,17 @@ export default {
   },
 
   methods: {
+    configAxios() {
+      let jwtoken = localStorage.getItem("userToken");
+      //console.log(jwtoken);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtoken}`,
+        },
+      };
+      return config;
+    },
     selectFile() {
       console.log("passe dans methode selectFile()");
       //console.log(this.$refs.file.files[0].name);
@@ -166,7 +177,7 @@ export default {
       // let postId2 = localStorage.getItem("modifyPostId");
       // console.log(postId2);
       axios
-        .get(this.url + `/posts/` + postId)
+        .get(this.url + `/posts/` + postId, this.configAxios())
         .then((response) => {
           this.getApiResponse = response.data;
           // this.getApiResponse = response.data;
@@ -225,7 +236,7 @@ export default {
         .put(
           modifyUrl,
           formdata,
-          config
+          this.configAxios()
           // { headers: { Authorization: "Bearer " + token } }
           // { headers: { Authorization: `Bearer ${token}` } }
         )

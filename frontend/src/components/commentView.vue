@@ -116,6 +116,17 @@ export default {
   //   this.getAllComments4OnePost();
   // },
   methods: {
+    configAxios() {
+      let jwtoken = localStorage.getItem("userToken");
+      //console.log(jwtoken);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtoken}`,
+        },
+      };
+      return config;
+    },
     format(maDate) {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
       // console.log();
@@ -127,7 +138,7 @@ export default {
       //console.log(this.getApiResponse);
       //console.log("recup Commentaires");
       axios
-        .get(this.url + "/" + this.idFromPost)
+        .get(this.url + "/" + this.idFromPost, this.configAxios())
         .then((response) => {
           this.getApiResponse = response.data;
           //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
@@ -158,7 +169,7 @@ export default {
         )
       ) {
         axios
-          .delete(this.url + "/" + idComment + "/" + idPost)
+          .delete(this.url + "/" + idComment + "/" + idPost, this.configAxios())
           .then((res) => {
             //console.log(res);
             //alert("Votre message " + idComment + " a bien été supprimé");
@@ -204,7 +215,11 @@ export default {
       let modif = prompt("Modifiez votre commentaire:", textComment);
       if (modif) {
         axios
-          .put(this.url + "/" + idComment, { contenu: modif })
+          .put(
+            this.url + "/" + idComment,
+            { contenu: modif },
+            this.configAxios()
+          )
           .then((res) => {
             //console.log(res);
             //alert("Votre message " + idPosts + " a bien été supprimé");
@@ -259,7 +274,7 @@ export default {
         .post(
           this.url,
           bodyParameters,
-          config
+          this.configAxios()
           // { headers: { Authorization: "Bearer " + token } }
           // { headers: { Authorization: `Bearer ${token}` } }
         )
