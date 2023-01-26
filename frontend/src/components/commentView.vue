@@ -10,18 +10,33 @@
         v-model="inputComment"
         rows="5"
         cols="1"
-        maxlength="500"
+        maxlength="256"
         class="centerTxt input-text"
         name="inputText"
         id="inputText"
         placeholder="Écrivez ici votre commentaire"
         required
       ></textarea>
+      <p
+        id="commentAlert"
+        class="inputCommentAlert"
+        v-if="!testRegex(/^.{1,256}$/, this.inputComment)"
+      >
+        1 à 256 caractères
+      </p>
+      <p
+        id="commentOk"
+        class="inputCommentValid"
+        v-if="testRegex(/^.{1,256}$/, this.inputComment)"
+      >
+        Taille OK(2-256car)
+      </p>
       <i
         class="fa-solid fa-paper-plane envoiComment"
         title="envoyer!"
         v-on:click.prevent="envoiComment"
       ></i>
+      <p class="messageRetour">{{ messageRetour }}</p>
     </div>
 
     <!-- ........💬 ici démarre la zone d'affichage des commentaires 💬....VFOR.... -->
@@ -100,6 +115,7 @@ export default {
       commentApiResponse: "",
       comCount: 0,
       hasCommentedThisPost: false,
+      messageRetour: "",
     };
   },
   //created() {
@@ -116,6 +132,12 @@ export default {
   //   this.getAllComments4OnePost();
   // },
   methods: {
+    testRegex(laRegex, varATester) {
+      //const regex = new RegExp(laRegex);
+      const valeurTest = laRegex.test(varATester);
+      console.log("valeurTest", valeurTest);
+      return valeurTest;
+    },
     configAxios() {
       let jwtoken = localStorage.getItem("userToken");
       //console.log(jwtoken);
@@ -226,7 +248,8 @@ export default {
             this.getAllComments4OnePost();
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.message);
+            this.messageRetour = error.message;
           });
       } else {
         this.getAllComments4OnePost();
@@ -293,8 +316,9 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-          this.messageRetour = error.response.data.erreur;
-          console.log(error.response.data);
+          //this.messageRetour = error.response.data.erreur;
+          this.messageRetour = error.response.data.message;
+          console.log(error.response.data.message);
           //this.messageRetour = this.getApi.error;
           //this.loading = false;
         });

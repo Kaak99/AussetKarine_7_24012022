@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
   const regexBio = /^.{0,200}$/;
   //const regexAvatar = /\w{0,25}$/;
   const regexPassword =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-z^A-Z^0-9]).{8,}$/;
   console.log("req.body", req.body);
   if (regexEmail.test(req.body.email)) {
     console.log("email match");

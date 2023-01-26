@@ -39,7 +39,7 @@
         <div class="profil-modifier d-flex">
           <p>-- Modifier le profil --</p>
 
-          <label for="userPseudo" title="chiffres et lettres (3-25)"
+          <label for="userPseudo" title="chiffres _ lettres (2à25)"
             >Pseudo :</label
           >
           <input
@@ -52,16 +52,22 @@
             id="pseudo"
             required
           />
-          <p id="pseudoAlert" class="userPseudoAlert">
+          <p
+            id="pseudoAlert"
+            class="userPseudoAlert"
+            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo) === false"
+          >
             <i class="fas fa-times-circle"></i>Pseudo incorrect
           </p>
-          <p id="pseudoOk" class="userPseudoValid">
+          <p
+            id="pseudoOk"
+            class="userPseudoOK"
+            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo) === true"
+          >
             <i class="fas fa-check-circle"></i>Pseudo accepté
           </p>
 
-          <label for="userBio" title="chiffres et lettres (200 max)"
-            >Bio :</label
-          >
+          <label for="userBio" title="0-200 caractères)">Bio</label>
           <textarea
             v-model="inputBio"
             name="bio"
@@ -69,16 +75,25 @@
             rows="3"
             cols="30"
             maxlength="120"
+            class="centerTxt"
           />
-          <p id="bioAlert" class="userBioAlert">
+          <p
+            id="bioAlert"
+            class="userBioAlert"
+            v-if="!testRegex(/^.{0,200}$/, this.inputBio)"
+          >
             <i class="fas fa-times-circle"></i>Bio incorrecte
           </p>
-          <p id="bioOk" class="userBioValid">
+          <p
+            id="bioOk"
+            class="userBioValid"
+            v-if="testRegex(/^.{0,200}$/, this.inputBio)"
+          >
             <i class="fas fa-check-circle"></i>Bio acceptée
           </p>
 
           <label for="userAvatar" title="fichier jpg/webp/gif/png <3mo"
-            >Avatar :</label
+            >Avatar</label
           >
 
           <!-- <p class="user-avatar">{{ inputAvatar }}</p> -->
@@ -92,12 +107,12 @@
             accept=".jpg,.jpeg,.png,.gif,.webp"
           />
 
-          <p id="avatarAlert" class="userAvatarAlert">
+          <!-- <p id="avatarAlert" class="userAvatarAlert">
             <i class="fas fa-times-circle"></i>Avatar incorrect
           </p>
           <p id="avatarOk" class="userAvatarValid">
             <i class="fas fa-check-circle"></i>Avatar accepté
-          </p>
+          </p> -->
 
           <button
             class="buttonValid envoiProfil"
@@ -156,6 +171,12 @@ export default {
     },
   },
   methods: {
+    testRegex(laRegex, varATester) {
+      //const regex = new RegExp(laRegex);
+      const valeurTest = laRegex.test(varATester);
+      console.log("valeurTest", valeurTest);
+      return valeurTest;
+    },
     configAxios() {
       let jwtoken = localStorage.getItem("userToken");
       //console.log(jwtoken);
@@ -219,7 +240,7 @@ export default {
       // console.log("j'ai validé les modif");
       this.messageRetour = "";
       // this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
-      this.thisUrl = `${process.env.VUE_APP_URL_SERVEUR}/${this.thisId}`;
+      this.thisUrl = `${this.url}/users/${this.thisId}`;
       let formdata = new FormData();
       //console.log(this.inputPseudo);
       //console.log(this.inputPassword);
@@ -315,7 +336,12 @@ export default {
 .main {
   padding-bottom: 10px;
 }
-
+/* .userPseudoAlert {
+  display: none;
+}
+.userPseudoOK {
+  display: none;
+} */
 .post {
   padding: 5px;
   border: solid 1px cyan;

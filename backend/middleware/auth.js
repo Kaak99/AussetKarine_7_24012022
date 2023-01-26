@@ -19,6 +19,7 @@ module.exports = (req, res, next) => {
     // ! bonus : on stocke token decodé dans req pour y avoir acces + tard//
     req.token = jwt.verify(token, process.env.JWT_SECRET_TOKEN);
     const userId = req.token.userId;
+    //on verifie que l'userId du demandeur correspond bien à celui annoncé dans le payload
     if (req.body.userId && req.body.userId !== userId) {
       throw "Invalid user ID";
     } else {

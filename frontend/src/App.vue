@@ -192,7 +192,8 @@ p {
 }
 .messageRetour {
   color: red;
-  animation: insiste 800ms ease infinite;
+  opacity: 55%;
+  animation: insiste 800ms ease 6;
 }
 @keyframes insiste {
   0% {

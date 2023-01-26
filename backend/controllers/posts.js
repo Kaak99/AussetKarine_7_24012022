@@ -84,99 +84,64 @@ db.promise().query(' SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ', 
 //! router.delete('/:id', postsController.deletePosts) //
 //!__ renvoie { message: String }         __//
 
-exports.deletePosts = (req, res, next) => {
-  //if (sauce.userId === req.token.userId){
-  //   if
-  // const filename = sauce.imageUrl.split('/images/')[1];
-  // fs.unlink(`images/${filename}`, () => {
-  db.promise()
-    .query(" SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ", [
-      req.params.id,
-    ])
-    .then(([results]) => {
-      //console.log("---then-find---");
-      //console.log(req);
-      //console.log(results);
-      //console.log(results[0].image);
-      const useridDuPost = results[0].id_Users;
-      db.promise()
-        .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
-          useridDuPost,
-        ])
-        .then(([results]) => {
-          const useridDuPostAdminStatus = results[0];
-          console.log("results[0]", results[0]);
-        })
-        .catch((error) => {
-          error: "admin pas trouvé";
+exports.deletePosts = async (req, res, next) => {
+  try {
+    const [RES_InfoPostADelete] = await db
+      .promise()
+      .query(" SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ", [
+        req.params.id,
+      ]);
+    const idDuPost = req.params.id; //id du post à delete
+    const useridDuCreateurDuPost = RES_InfoPostADelete[0].id_Users; //createur du post à delete
+    const useridDuDemandeur = req.token.userId; //Demandeur de requete delete
+
+    const [RES_adminStatusDuDemandeur] = await db
+      .promise()
+      .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
+        useridDuDemandeur,
+      ]);
+    const adminStatusDuDemandeur = RES_adminStatusDuDemandeur[0].admin;
+    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+    //on vérifie légitimité du demandeur
+    if (
+      useridDuCreateurDuPost === useridDuDemandeur ||
+      adminStatusDuDemandeur === 1
+    ) {
+      console.log("admis");
+      //cas 1 = avec une image (il va falloir la supprimer diu serveur)
+      if (RES_InfoPostADelete[0].image) {
+        const filename = RES_InfoPostADelete[0].image.split("/images/")[1];
+        fs.unlink(`images/${filename}`, async () => {
+          const [RES_DeletePostAvecImage] = await db
+            .promise()
+            .query(" DELETE FROM groupomania.posts_table WHERE `idPosts`=?;", [
+              idDuPost,
+            ]);
+          console.log("delete post avec image");
+          res.status(200).json(RES_DeletePostAvecImage);
         });
-
-      console.log("results[0].id_Users", results[0].id_Users);
-      console.log("req.token.userId", req.token.userId);
-      if (results[0].id_Users === req.token.userId) {
-        console.log(
-          "l'id de la requete correspond à l'id du createur du post (ou est un admin)"
-        );
-        if (results[0].image) {
-          const filename = results[0].image.split("/images/")[1];
-          fs.unlink(`images/${filename}`, () => {
-            db.promise()
-              .query(
-                " DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;",
-                [req.params.id]
-              )
-              .then(([results]) => {
-                //console.log("---then1-efface---");
-
-                res.status(200).json(results);
-              })
-              .catch((error) => {
-                //console.log("---catch---");
-                res.status(400).json({ error: error });
-                //attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
-              });
-          });
-        } else {
-          db.promise()
-            .query(" DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;", [
-              req.params.id,
-            ])
-            .then(([results]) => {
-              //console.log("---then2-efface---");
-
-              res.status(200).json(results);
-            })
-            .catch((error) => {
-              //console.log("---catch---");
-              res.status(400).json({ error: error });
-            });
-        }
+        //cas 2 = pas d' image
       } else {
-        console.log("! pas autorisé (vous n'etes pas l'auteur ni admin) !");
-        res.status(401).json({ error: "unauthorized" });
+        const [RES_DeletePostSansImage] = await db
+          .promise()
+          .query(" DELETE FROM groupomania.posts_table WHERE `idPosts`=? ;", [
+            idDuPost,
+          ]);
+        console.log("delete post sans image");
+        res.status(200).json(RES_DeletePostSansImage);
       }
-    });
+    } else {
+      console.log("pas admis");
+      res.status(401).json({
+        error: "! pas autorisé (vous n'etes pas l'auteur ni admin) !",
+      });
+    }
+  } catch (error) {
+    console.log("probleme lors delete du commentaire");
+    res.status(400).json({ error: error });
+  }
 };
-
-// exports.deleteSauce = (req, res, next) => {
-//   // console.log("idToken");
-//   // console.log(req.token.userId);
-//   Sauce.findOne({ _id: req.params.id })
-//     .then(sauce => {
-//       if (sauce.userId === req.token.userId){
-//       const filename = sauce.imageUrl.split('/images/')[1];
-//       fs.unlink(`images/${filename}`, () => {
-//         Sauce.deleteOne({ _id: req.params.id })
-//           .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
-//           .catch(error => res.status(400).json({ error }));
-//       });
-//       }
-//       else{
-//         res.status(403).json({message : "vous n'etes pas autorisé à effacer cette sauce"});//car la sauce d'un autre!
-//       }
-//     })
-//     .catch(error => res.status(500).json(error.message));
-// };
+//attention: ne dit rien si adresse d'une image inéxistante(efface post, 200)
 
 //!__        CREATE POSTS (POST)              __//
 //!__ recoit : as JSON OR { post: String, image: File } ?  __//
@@ -256,23 +221,43 @@ exports.createPosts = (req, res, next) => {
 //!__ recoit : Post as raw-JSON(sans img) OR form-data { post:String,image: File }  __//
 //!__ renvoie : { message: String }                           __//
 
-exports.modifyPosts = (req, res, next) => {
-  db.promise()
-    .query(" SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ", [
-      req.params.id,
-    ])
-    .then(([results]) => {
-      //console.log("req", req);
-      console.log("req.file", req.file);
-      console.log("req.body", req.body);
-      console.log("req.params", req.params);
+exports.modifyPosts = async (req, res, next) => {
+  try {
+    const [RES_InfoPostAModifier] = await db
+      .promise()
+      .query(" SELECT * FROM groupomania.posts_table WHERE `idPosts`=? ", [
+        req.params.id,
+      ]);
+    const idDuPost = req.params.id; //id du post à modifier
+    const useridDuCreateurDuPost = RES_InfoPostAModifier[0].id_Users; //createur du post à modifier
+    const useridDuDemandeur = req.token.userId; //Demandeur de requete modifier
+    console.log("idDuPost", idDuPost);
+    console.log("useridDuCreateurDuPost.body", useridDuCreateurDuPost);
+    console.log("useridDuDemandeur", useridDuDemandeur);
+
+    const [RES_adminStatusDemandeur] = await db
+      .promise()
+      .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
+        useridDuDemandeur,
+      ]);
+    const adminStatusDuDemandeur = RES_adminStatusDemandeur[0].admin;
+    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+
+    if (
+      useridDuCreateurDuPost === useridDuDemandeur ||
+      adminStatusDuDemandeur === 1
+    ) {
+      console.log(
+        "admis (demandeur est soit le createur du post, soit un admin)"
+      );
       let oldfilename = "rien";
-      if (results[0].image) {
-        oldfilename = results[0].image.split("/images/")[1];
+      if (RES_InfoPostAModifier[0].image) {
+        oldfilename = RES_InfoPostAModifier[0].image.split("/images/")[1];
         console.log("oldfilename=", oldfilename);
       }
-      //maintenant filename contient le nom du fichier de l'image (ou "rien" si pas d'image")
+      //maintenant filename contient le nom du fichier initial de l'image (ou "rien" si pas d'image")
       let postObject = {};
+      //cas1: un fichier image a été envoyé
       if (req.file) {
         console.log("cas1:fichier image reçu");
         postObject = {
@@ -293,7 +278,7 @@ exports.modifyPosts = (req, res, next) => {
           });
         }
       } else if (req.body.noImg === "") {
-        console.log("cas2:virer toute image");
+        console.log("cas2:virer toute image"); //on na pas envoyé d'image mais en + on veut supprimer l'ancienne
         postObject = {
           titre: req.body.titre,
           contenu: req.body.contenu,
@@ -322,72 +307,34 @@ exports.modifyPosts = (req, res, next) => {
         };
         console.log("postObject", postObject);
       }
-
+      delete postObject.id_Users;
+      //on ne veut pas inscrire id_users car si moderation, remplace nom user par nom moderateur
       //console.log(postObject);
-      db.promise()
+      const RES_updatePost = await db
+        .promise()
         .query(
           " UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ",
           [postObject, req.params.id]
         )
-        .then(([results]) => {
+        .then(([RES_updatePost]) => {
           //console.log("---then1-modify---");
-          res.status(200).json(results);
+          res.status(200).json(RES_updatePost);
         })
         .catch((error) => {
           //console.log("---catch---");
           res.status(400).json({ error: error });
         });
-    })
-    .catch((error) => {
-      //console.log("---post pas trouvé---");
-      res.status(404).json({ error: error });
-    });
-};
-
-/*modify(sans fichier)--------------
-exports.modifyPosts = (req, res, next) => {
-  //console.log(req);
-  // let changedPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image, userid:req.body.userid };
-  let changedPost = { titre: req.body.titre, contenu: req.body.contenu, image: req.body.image};
-  console.log(changedPost);
-  // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
-  //db.promise().query(' INSERT INTO `groupomania`.`posts_table` SET ? ', changedPost)
-  //db.promise().query(' UPDATE `groupomania`.`posts_table` SET ? WHERE ', changedPost)
-  // db.promise().query(' UPDATE `groupomania`.`posts_table` SET titre=?, contenu=?, image=? WHERE `idPosts`=? ', [req.body.titre, req.body.contenu,req.body.image, req.params.id])
-  db.promise().query(' UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ', [changedPost, req.params.id])
-.then( ([results]) => {
-  console.log(results);
-  res.status(200).json(results);
-})
-.catch((error) => {
-  res.status(400).json({ error: error });
-  })
-};
-//-------------------------------------*/
-
-/*
-exports.modifySauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id })
-  .then(sauce => {
-      const sauceObject = req.file ? {
-      ...JSON.parse(req.body.sauce),
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    } : { ...req.body };
-    
-    if (sauce.userId === req.token.userId){
-      Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-      .then(() => res.status(200).json({ message: 'Objet modifié !'}))
-      //.catch(error => res.status(400).json({ error }));
-      .catch(error => res.status(400).json(error.message));
+    } else {
+      console.log("pas admis");
+      res.status(401).json({
+        error: "! pas autorisé (vous n'etes pas l'auteur ni admin) !",
+      });
     }
-    else{
-      res.status(403).json({message : "vous n'etes pas autorisé à modifier cette sauce"});//car la sauce d'un autre!
-    }
-  })  
-  .catch(error => res.status(400).json(error.message));
-}
-
-*/
+  } catch (error) {
+    console.log("probleme lors modif du commentaire");
+    res.status(400).json({ error: error });
+  }
+};
 
 // //!__    LIKES&DISLIKES SAUCE (POST+id sauce)    __//
 // //!__ recoit : { userId: String, like: Number }  __//

@@ -8,9 +8,7 @@
         <!-- ............✍️ ici démarre la zone d'input "new post" ✍️.............. -->
         <div class="writeBox">
           <div class="inputContainer d-flex">
-            <label for="post-title" title="maximum 50 caractères"
-              >Titre :</label
-            >
+            <label for="post-title" title="2 à 50 caractères">Titre :</label>
             <input
               v-model="inputTitle"
               type="text"
@@ -19,13 +17,11 @@
               class="centerTxt input-title"
               name="inputTitle"
               id="inputTitle"
-              placeholder="maximum 50 caractères"
+              placeholder="2 à 50 caractères"
               required
             />
 
-            <label for="post-write" title="maximum 500 caractères"
-              >Contenu :</label
-            >
+            <label for="post-write" title="2 à 500 caractères">Contenu :</label>
             <textarea
               v-model="inputText"
               rows="4"
@@ -34,7 +30,7 @@
               class="centerTxt input-text"
               name="inputText"
               id="inputText"
-              placeholder="maximum 500 caractères"
+              placeholder="2 à 500 caractères"
               required
             ></textarea>
             <label for="post-image" title="fichier jpg/webp/gif/png <3mo"
@@ -560,9 +556,13 @@ export default {
         .catch((error) => {
           //console.log(error);
           this.messageRetour = error.response.data.erreur;
-          console.log(error.response.status);
+          console.log("error.response.status", error.response.status);
+          console.log("error.response.data.erreur", error.response.data.erreur);
           if (error.response.status == 500) {
             this.messageRetour = "fichier trop gros (3Mo max)!";
+          } else if (error.response.status == 400) {
+            this.messageRetour =
+              "titre&contenu à remplir (>2caractères chacun)";
           } else {
             this.messageRetour = "une erreur est survenue";
           }

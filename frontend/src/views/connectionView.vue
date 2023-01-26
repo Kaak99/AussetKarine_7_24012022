@@ -16,7 +16,9 @@
             <p class="user-bio">presentation</p>
           </div>
          </div> -->
-          <label for="userPseudo" title="au moins 5 lettres"></label>
+          <label for="userPseudo" title="au moins 5 lettres"
+            >Mon Pseudo :</label
+          >
           <input
             v-model="pseudo"
             type="text"
@@ -28,14 +30,16 @@
             placeholder="votre pseudo"
             required
           />
-          <p id="pseudoAlert" class="userPseudoAlert">
+          <!-- <p id="pseudoAlert" class="userPseudoAlert">
             <i class="fas fa-times-circle"></i>Pseudo incorrect
           </p>
           <p id="pseudoOk" class="userPseudoValid">
             <i class="fas fa-check-circle"></i>Pseudo accepté
-          </p>
+          </p> -->
 
-          <label for="userPassword" title="au moins 6 caractères"></label>
+          <label for="userPassword" title="au moins 6 caractères"
+            >Mon mot de passe :</label
+          >
           <input
             v-model="mdp"
             type="password"
@@ -47,12 +51,12 @@
             placeholder="mot de passe"
             required
           />
-          <p id="passwordAlert" class="userPasswordAlert">
+          <!-- <p id="passwordAlert" class="userPasswordAlert">
             <i class="fas fa-times-circle"></i>mot de passe incorrect
           </p>
           <p id="passwordOk" class="userPasswordValid">
             <i class="fas fa-check-circle"></i>mot de passe accepté
-          </p>
+          </p> -->
           <button class="buttonValid" v-on:click.prevent="envoi">
             Je me connecte !
           </button>

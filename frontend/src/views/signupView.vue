@@ -6,7 +6,7 @@
       <!-- <div class="users" v-if="loading === true"> -->
       <form class="formSignup">
         <h1>Page d'inscription</h1>
-        <h2 class="centerTxt">Veuillez rentrer les informations demandées</h2>
+        <h2 class="centerTxt">Obligatoire: email, pseudo,mot de passe</h2>
         <div class="userContainer d-flex">
           <!--ici démarre la zone de création de posts-->
           <!-- <div class="usersCard">
@@ -15,26 +15,6 @@
             <p class="user-bio">presentation</p>
           </div>
          </div> -->
-          <label for="userEmail" title="identifiant@gpm.fr (30 caractères max)"
-            >Email :</label
-          >
-          <input
-            v-model="inputEmail"
-            type="text"
-            size="20"
-            maxlength="30"
-            class="centerTxt"
-            name="email"
-            id="email"
-            placeholder="votre email d'entreprise"
-            required
-          />
-          <p id="emailAlert" class="userEmailAlert">
-            <i class="fas fa-times-circle"></i>Email incorrect
-          </p>
-          <p id="emailOk" class="userEmailValid">
-            <i class="fas fa-check-circle"></i>Email accepté
-          </p>
 
           <label for="userPseudo" title="chiffres et lettres (3-25)"
             >Pseudo :</label
@@ -47,20 +27,55 @@
             class="centerTxt"
             name="pseudo"
             id="pseudo"
-            placeholder="choisissez un pseudo"
+            placeholder="2+(lettre, chiffre,underscore)"
             pattern="\w*"
             required
           />
-          <p id="pseudoAlert" class="userPseudoAlert">
+          <p
+            id="pseudoAlert"
+            class="userPseudoAlert"
+            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo) === false"
+          >
             <i class="fas fa-times-circle"></i>Pseudo incorrect
           </p>
-          <p id="pseudoOk" class="userPseudoValid">
+          <p
+            id="pseudoOk"
+            class="userPseudoValid"
+            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo) === true"
+          >
             <i class="fas fa-check-circle"></i>Pseudo accepté
           </p>
 
-          <label for="userBio" title="chiffres et lettres (200 max)"
-            >Bio :</label
+          <label for="userEmail" title="identifiant@gpm.fr (30 caractères max)"
+            >Email :</label
           >
+          <input
+            v-model="inputEmail"
+            type="text"
+            size="20"
+            maxlength="30"
+            class="centerTxt"
+            name="email"
+            id="email"
+            placeholder="votre email @gpm.fr"
+            required
+          />
+          <p
+            id="emailAlert"
+            class="userEmailAlert"
+            v-if="!testRegex(/^\w+([\.-]?\w+)*@gpm.fr$/, this.inputEmail)"
+          >
+            <i class="fas fa-times-circle"></i>Email incorrect
+          </p>
+          <p
+            id="emailOk"
+            class="userEmailValid"
+            v-if="testRegex(/^\w+([\.-]?\w+)*@gpm.fr$/, this.inputEmail)"
+          >
+            <i class="fas fa-check-circle"></i>Email accepté
+          </p>
+
+          <label for="userBio" title="chiffres et lettres (200 max)">Bio</label>
           <textarea
             v-model="inputBio"
             name="bio"
@@ -71,15 +86,23 @@
             cols="30"
             maxlength="120"
           />
-          <p id="bioAlert" class="userBioAlert">
+          <p
+            id="bioAlert"
+            class="userBioAlert"
+            v-if="!testRegex(/^.{0,200}$/, this.inputBio)"
+          >
             <i class="fas fa-times-circle"></i>Bio incorrecte
           </p>
-          <p id="bioOk" class="userBioValid">
+          <p
+            id="bioOk"
+            class="userBioValid"
+            v-if="testRegex(/^.{0,200}$/, this.inputBio)"
+          >
             <i class="fas fa-check-circle"></i>Bio acceptée
           </p>
 
           <label for="userAvatar" title="fichier jpg/webp/gif/png <3mo"
-            >Avatar :</label
+            >Avatar</label
           >
           <!-- <img src="../../../backend/images/default.gif" /> -->
           <img
@@ -115,12 +138,12 @@
             placeholder="votre avatar"
             default="avatarAnonyme"
           /> -->
-          <p id="avatarAlert" class="userAvatarAlert">
+          <!-- <p id="avatarAlert" class="userAvatarAlert">
             <i class="fas fa-times-circle"></i>Avatar incorrect
           </p>
           <p id="avatarOk" class="userAvatarValid">
             <i class="fas fa-check-circle"></i>Avatar accepté
-          </p>
+          </p> -->
 
           <label
             for="userPassword"
@@ -135,13 +158,31 @@
             class="centerTxt cart"
             name="userPassword"
             id="userPassword"
-            placeholder="mot de passe"
+            placeholder="8+caractères (maj,min,chiffre,special)"
             required
           />
-          <p id="passwordAlert" class="userPasswordAlert">
+          <p
+            id="passwordAlert"
+            class="userPasswordAlert"
+            v-if="
+              !testRegex(
+                /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-z^A-Z^0-9]).{8,}$/,
+                this.inputPassword
+              )
+            "
+          >
             <i class="fas fa-times-circle"></i>mot de passe incorrect
           </p>
-          <p id="passwordOk" class="userPasswordValid">
+          <p
+            id="passwordOk"
+            class="userPasswordValid"
+            v-if="
+              testRegex(
+                /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-z^A-Z^0-9]).{8,}$/,
+                this.inputPassword
+              )
+            "
+          >
             <i class="fas fa-check-circle"></i>mot de passe accepté
           </p>
           <button class="buttonValid" v-on:click.prevent="envoiInscription">
@@ -189,6 +230,12 @@ export default {
     };
   },
   methods: {
+    testRegex(laRegex, varATester) {
+      //const regex = new RegExp(laRegex);
+      const valeurTest = laRegex.test(varATester);
+      console.log("valeurTest", valeurTest);
+      return valeurTest;
+    },
     selectFile() {
       // console.log("j'ai cliqué sur selecteur de fichier");
       this.messageRetour = "";
@@ -256,7 +303,8 @@ export default {
           if (error.response.status == 500) {
             this.messageRetour = "fichier trop gros (3Mo max)!";
           } else {
-            this.messageRetour = "une erreur est survenue";
+            console.log(error.response.status);
+            //this.messageRetour = "une erreur est survenue";
           }
           //this.messageRetour = this.postApiResponse.error;
           //this.loading = false;
