@@ -6,7 +6,7 @@ Formation developpeur web d'OpenClassrooms
 --------------------------------------
   
 Utilisation de Vue.js2 pour le frontend
-Utilisation de NodeJs, Express et Mysql pour le backend
+Utilisation de NodeJs, npm, Express et Mysql pour le backend
   
 -----------
 
@@ -15,10 +15,8 @@ Utilisation de NodeJs, Express et Mysql pour le backend
 -----------
 ## Pour installer le projet :
 
-Installer  @vue/cli
 Installer le Systême de gestion de base de données mySql
-installer la version xxx de node js 
-installer la version xxx du gestionnaire de paquets npm
+installer node js , qui contieny le gestionnaire de paquets npm
 
 ### Frontend:
 AussetKarine_7_24012022 > frontend
@@ -27,6 +25,10 @@ AussetKarine_7_24012022 > frontend
 ### Backend:
 AussetKarine_7_24012022 > backend
 ```npm install```
+
+### Bdd:
+La base de donnée se trouve dans le dossier 
+AussetKarine_7_24012022 > frontend
 
 -----------
 ## Pour lancer le projet :
@@ -40,7 +42,8 @@ AussetKarine_7_24012022 > backend
 Pour lancer le server, tapez ```npm run start```
 
 ### Base de donnée :
-
+root/bddProjet7
+Il y a un seul compte administrateur, provisoire (login:god, mot de passe:mdp)
 
 -----------
 ## Présentation du projet :

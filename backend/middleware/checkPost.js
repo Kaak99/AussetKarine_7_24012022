@@ -4,7 +4,7 @@ console.log(` --------> checkPost`);
 
 module.exports = (req, res, next) => {
   const regexTitre = /^.{2,50}$/;
-  const regexContenu = /^.{2,500}$/;
+  const regexContenu = /^(.|\s){2,500}$/;
   //console.log("req.body", req.body);
   if (regexTitre.test(req.body.titre)) {
     console.log("titre match");

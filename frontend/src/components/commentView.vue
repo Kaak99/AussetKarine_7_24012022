@@ -112,11 +112,18 @@ export default {
       // url: `http://localhost:3000/api/comments`,
       url: `${process.env.VUE_APP_URL_SERVEUR}/api/comments`,
       inputComment: "",
+      testInputComment: false,
       commentApiResponse: "",
       comCount: 0,
       hasCommentedThisPost: false,
       messageRetour: "",
     };
+  },
+  watch: {
+    inputComment: function (val) {
+      //console.log("watch", val);
+      this.messageRetour = "";
+    },
   },
   //created() {
   mounted() {
@@ -135,7 +142,8 @@ export default {
     testRegex(laRegex, varATester) {
       //const regex = new RegExp(laRegex);
       const valeurTest = laRegex.test(varATester);
-      console.log("valeurTest", valeurTest);
+      //console.log("valeurTest", valeurTest);
+      this.testInputComment = valeurTest;
       return valeurTest;
     },
     configAxios() {
@@ -258,70 +266,74 @@ export default {
 
     //! Création d'un commentaire (envoi au backend)
     envoiComment: function () {
-      //mais d'abord on rajoute l'idpost du commentaire à la liste des post commentés par ce user et
-      let allCommentedPostTab = JSON.parse(
-        localStorage.getItem("allCommentedPost")
-      );
-      const test = allCommentedPostTab.indexOf(this.idFromPost);
-      // if (test == -1) {
-      //   //pas de valeur retournée=cet idPost n'est pas stocké
-      //   //alors on l'ajoute au tableau (s'il y etait déjà, rien à afire par contre)
-      //   allCommentedPostTab.push(this.idFromPost);
-      // }
-      allCommentedPostTab.push(this.idFromPost); //on push toujours (si deja un com pour ce post, pas grave, on met autant d'idPost commenté qu'il y a de com de ce user)
+      if (this.testInputComment) {
+        //mais d'abord on rajoute l'idpost du commentaire à la liste des post commentés par ce user et
+        let allCommentedPostTab = JSON.parse(
+          localStorage.getItem("allCommentedPost")
+        );
+        const test = allCommentedPostTab.indexOf(this.idFromPost);
+        // if (test == -1) {
+        //   //pas de valeur retournée=cet idPost n'est pas stocké
+        //   //alors on l'ajoute au tableau (s'il y etait déjà, rien à afire par contre)
+        //   allCommentedPostTab.push(this.idFromPost);
+        // }
+        allCommentedPostTab.push(this.idFromPost); //on push toujours (si deja un com pour ce post, pas grave, on met autant d'idPost commenté qu'il y a de com de ce user)
 
-      //on remet dans le localstorage la liste actualisée des post commentés par ce userId
-      localStorage.setItem(
-        "allCommentedPost",
-        JSON.stringify(allCommentedPostTab)
-      );
-      //puis on envoi le commentaire au backend (plutot envoyer d'abord et si reussi mettre à jour localstorage?)
-      const config = null;
-      // let id_Posts = "";
-      // let id_Users = "";
-      //console.log(this.inputComment);
-      //console.log(this.idFromPost);
-      //console.log(this.idConnected);
-      let bodyParameters = {
-        contenu: this.inputComment,
-        id_Posts: this.idFromPost,
-        id_Users: this.idConnected,
-      };
-      //console.log(bodyParameters);
-      axios
-        // .post(this.url, {
-        //   contenu: this.inputComment,
-        //   id_Posts: this.idFromPost,
-        //   id_Users: this.idConnected,
-        // })
-        .post(
-          this.url,
-          bodyParameters,
-          this.configAxios()
-          // { headers: { Authorization: "Bearer " + token } }
-          // { headers: { Authorization: `Bearer ${token}` } }
-        )
-        // .post(this.url, { pseudo: "user60", password: "mdp" })
-        .then((response) => {
-          this.postApiResponse = response.data;
-          this.messageRetour = "Commentaire envoyé !";
-          // console.log(this.postApiResponse);
-          // console.log(this.postApiResponse.userId);
-          // console.log(this.postApiResponse.token);
-          this.loading = true;
-          //remettre els champs à zero
-          this.inputComment = "";
-          this.getAllComments4OnePost();
-          //this.$router.push("/");
-        })
-        .catch((error) => {
-          console.log(error);
-          //this.messageRetour = error.response.data.erreur;
-          this.messageRetour = error.response.data.message;
-          console.log(error.response.data.message);
-          //this.messageRetour = this.getApi.error;
-          //this.loading = false;
-        });
+        //on remet dans le localstorage la liste actualisée des post commentés par ce userId
+        localStorage.setItem(
+          "allCommentedPost",
+          JSON.stringify(allCommentedPostTab)
+        );
+        //puis on envoi le commentaire au backend (plutot envoyer d'abord et si reussi mettre à jour localstorage?)
+        const config = null;
+        // let id_Posts = "";
+        // let id_Users = "";
+        //console.log(this.inputComment);
+        //console.log(this.idFromPost);
+        //console.log(this.idConnected);
+        let bodyParameters = {
+          contenu: this.inputComment,
+          id_Posts: this.idFromPost,
+          id_Users: this.idConnected,
+        };
+        //console.log(bodyParameters);
+        axios
+          // .post(this.url, {
+          //   contenu: this.inputComment,
+          //   id_Posts: this.idFromPost,
+          //   id_Users: this.idConnected,
+          // })
+          .post(
+            this.url,
+            bodyParameters,
+            this.configAxios()
+            // { headers: { Authorization: "Bearer " + token } }
+            // { headers: { Authorization: `Bearer ${token}` } }
+          )
+          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .then((response) => {
+            this.postApiResponse = response.data;
+            this.messageRetour = "Commentaire envoyé !";
+            // console.log(this.postApiResponse);
+            // console.log(this.postApiResponse.userId);
+            // console.log(this.postApiResponse.token);
+            this.loading = true;
+            //remettre els champs à zero
+            this.inputComment = "";
+            this.getAllComments4OnePost();
+            //this.$router.push("/");
+          })
+          .catch((error) => {
+            console.log(error);
+            //this.messageRetour = error.response.data.erreur;
+            this.messageRetour = error.response.data.message;
+            console.log(error.response.data.message);
+            //this.messageRetour = this.getApi.error;
+            //this.loading = false;
+          });
+      } else {
+        this.messageRetour = "champ mal rempli";
+      }
     },
   },
 };
@@ -338,6 +350,7 @@ export default {
   /* padding: 1vw 1vw 1.2vw 1vw; */
   transform: scale(1.02);
   color: #3b46eb;
+  color: var(--primaryColor3);
 }
 .newComment {
   background-color: #fbeded;

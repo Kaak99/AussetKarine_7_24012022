@@ -70,7 +70,7 @@ export default {
 
 .userContainer {
   padding: 10px;
-  border: solid 1px blue;
+  border: solid 1px var(--primaryColor3);
 }
 
 .user {

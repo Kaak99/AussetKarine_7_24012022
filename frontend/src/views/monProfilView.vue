@@ -55,14 +55,14 @@
           <p
             id="pseudoAlert"
             class="userPseudoAlert"
-            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo) === false"
+            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo, 1) === false"
           >
             <i class="fas fa-times-circle"></i>Pseudo incorrect
           </p>
           <p
             id="pseudoOk"
             class="userPseudoOK"
-            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo) === true"
+            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo, 1) === true"
           >
             <i class="fas fa-check-circle"></i>Pseudo accepté
           </p>
@@ -148,7 +148,9 @@ export default {
       thisUrl: "",
       getApiResponse: {},
       inputPseudo: "",
+      testInputPseudo: false,
       inputBio: "",
+      testInputBio: false,
       inputAvatar: "",
       messageRetour: "",
     };
@@ -162,19 +164,24 @@ export default {
   },
   watch: {
     inputPseudo: function (val) {
-      console.log("watch", val);
+      //console.log("watch", val);
       this.messageRetour = "";
     },
     inputBio: function (val) {
-      console.log("watch", val);
+      this.messageRetour = "";
+    },
+    inputFile: function (val) {
       this.messageRetour = "";
     },
   },
   methods: {
-    testRegex(laRegex, varATester) {
+    testRegex(laRegex, varATester, testFlag) {
       //const regex = new RegExp(laRegex);
       const valeurTest = laRegex.test(varATester);
-      console.log("valeurTest", valeurTest);
+      if (testFlag === 1) {
+        this.testInputPseudo = valeurTest;
+      }
+      //console.log("valeurTest", valeurTest);
       return valeurTest;
     },
     configAxios() {
@@ -197,7 +204,7 @@ export default {
       this.messageRetour = "";
       this.inputFile = this.$refs.file.files[0];
       //console.log(this.$refs.file.files[0].name);
-      console.log("$refs.file", this.$refs.file);
+      //console.log("$refs.file", this.$refs.file);
       this.inputAvatar = URL.createObjectURL(this.inputFile);
       //console.log("file", this.inputFile);
       //this.inputAvatar = this.inputFile;
@@ -238,64 +245,69 @@ export default {
 
     modifyUser: function () {
       // console.log("j'ai validé les modif");
-      this.messageRetour = "";
-      // this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
-      this.thisUrl = `${this.url}/users/${this.thisId}`;
-      let formdata = new FormData();
-      //console.log(this.inputPseudo);
-      //console.log(this.inputPassword);
-      //console.log(this.inputEmail);
-      formdata.append("pseudo", this.inputPseudo);
-      //console.log(formdata);
-      if (this.inputFile) {
-        console.log(this.inputFile);
-        formdata.append("image", this.inputFile, this.inputFile.name);
-        // } else {
-        //   formdata.append(
-        //     "image",
-        //     "http://localhost:3000/images/default.jpg",
-        //     "default.jpg"
-        //   );
+      if (this.testInputPseudo) {
+        this.messageRetour = "";
+        // this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
+        this.thisUrl = `${this.url}/users/${this.thisId}`;
+        let formdata = new FormData();
+        //console.log(this.inputPseudo);
+        //console.log(this.inputPassword);
+        //console.log(this.inputEmail);
+        formdata.append("pseudo", this.inputPseudo);
+        //console.log(formdata);
+        if (this.inputFile) {
+          //console.log(this.inputFile);
+          formdata.append("image", this.inputFile, this.inputFile.name);
+          // } else {
+          //   formdata.append(
+          //     "image",
+          //     "http://localhost:3000/images/default.jpg",
+          //     "default.jpg"
+          //   );
+        }
+
+        formdata.append("bio", this.inputBio);
+
+        // console.log(formdata);
+        axios
+          // .post(this.url, {
+          //   pseudo: this.pseudo,
+          //   password: this.mdp,
+          //   image: this.avatar,
+          //   email: this.email,
+          //   bio: this.bio,
+          //   admin: 0,
+          //   active: 1,
+          // })
+          .put(this.thisUrl, formdata, this.configAxios())
+          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .then((response) => {
+            this.postApiResponse = response.data;
+            this.messageRetour = "profil modifié !";
+            //console.log(this.postApiResponse);
+            //console.log(this.postApiResponse.userId);
+            //console.log(this.postApiResponse.token);
+            this.loading = true;
+            this.showUser();
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log(error.response.status);
+            if (error.response.status == 500) {
+              this.messageRetour = "fichier trop gros (3Mo max)!";
+            } else {
+              this.messageRetour = "une erreur est survenue";
+            }
+            //this.messageRetour = error.response.data.erreur;
+            // console.log(error.response.data);
+            //this.messageRetour = this.postApiResponse.error;
+            //this.loading = false;
+          });
+      } else {
+        this.messageRetour = "champs mal remplis";
       }
-
-      formdata.append("bio", this.inputBio);
-
-      // console.log(formdata);
-      axios
-        // .post(this.url, {
-        //   pseudo: this.pseudo,
-        //   password: this.mdp,
-        //   image: this.avatar,
-        //   email: this.email,
-        //   bio: this.bio,
-        //   admin: 0,
-        //   active: 1,
-        // })
-        .put(this.thisUrl, formdata, this.configAxios())
-        // .post(this.url, { pseudo: "user60", password: "mdp" })
-        .then((response) => {
-          this.postApiResponse = response.data;
-          this.messageRetour = "profil modifié !";
-          //console.log(this.postApiResponse);
-          //console.log(this.postApiResponse.userId);
-          //console.log(this.postApiResponse.token);
-          this.loading = true;
-          this.showUser();
-        })
-        .catch((error) => {
-          console.log(error);
-          console.log(error.response.status);
-          if (error.response.status == 500) {
-            this.messageRetour = "fichier trop gros (3Mo max)!";
-          } else {
-            this.messageRetour = "une erreur est survenue";
-          }
-          //this.messageRetour = error.response.data.erreur;
-          // console.log(error.response.data);
-          //this.messageRetour = this.postApiResponse.error;
-          //this.loading = false;
-        });
     },
+
     deleteUser() {
       //console.log("j'ai clické bouton effacer user");
       //console.log(this.thisId);
@@ -344,7 +356,7 @@ export default {
 } */
 .post {
   padding: 5px;
-  border: solid 1px cyan;
+  /* border: solid 1px cyan; */
 }
 .avatar {
   width: 20%;
@@ -366,7 +378,7 @@ export default {
 
 .userContainer {
   padding: 10px;
-  border: solid 1px blue;
+  border: solid 1px var(--primaryColor3);
 }
 
 .user {
@@ -382,7 +394,8 @@ export default {
 }
 .profil-modifier {
   padding: 5px;
-  border: solid 2px red;
+  /* border: solid 2px red; */
+  box-shadow: 0px 0px 5px 1px #ff0000;
   width: 90%;
   margin: 5px auto;
 }
@@ -393,6 +406,7 @@ export default {
 .envoiProfil:hover {
   cursor: pointer;
   color: #3b46eb;
+  color: var(--primaryColor3);
   /* transform: scale(1.02); */
 }
 .envoiProfil {

@@ -20,6 +20,20 @@
               placeholder="2 à 50 caractères"
               required
             />
+            <p
+              id="titleAlert"
+              class="titleAlert"
+              v-if="testRegex(/^.{2,50}$/, this.inputTitle, 1) === false"
+            >
+              <i class="fas fa-times-circle"></i>Titre incorrect
+            </p>
+            <p
+              id="titleOk"
+              class="titleValid"
+              v-if="testRegex(/^.{2,50}$/, this.inputTitle, 1)"
+            >
+              <i class="fas fa-check-circle"></i>Titre accepté
+            </p>
 
             <label for="post-write" title="2 à 500 caractères">Contenu :</label>
             <textarea
@@ -33,6 +47,21 @@
               placeholder="2 à 500 caractères"
               required
             ></textarea>
+            <p
+              id="inputTextAlert"
+              class="inputTextAlert"
+              v-if="testRegex(/^(.|\s){2,500}$/, this.inputText, 2) === false"
+            >
+              <i class="fas fa-times-circle"></i>Contenu incorrect
+            </p>
+            <p
+              id="inputTextOk"
+              class="inputTextValid"
+              v-if="testRegex(/^(.|\s){2,500}$/, this.inputText, 2)"
+            >
+              <i class="fas fa-check-circle"></i>Contenu accepté
+            </p>
+
             <label for="post-image" title="fichier jpg/webp/gif/png <3mo"
               >Image :</label
             >
@@ -225,7 +254,9 @@ export default {
       getCountLikeResponse: "", //recup nombrelike
       messageRetour: "",
       inputTitle: "",
+      testInputTitle: false,
       inputText: "",
+      testInputText: false,
       inputFile: "",
       timeDayjs: [],
       idConnected: JSON.parse(localStorage.getItem("userId")),
@@ -240,7 +271,18 @@ export default {
       idPosttoModify: 0,
     };
   },
-
+  watch: {
+    inputTitle: function (val) {
+      //console.log("watch", val);
+      this.messageRetour = "";
+    },
+    inputText: function (val) {
+      this.messageRetour = "";
+    },
+    inputFile: function (val) {
+      this.messageRetour = "";
+    },
+  },
   // created() {},
   mounted() {
     // console.log("hook mounted");
@@ -251,6 +293,20 @@ export default {
   computed: {},
 
   methods: {
+    testRegex(laRegex, varATester, testFlag) {
+      //const regex = new RegExp(laRegex);
+      const valeurTest = laRegex.test(varATester);
+      switch (testFlag) {
+        case 1:
+          this.testInputTitle = valeurTest;
+          break;
+        case 2:
+          this.testInputText = valeurTest;
+          break;
+      }
+      return valeurTest;
+    },
+
     configAxios() {
       let jwtoken = localStorage.getItem("userToken");
       //console.log(jwtoken);
@@ -518,58 +574,64 @@ export default {
       //   //id_Users: JSON.parse(localStorage.getItem("userId")).toString(),
       //   id_Users: localStorage.getItem("userId"),
       // };
+      if (this.testInputTitle && this.testInputText) {
+        const formdata = new FormData();
+        formdata.append("titre", this.inputTitle);
+        formdata.append("contenu", this.inputText);
+        if (this.inputFile) {
+          formdata.append("image", this.inputFile, this.inputFile.name);
+        }
+        formdata.append("id_Users", this.idConnected);
+        //console.log(formdata);
+        //const config = null;
 
-      const formdata = new FormData();
-      formdata.append("titre", this.inputTitle);
-      formdata.append("contenu", this.inputText);
-      if (this.inputFile) {
-        formdata.append("image", this.inputFile, this.inputFile.name);
+        axios
+          .post(
+            this.url,
+            formdata,
+            this.configAxios()
+            // { headers: { Authorization: "Bearer " + token } }
+            // { headers: { Authorization: `Bearer ${token}` } }
+          )
+          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .then((response) => {
+            this.postApiResponse = response.data;
+            this.messageRetour = "Message envoyé !";
+            // console.log(this.postApiResponse);
+            // console.log(this.postApiResponse.userId);
+            // console.log(this.postApiResponse.token);
+            this.loading = true;
+            //remettre els champs à zero
+            this.inputTitle = "";
+            this.inputText = "";
+            this.$refs.file.value = "";
+
+            this.getAllPost();
+            //this.$router.push("/");
+          })
+          .catch((error) => {
+            //console.log(error);
+            this.messageRetour = error.response.data.erreur;
+            console.log("error.response.status", error.response.status);
+            console.log(
+              "error.response.data.erreur",
+              error.response.data.erreur
+            );
+            if (error.response.status == 500) {
+              this.messageRetour = "fichier trop gros (3Mo max)!";
+            } else if (error.response.status == 400) {
+              this.messageRetour =
+                "titre&contenu à remplir (>2caractères chacun)";
+            } else {
+              this.messageRetour = "une erreur est survenue";
+            }
+            //console.log(error.response.data);
+            //this.messageRetour = this.getApi.error;
+            //this.loading = false;
+          });
+      } else {
+        this.messageRetour = "champs mal remplis";
       }
-      formdata.append("id_Users", this.idConnected);
-      //console.log(formdata);
-      //const config = null;
-
-      axios
-        .post(
-          this.url,
-          formdata,
-          this.configAxios()
-          // { headers: { Authorization: "Bearer " + token } }
-          // { headers: { Authorization: `Bearer ${token}` } }
-        )
-        // .post(this.url, { pseudo: "user60", password: "mdp" })
-        .then((response) => {
-          this.postApiResponse = response.data;
-          this.messageRetour = "Message envoyé !";
-          // console.log(this.postApiResponse);
-          // console.log(this.postApiResponse.userId);
-          // console.log(this.postApiResponse.token);
-          this.loading = true;
-          //remettre els champs à zero
-          this.inputTitle = "";
-          this.inputText = "";
-          this.$refs.file.value = "";
-
-          this.getAllPost();
-          //this.$router.push("/");
-        })
-        .catch((error) => {
-          //console.log(error);
-          this.messageRetour = error.response.data.erreur;
-          console.log("error.response.status", error.response.status);
-          console.log("error.response.data.erreur", error.response.data.erreur);
-          if (error.response.status == 500) {
-            this.messageRetour = "fichier trop gros (3Mo max)!";
-          } else if (error.response.status == 400) {
-            this.messageRetour =
-              "titre&contenu à remplir (>2caractères chacun)";
-          } else {
-            this.messageRetour = "une erreur est survenue";
-          }
-          //console.log(error.response.data);
-          //this.messageRetour = this.getApi.error;
-          //this.loading = false;
-        });
     },
   },
 };
@@ -612,7 +674,8 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  color: blue;
+  /* color: blue; */
+  color: var(--primaryColor3);
   /* font-size: 5vw; */
 }
 
@@ -694,9 +757,11 @@ export default {
 
 .blue {
   color: #3b46eb;
+  color: var(--primaryColor3);
 }
 .envoiPost:hover {
   color: #3b46eb;
+  color: var(--primaryColor3);
   /* transform: scale(1.02); */
 }
 .envoiPost {

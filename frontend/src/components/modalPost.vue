@@ -25,6 +25,20 @@
             id="modifiedTitle"
             required
           />
+          <p
+            id="modifiedTitleAlert"
+            class="modifiedTitleAlert"
+            v-if="testRegex(/^.{2,50}$/, this.modifiedTitle, 1) === false"
+          >
+            <i class="fas fa-times-circle"></i>Titre incorrect
+          </p>
+          <p
+            id="modifiedTitleOk"
+            class="modifiedTitleValid"
+            v-if="testRegex(/^.{2,50}$/, this.modifiedTitle, 1)"
+          >
+            <i class="fas fa-check-circle"></i>Titre accepté
+          </p>
           <!-- <img
             class="postMiniImage"
             alt="image d'illustration "
@@ -44,6 +58,23 @@
             class="centerTxt"
             required
           />
+          <p
+            id="modifiedText"
+            class="modifiedText"
+            v-if="
+              testRegex(/^(.|\s){2,500}$/, this.modifiedPostContent, 2) ===
+              false
+            "
+          >
+            <i class="fas fa-times-circle"></i>Contenu incorrect
+          </p>
+          <p
+            id="modifiedTextOk"
+            class="modifiedTextValid"
+            v-if="testRegex(/^(.|\s){2,500}$/, this.modifiedPostContent, 2)"
+          >
+            <i class="fas fa-check-circle"></i>Contenu accepté
+          </p>
 
           <label for="postImage" title="fichier jpg/webp/gif/png <3mo"
             >Image :</label
@@ -121,7 +152,9 @@ export default {
       getApiResponse: "", //recupere le getOnePost
       putApiResponse: "", //recupere le modifyPost
       modifiedTitle: "",
+      testModifiedTitle: false,
       modifiedPostContent: "",
+      testModifiedPostContent: false,
       inputFile: null,
       image: "",
       deleteImageBoolean: false,
@@ -134,13 +167,35 @@ export default {
   watch: {
     idPosttoModify: function (val) {
       this.getOnePost(val);
-      console.log("watch", val);
+      //console.log("watch", val);
       this.messageRetour = "";
       //this.idPosttoModify = 0;
+    },
+    inputTitle: function (val) {
+      this.messageRetour = "";
+    },
+    inputText: function (val) {
+      this.messageRetour = "";
+    },
+    inputFile: function (val) {
+      this.messageRetour = "";
     },
   },
 
   methods: {
+    testRegex(laRegex, varATester, testFlag) {
+      //const regex = new RegExp(laRegex);
+      const valeurTest = laRegex.test(varATester);
+      switch (testFlag) {
+        case 1:
+          this.testModifiedTitle = valeurTest;
+          break;
+        case 2:
+          this.testModifiedPostContent = valeurTest;
+          break;
+      }
+      return valeurTest;
+    },
     configAxios() {
       let jwtoken = localStorage.getItem("userToken");
       //console.log(jwtoken);
@@ -156,7 +211,7 @@ export default {
       console.log("passe dans methode selectFile()");
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
-      console.log("this.inputFile", this.inputFile);
+      //console.log("this.inputFile", this.inputFile);
       this.image = URL.createObjectURL(this.inputFile);
       //this.inputFile = URL.createObjectURL(this.inputFile);
       // console.log(this.image);
@@ -181,11 +236,11 @@ export default {
         .then((response) => {
           this.getApiResponse = response.data;
           // this.getApiResponse = response.data;
-          console.log(this.getApiResponse);
+          //console.log(this.getApiResponse);
           this.modifiedTitle = this.getApiResponse.titre;
           this.modifiedPostContent = this.getApiResponse.contenu;
           this.image = this.getApiResponse.image;
-          console.log("image", this.getApiResponse.image);
+          //console.log("image", this.getApiResponse.image);
           // console.log(this.modifiedTitle);
           this.loading = true;
         })
@@ -199,79 +254,83 @@ export default {
     },
 
     modifyPost() {
-      console.log("passe dans methode modifyPost()");
-      //quand on valide la modif
-      // console.log("modifyPost");
-      const formdata = new FormData();
-      formdata.append("titre", this.modifiedTitle);
-      formdata.append("contenu", this.modifiedPostContent);
-      console.log("inputFile", this.inputFile);
-      console.log("type inputFile", typeof this.inputFile);
-      if (this.inputFile) {
-        console.log("dans if this.inputFile");
-        formdata.append("image", this.inputFile, this.inputFile.name);
-      }
-      if (this.deleteImageBoolean) {
-        console.log("dans if this.deleteImageBoolean");
-        formdata.append("noImg", ""); //pour dire d'effacer le fichier image d'avant
-        this.deleteImageBoolean = false;
-        console.log(this.deleteImageBoolean);
-        this.$refs.file.value = "";
-      }
-      formdata.append("id_Users", this.idConnected);
-      console.log("formdata");
-      console.log(formdata);
-      let modifyUrl = this.url + `/posts/` + this.idPosttoModify;
-      console.log(modifyUrl);
-      // const config = {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // };
-      // console.log(config);
-      const config = null;
+      if (this.testModifiedTitle && this.testModifiedPostContent) {
+        console.log("passe dans methode modifyPost()");
+        //quand on valide la modif
+        // console.log("modifyPost");
+        const formdata = new FormData();
+        formdata.append("titre", this.modifiedTitle);
+        formdata.append("contenu", this.modifiedPostContent);
+        //console.log("inputFile", this.inputFile);
+        //console.log("type inputFile", typeof this.inputFile);
+        if (this.inputFile) {
+          console.log("dans if this.inputFile");
+          formdata.append("image", this.inputFile, this.inputFile.name);
+        }
+        if (this.deleteImageBoolean) {
+          console.log("dans if this.deleteImageBoolean");
+          formdata.append("noImg", ""); //pour dire d'effacer le fichier image d'avant
+          this.deleteImageBoolean = false;
+          //console.log(this.deleteImageBoolean);
+          this.$refs.file.value = "";
+        }
+        formdata.append("id_Users", this.idConnected);
+        //console.log("formdata");
+        //console.log(formdata);
+        let modifyUrl = this.url + `/posts/` + this.idPosttoModify;
+        //console.log(modifyUrl);
+        // const config = {
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // };
+        // console.log(config);
+        const config = null;
 
-      axios
-        .put(
-          modifyUrl,
-          formdata,
-          this.configAxios()
-          // { headers: { Authorization: "Bearer " + token } }
-          // { headers: { Authorization: `Bearer ${token}` } }
-        )
-        // .post(this.url, { pseudo: "user60", password: "mdp" })
-        .then((response) => {
-          this.putApiResponse = response.data;
-          console.log(this.putApiResponse);
-          this.messageRetour = "Message envoyé !";
-          this.inputFile = null;
-          //this.$emit("retourModalPost", this.revele);
-          //this.$emit("retourModalPost", this.toggleModale());
-          this.toggleModale();
-          this.$emit("retourModalPost", true);
-          //modifier idPosttoModify à -1 pour forcer getOnePost si reclic sur meme post?
-          //pas possible dans component? faire dans parent?
-          // console.log(this.postApiResponse.userId);
-          // console.log(this.postApiResponse.token);
-          // this.loading = true;
-          // this.inputTitle = "";
-          // this.inputText = "";
-          // this.$refs.file.value = "";
-          //this.$router.push("/");
-        })
-        .catch((error) => {
-          console.log(error);
-          //this.messageRetour = error.response.data.erreur;
-          if (error.response.status == 500) {
-            this.messageRetour = "fichier trop gros (3Mo max)!";
-          } else {
-            this.messageRetour = "une erreur est survenue";
-          }
-          //console.log(error.response.data);
-          //this.messageRetour = this.getApi.error;
-          //this.loading = false;
-        });
+        axios
+          .put(
+            modifyUrl,
+            formdata,
+            this.configAxios()
+            // { headers: { Authorization: "Bearer " + token } }
+            // { headers: { Authorization: `Bearer ${token}` } }
+          )
+          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .then((response) => {
+            this.putApiResponse = response.data;
+            //console.log(this.putApiResponse);
+            this.messageRetour = "Message envoyé !";
+            this.inputFile = null;
+            //this.$emit("retourModalPost", this.revele);
+            //this.$emit("retourModalPost", this.toggleModale());
+            this.toggleModale();
+            this.$emit("retourModalPost", true);
+            //modifier idPosttoModify à -1 pour forcer getOnePost si reclic sur meme post?
+            //pas possible dans component? faire dans parent?
+            // console.log(this.postApiResponse.userId);
+            // console.log(this.postApiResponse.token);
+            // this.loading = true;
+            // this.inputTitle = "";
+            // this.inputText = "";
+            // this.$refs.file.value = "";
+            //this.$router.push("/");
+          })
+          .catch((error) => {
+            console.log(error);
+            //this.messageRetour = error.response.data.erreur;
+            if (error.response.status == 500) {
+              this.messageRetour = "fichier trop gros (3Mo max)!";
+            } else {
+              this.messageRetour = "une erreur est survenue";
+            }
+            //console.log(error.response.data);
+            //this.messageRetour = this.getApi.error;
+            //this.loading = false;
+          });
+      } else {
+        this.messageRetour = "champs mal remplis";
+      }
     },
   },
 };
@@ -308,9 +367,9 @@ export default {
 .modaleCard {
   background: #919ba7;
   color: #333;
-  padding: 20px;
+  padding: 10px;
   position: fixed;
-  top: 20%;
+  top: 15%;
   border-radius: 10%;
 }
 
@@ -347,6 +406,7 @@ export default {
 .modifyPostButton:hover {
   cursor: pointer;
   color: #3b46eb;
+  color: var(--primaryColor3);
   /* transform: scale(1.02); */
 }
 .modifyPostButton {

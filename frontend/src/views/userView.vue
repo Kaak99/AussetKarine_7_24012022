@@ -93,7 +93,6 @@ export default {
   },
 };
 
-// //fetch
 // fetch(url)
 //   .then((res) => {
 //     if (res.ok) {
@@ -108,25 +107,6 @@ export default {
 //   .then((data) => {
 //     console.log(data); //affiche les data de l'api (tableau d'objet)
 //     let usersString = ""; // Création de la variable qui concatenera tous éléments
-
-//     // Boucle pour récupérer les données des produits &écrire html//
-//     for (let i = 0; i < data.length; i++) {
-//       console.log(data[i].idUsers + data[i].pseudo); // Visualisation si la boucle est opérationnel //
-
-//       // Création de l'élément en HTML //
-//       //avec pour chaque le lien .html?id et img/nom/prix/description
-//       usersString += `
-//         <div class="user">
-//           <p class="user-pseudo">${data[i].pseudo}</p>
-//           <p class="user-bio">${data[i].bio}</p>
-//         </div>`;
-//     }
-
-//     // Insertion html créé : mis dans .postsContainerHTML (index.html) //
-//     const userContainerHTML = document.querySelector(".userContainer");
-//     userContainerHTML.innerHTML = usersString;
-//   })
-
 //   // Message d'erreur //
 //   .catch((error) => {
 //     console.log("error(du catch de fetch url)"); //+quand pas connexion server,bad url,erreur dans then
@@ -148,12 +128,13 @@ export default {
 
 .userContainer {
   padding: 10px;
-  border: solid 1px blue;
+  /* border: solid 1px blue; */
 }
 
 .user {
   padding: 5px;
   border: solid 2px red;
+  box-shadow: 0px 0px 5px 1px #ff0000;
 }
 .user-pseudo {
   font-weight: bold;

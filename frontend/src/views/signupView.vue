@@ -34,14 +34,14 @@
           <p
             id="pseudoAlert"
             class="userPseudoAlert"
-            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo) === false"
+            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo, 1) === false"
           >
             <i class="fas fa-times-circle"></i>Pseudo incorrect
           </p>
           <p
             id="pseudoOk"
             class="userPseudoValid"
-            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo) === true"
+            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo, 1) === true"
           >
             <i class="fas fa-check-circle"></i>Pseudo accepté
           </p>
@@ -63,14 +63,14 @@
           <p
             id="emailAlert"
             class="userEmailAlert"
-            v-if="!testRegex(/^\w+([\.-]?\w+)*@gpm.fr$/, this.inputEmail)"
+            v-if="!testRegex(/^\w+([\.-]?\w+)*@gpm.fr$/, this.inputEmail, 2)"
           >
             <i class="fas fa-times-circle"></i>Email incorrect
           </p>
           <p
             id="emailOk"
             class="userEmailValid"
-            v-if="testRegex(/^\w+([\.-]?\w+)*@gpm.fr$/, this.inputEmail)"
+            v-if="testRegex(/^\w+([\.-]?\w+)*@gpm.fr$/, this.inputEmail, 2)"
           >
             <i class="fas fa-check-circle"></i>Email accepté
           </p>
@@ -167,7 +167,8 @@
             v-if="
               !testRegex(
                 /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-z^A-Z^0-9]).{8,}$/,
-                this.inputPassword
+                this.inputPassword,
+                3
               )
             "
           >
@@ -179,7 +180,8 @@
             v-if="
               testRegex(
                 /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-z^A-Z^0-9]).{8,}$/,
-                this.inputPassword
+                this.inputPassword,
+                3
               )
             "
           >
@@ -222,18 +224,70 @@ export default {
       postApiResponse: "",
       messageRetour: "",
       inputEmail: "",
+      testEmail: false,
       inputPseudo: "",
-      inputBio: "",
+      testPseudo: false,
       inputPassword: "",
+      testPassword: false,
+      inputBio: "",
+      testBio: false,
+      testFinal: {
+        testEmail: false,
+        testPseudo: false,
+        testPassword: false,
+        testBio: false,
+      },
       inputFile: "",
       image: "",
     };
   },
+  watch: {
+    inputPseudo: function (val) {
+      //console.log("watch", val);
+      this.messageRetour = "";
+    },
+    inputEmail: function (val) {
+      this.messageRetour = "";
+    },
+    inputPassword: function (val) {
+      this.messageRetour = "";
+    },
+    inputBio: function (val) {
+      this.messageRetour = "";
+    },
+    inputFile: function (val) {
+      this.messageRetour = "";
+    },
+  },
+
   methods: {
-    testRegex(laRegex, varATester) {
+    testRegex(laRegex, varATester, testFlag) {
       //const regex = new RegExp(laRegex);
       const valeurTest = laRegex.test(varATester);
-      console.log("valeurTest", valeurTest);
+      //testFlag = valeurTest;
+      switch (testFlag) {
+        case 1:
+          this.testPseudo = valeurTest;
+          // this.testFinal.testPseudo = valeurTest;
+          // console.log("testFlag", testFlag);
+          // console.log("testPseudo", this.testPseudo);
+          // console.log("testFinal", this.testFinal);
+          break;
+        case 2:
+          this.testEmail = valeurTest;
+          // this.testFinal.testEmail = valeurTest;
+          // console.log("testFlag", testFlag);
+          // console.log("testFinal", this.testFinal);
+          break;
+        case 3:
+          this.testPassword = valeurTest;
+          // this.testFinal.testPassword = valeurTest;
+          // console.log("testFlag", testFlag);
+          // console.log("testFinal", this.testFinal);
+          break;
+      }
+      //console.log("valeurTest", valeurTest);
+      //console.log("testFlag", testFlag);
       return valeurTest;
     },
     selectFile() {
@@ -246,69 +300,82 @@ export default {
     },
     envoiInscription: function () {
       // console.log("j'ai cliqué sur bouton inscription");
-      this.messageRetour = "";
-      let formdata = new FormData();
-      //console.log(this.inputPseudo);
-      //console.log(this.inputPassword);
-      //console.log(this.inputEmail);
-      formdata.append("pseudo", this.inputPseudo);
-      formdata.append("password", this.inputPassword);
-      formdata.append("email", this.inputEmail);
-      //console.log(formdata);
-      if (this.inputFile) {
-        formdata.append("image", this.inputFile, this.inputFile.name);
-        // } else {
-        //   formdata.append(
-        //     "image",
-        //     "http://localhost:3000/images/default.jpg",
-        //     "default.jpg"
-        //   );
-      }
-      //formdata.append("id_Users", localStorage.getItem("userId"));
-      formdata.append("bio", this.inputBio);
-      formdata.append("admin", 0);
-      formdata.append("active", 1);
+      // console.log("this.inputPseudo=", this.inputPseudo);
+      // console.log("this.testPseudo", this.testPseudo);
+      // console.log("this.inputPassword=", this.inputPassword);
+      // console.log("this.testPassword", this.testPassword);
+      // console.log("this.inputPseudo=", this.inputPseudo);
+      // console.log("this.testPseudo", this.testPseudo);
+      // console.log("this.inputEmail=", this.inputEmail);
+      // console.log("this.testEmail", this.testEmail);
+      //console.log("objet testFinal=", this.testFinal);
+      if (this.testPseudo || this.testPassword || this.testEmail) {
+        this.messageRetour = "";
+        let formdata = new FormData();
+        //console.log(this.inputPseudo);
+        //console.log(this.inputPassword);
+        //console.log(this.inputEmail);
+        formdata.append("pseudo", this.inputPseudo);
+        formdata.append("password", this.inputPassword);
+        formdata.append("email", this.inputEmail);
+        //console.log(formdata);
+        if (this.inputFile) {
+          formdata.append("image", this.inputFile, this.inputFile.name);
+          // } else {
+          //   formdata.append(
+          //     "image",
+          //     "http://localhost:3000/images/default.jpg",
+          //     "default.jpg"
+          //   );
+        }
+        //formdata.append("id_Users", localStorage.getItem("userId"));
+        formdata.append("bio", this.inputBio);
+        formdata.append("admin", 0);
+        formdata.append("active", 1);
 
-      console.log(formdata);
-      axios
-        // .post(this.url, {
-        //   pseudo: this.pseudo,
-        //   password: this.mdp,
-        //   image: this.avatar,
-        //   email: this.email,
-        //   bio: this.bio,
-        //   admin: 0,
-        //   active: 1,
-        // })
-        .post(this.url, formdata)
-        // .post(this.url, { pseudo: "user60", password: "mdp" })
-        .then((response) => {
-          this.postApiResponse = response.data;
-          this.messageRetour = "inscription...";
-          //console.log(this.postApiResponse);
-          //console.log(this.postApiResponse.userId);
-          //console.log(this.postApiResponse.token);
-          this.loading = true;
-          this.$router.push("/connection"); //redirection vers /connection
-          // localStorage.setItem(
-          //   JSON.stringify(this.postApiResponse.userId),
-          //   JSON.stringify(this.postApiResponse.token)
-          // );
-        })
-        .catch((error) => {
-          console.log(error);
-          this.messageRetour = error.response.data.erreur;
-          //console.log(error.response.data);
-          console.log(error.response.status);
-          if (error.response.status == 500) {
-            this.messageRetour = "fichier trop gros (3Mo max)!";
-          } else {
+        //console.log(formdata);
+        axios
+          // .post(this.url, {
+          //   pseudo: this.pseudo,
+          //   password: this.mdp,
+          //   image: this.avatar,
+          //   email: this.email,
+          //   bio: this.bio,
+          //   admin: 0,
+          //   active: 1,
+          // })
+          .post(this.url, formdata)
+          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .then((response) => {
+            this.postApiResponse = response.data;
+            this.messageRetour = "inscription...";
+            //console.log(this.postApiResponse);
+            //console.log(this.postApiResponse.userId);
+            //console.log(this.postApiResponse.token);
+            this.loading = true;
+            this.$router.push("/connection"); //redirection vers /connection
+            // localStorage.setItem(
+            //   JSON.stringify(this.postApiResponse.userId),
+            //   JSON.stringify(this.postApiResponse.token)
+            // );
+          })
+          .catch((error) => {
+            console.log(error);
+            this.messageRetour = error.response.data.erreur;
+            //console.log(error.response.data);
             console.log(error.response.status);
-            //this.messageRetour = "une erreur est survenue";
-          }
-          //this.messageRetour = this.postApiResponse.error;
-          //this.loading = false;
-        });
+            if (error.response.status == 500) {
+              this.messageRetour = "fichier trop gros (3Mo max)!";
+            } else {
+              console.log(error.response.status);
+              //this.messageRetour = "une erreur est survenue";
+            }
+            //this.messageRetour = this.postApiResponse.error;
+            //this.loading = false;
+          });
+      } else {
+        this.messageRetour = "probleme!";
+      }
     },
   },
 };
@@ -327,7 +394,8 @@ export default {
 
 .userContainer {
   padding: 10px;
-  border: solid 1px blue;
+  /* border: solid 1px blue; */
+  box-shadow: 0px 0px 5px 1px var(--primaryColor3);
 }
 
 .user {

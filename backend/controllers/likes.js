@@ -9,12 +9,12 @@ const fs = require("fs"); //package fs de node
 //!__ recoit : raw-JSON                               __//
 //!__ renvoie : { message: String }                  __//
 
-//essai de tout faire sur modify : creer et modifier
+//ici on va creer ET modifier
 //car le front envoi juste un id user et idpost et un like à zero ou 1 sans faire la requet voir si champ like existe deja quand on clic sur coeur
 //il faut que le back regarde si champ existe et recup idlike et mette à jour la valeur
 //si n'existe pas, cree la donnée
 //tout faire en mode post du coté de la requete front/postman?? (pas de put, il faut choisir)
-//autre solution : à chaque nouveau user ou nouveau post, la base sql cree un champ like à valeur à zero par defaut (e tdans ce cas là, juste un put necessaire; mais va gonfler++ la bdd inutilement pour des likes qui ne seraient jamais créés sans ça)
+//autre solution : à chaque nouveau user ou nouveau post, la base sql cree un champ like à valeur à zero par defaut (et dans ce cas là, juste un put necessaire; mais va gonfler++ la bdd inutilement pour des likes qui ne seraient jamais créés sans ça)
 
 exports.modifyLikes = async (req, res, next) => {
   try {
@@ -28,12 +28,13 @@ exports.modifyLikes = async (req, res, next) => {
     let likeId; //id du like, à trouver dans bdd (si existe déjà) grace à id_user/post fourni dans req
     let likeUpdate = req.body.like; //la valeur qu'on veut donner au like d'apres req
     let idPosts = req.body.id_Posts;
+    if (likeUpdate < 0 || likeUpdate > 1) throw error;
     if (results1.length === 0) {
       //si aucun resultat, alors on va creer ce champ like (verifier avant que user et post id existant bien?de toute facon erreur sinon->catch du create)
       console.log("pas de resultats, on crée!");
       // CREATION du champ like
       let newLike = {
-        like: likeUpdate, //sera forcément 0 ou 1 (tester!!)
+        like: likeUpdate, //sera forcément 0 ou 1 (vérifié)
         id_Posts: req.body.id_Posts,
         id_Users: req.body.id_Users,
       };

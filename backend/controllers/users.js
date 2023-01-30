@@ -47,20 +47,38 @@ exports.getOneUsers = (req, res, next) => {
 };
 
 // ! --------- modifyUser ----------- ! //
-exports.modifyUser = (req, res, next) => {
-  db.promise()
-    .query(" SELECT * FROM groupomania.users_table WHERE `idUsers`=? ", [
-      req.params.id,
-    ])
-    .then(([results]) => {
-      // console.log("---req---");
-      // console.log(req);
-      console.log("---req.body---");
-      console.log("avatar ds bdd", results[0].avatar);
-      // console.log("results[0].avatar",results[0].avatar);
+
+exports.modifyUser = async (req, res, next) => {
+  try {
+    const [RES_InfoUserAModifier] = await db
+      .promise()
+      .query(" SELECT * FROM groupomania.users_table WHERE `idUsers`=? ", [
+        req.params.id,
+      ]);
+    const idUser = req.params.id; //id du user à delete
+    const useridDuDemandeur = req.token.userId; //Demandeur de requete modifier
+    console.log("idUser", idUser);
+    console.log("typeof idUser", typeof idUser);
+    console.log("useridDuDemandeur", useridDuDemandeur);
+    console.log("typeof useridDuDemandeur", typeof useridDuDemandeur);
+    const [RES_adminStatusDemandeur] = await db
+      .promise()
+      .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
+        useridDuDemandeur,
+      ]);
+    const adminStatusDuDemandeur = RES_adminStatusDemandeur[0].admin;
+    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+
+    if (idUser == useridDuDemandeur || adminStatusDuDemandeur === 1) {
+      console.log(
+        "admis (demandeur est soit le createur du post, soit un admin)"
+      );
+
+      const bddAvatarUserAModifier = RES_InfoUserAModifier[0].avatar;
+      console.log("avatar ds bdd", bddAvatarUserAModifier);
       let oldfilename = "rien";
-      if (results[0].avatar) {
-        oldfilename = results[0].avatar.split("/images/")[1];
+      if (bddAvatarUserAModifier) {
+        oldfilename = bddAvatarUserAModifier.split("/images/")[1];
         console.log("oldfilename=", oldfilename);
       }
       //maintenant filename contient le nom du fichier de l'avatar ou "rien" s'il n'y en avait pas pas
@@ -99,85 +117,95 @@ exports.modifyUser = (req, res, next) => {
       }
 
       //console.log("postObject",postObject);
-      db.promise()
+      const RES_updateUser = await db
+        .promise()
         .query(
           " UPDATE `groupomania`.`users_table` SET ?  WHERE `idUsers`=? ",
-          [postObject, req.params.id]
-        )
-        .then(([results]) => {
-          //console.log("---then1-modify---");
-          res.status(200).json(results);
-        })
-        .catch((error) => {
-          //console.log("---catch---");
-          res.status(400).json({ error: error });
-        });
-    })
-    .catch((error) => {
-      //console.log("---user pas trouvé---");
-      res.status(404).json({ error: error });
-    });
+          [postObject, idUser]
+        );
+      console.log("on a modifié user" + idUser);
+      res.status(200).json(RES_updateUser);
+    } else {
+      console.log("pas admis");
+      res.status(401).json({
+        error: "! pas autorisé (vous n'etes pas l'auteur ni admin) !",
+      });
+    }
+  } catch (error) {
+    console.log("probleme lors modif du commentaire");
+    res.status(400).json({ error: error });
+  }
 };
 
 // ! --------- deleteUsers ----------- ! //
-exports.deleteUsers = (req, res, next) => {
-  //pour admin
 
-  db.promise()
-    .query(" SELECT * FROM groupomania.users_table WHERE `idUsers`=? ", [
-      req.params.id,
-    ])
-    .then(([results]) => {
-      //console.log("---then-find---");
-      //console.log(req);
-      //console.log(results);
-      //console.log(results[0].image);
+exports.deleteUsers = async (req, res, next) => {
+  try {
+    const [RES_InfoUserADelete] = await db
+      .promise()
+      .query(" SELECT * FROM groupomania.users_table WHERE `idUsers`=? ;", [
+        req.params.id,
+      ]);
+    const idUser = req.params.id; //id du user à delete
+    const useridDuDemandeur = req.token.userId; //Demandeur de requete modifier
+    console.log("idUser", idUser);
+    console.log("typeof idUser", typeof idUser);
+    console.log("useridDuDemandeur", useridDuDemandeur);
+    console.log("typeof useridDuDemandeur", typeof useridDuDemandeur);
+    const [RES_adminStatusDuDemandeur] = await db
+      .promise()
+      .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
+        useridDuDemandeur,
+      ]);
+    const adminStatusDuDemandeur = RES_adminStatusDuDemandeur[0].admin;
+    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+    //on vérifie légitimité du demandeur
+    if (idUser == useridDuDemandeur || adminStatusDuDemandeur === 1) {
+      console.log("admis");
       let filename = "rien";
-      if (results[0].avatar) {
-        console.log("avatar ds bdd=", results[0].avatar);
-        filename = results[0].avatar.split("/images/")[1];
+      if (RES_InfoUserADelete[0].avatar) {
+        const bddAvatarUserADelete = RES_InfoUserADelete[0].avatar;
+        console.log("avatar ds bdd=", bddAvatarUserADelete);
+        filename = bddAvatarUserADelete.split("/images/")[1];
         console.log("filename=", filename);
       }
       //maintenant filename contient le nom du fichier de l'avatar ou "rien" s'il n'y en a pas
       if (filename === "rien" || filename === "default.gif") {
-        db.promise()
-          .query(" DELETE FROM groupomania.users_table WHERE `idUsers`=? ;", [
-            req.params.id,
-          ])
-          .then(([results]) => {
-            console.log("---j'efface juste le user---");
-            res.status(200).json(results);
-          })
-          .catch((error) => {
-            //console.log("---catch---");
-            res.status(500).json({ error: error });
-          });
+        const [RES_deleteUser_sansAvatar] = await db
+          .promise()
+          .query("DELETE FROM groupomania.users_table WHERE `idUsers`=? ;", [
+            idUser,
+          ]);
+        console.log("on a bien supprimé juste user" + idUser);
+        res.status(200).json(RES_deleteUser_sansAvatar);
       } else {
         //s'il y a bien un fichier pour l'avatar et que ce n'est pas default.gif, alors on supprime le fichier (+le user)
-        fs.unlink(`images/${filename}`, () => {
-          db.promise()
-            .query(" DELETE FROM groupomania.users_table WHERE `idUsers`=? ;", [
-              req.params.id,
-            ])
-            .then(([results]) => {
-              console.log("---j'efface fichier+user---");
-              res.status(200).json(results);
-            })
-            .catch((error) => {
-              //console.log("---catch---");
-              res.status(500).json({ error: error });
-              //attention: ne dit rien si adresse d'une image inexistante, changer par :
-              //fs.unlink("example_file.txt", (err => {
-              //   if (err) console.log(err);
-              //   else {}
-            });
+        fs.unlink(`images/${filename}`, async () => {
+          const [RES_deleteUser_etAvatar] = await db
+            .promise()
+            .query("DELETE FROM groupomania.users_table WHERE `idUsers`=? ;", [
+              idUser,
+            ]);
+          console.log(
+            "on a bien supprimé user" + idUser + " ET fichier avatar"
+          );
+          res.status(200).json(RES_deleteUser_etAvatar);
+          //attention: ne dit rien si adresse d'une image inexistante, changer par :
+          //fs.unlink("example_file.txt", (err => {
+          //   if (err) console.log(err);
+          //   else {}
         });
       }
-    })
-    .catch((error) => {
-      //console.log("---pas trouvé cet user---");
-      res.status(404).json({ error: error });
-    });
+    } else {
+      console.log("pas admis");
+      res.status(401).json({
+        error: "! pas autorisé (vous n'etes pas cette personne ni l'admin) !",
+      });
+    }
+  } catch (error) {
+    console.log("probleme lors delete user");
+    res.status(400).json({ error: error });
+  }
 };
 
 // ! -------------------- ! //

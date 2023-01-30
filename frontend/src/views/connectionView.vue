@@ -109,15 +109,27 @@ export default {
   // emits: ["update:isConnected"],
   watch: {
     pseudo: function (val) {
-      console.log("watch", val);
+      //console.log("watch", val);
       this.messageRetour = "";
     },
     mdp: function (val) {
-      console.log("watch", val);
+      //console.log("watch", val);
       this.messageRetour = "";
     },
   },
   methods: {
+    configAxios() {
+      let jwtoken = localStorage.getItem("userToken");
+      //console.log(jwtoken);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtoken}`,
+        },
+      };
+      return config;
+    },
+
     async envoi() {
       await axios
         .post(this.url, { pseudo: this.pseudo, password: this.mdp })
@@ -147,7 +159,7 @@ export default {
 
           //on stocke dans le storage un tableau avec tous les idpost likés par cet userId
           await axios
-            .get(this.urlallLikes + "/" + this.userId)
+            .get(this.urlallLikes + "/" + this.userId, this.configAxios())
             .then((response) => {
               this.getApiResponseAllLikes = response.data;
               // console.log("likes", this.getApiResponseAllLikes);
@@ -174,7 +186,7 @@ export default {
 
           //on stocke dans le storage un tableau avec tous les idpost commentés par cet userId
           await axios
-            .get(this.urlallComments + "/" + this.userId)
+            .get(this.urlallComments + "/" + this.userId, this.configAxios())
             .then((response) => {
               this.getApiResponseAllComments = response.data;
               // console.log("likes", this.getApiResponseAllLikes);
@@ -226,7 +238,7 @@ export default {
 
 .userContainer {
   padding: 10px;
-  border: solid 1px blue;
+  border: solid 1px var(--primaryColor3);
 }
 
 .user {

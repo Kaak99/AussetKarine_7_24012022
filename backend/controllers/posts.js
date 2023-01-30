@@ -137,7 +137,7 @@ exports.deletePosts = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("probleme lors delete du commentaire");
+    console.log("probleme lors delete du message");
     res.status(400).json({ error: error });
   }
 };
@@ -308,22 +308,16 @@ exports.modifyPosts = async (req, res, next) => {
         console.log("postObject", postObject);
       }
       delete postObject.id_Users;
-      //on ne veut pas inscrire id_users car si moderation, remplace nom user par nom moderateur
+      //on ne veut pas inscrire id_users car si moderation, on veut garder nom auteur post, pas l'écraser par celui du moderateur
       //console.log(postObject);
       const RES_updatePost = await db
         .promise()
         .query(
           " UPDATE `groupomania`.`posts_table` SET ?  WHERE `idPosts`=? ",
           [postObject, req.params.id]
-        )
-        .then(([RES_updatePost]) => {
-          //console.log("---then1-modify---");
-          res.status(200).json(RES_updatePost);
-        })
-        .catch((error) => {
-          //console.log("---catch---");
-          res.status(400).json({ error: error });
-        });
+        );
+      console.log("on a modifié le post");
+      res.status(200).json(RES_updatePost);
     } else {
       console.log("pas admis");
       res.status(401).json({
@@ -335,86 +329,3 @@ exports.modifyPosts = async (req, res, next) => {
     res.status(400).json({ error: error });
   }
 };
-
-// //!__    LIKES&DISLIKES SAUCE (POST+id sauce)    __//
-// //!__ recoit : { userId: String, like: Number }  __//
-// //!__ renvoie : { message: String }              __//
-
-// exports.likeDislikeSauce = (req, res, next) => {
-//   //requete : userId(req.body.userId) et code like0/1/-1 (req.body.like)//
-//   //reponse attendue : message string//
-//   const likeChange = req.body.like;//le code 0/1/-1 renvoyé par le front
-//   const userId = req.body.userId;//le user qui veut liker/disliker
-//   const sauceId = req.params.id;  //la sauce d'ou part la requete
-//   console.log("--------------------------------");
-//   console.log(likeChange);
-//   console.log(userId);
-//   console.log(sauceId);
-//   console.log("--------------------------------");
-//   // 3 cas s'apres la doc api :
-//   // sous entend que le front deja regardé si user avait liké disliké avant ou non
-//   // et la reponse 0 1 -1 est la synthése de toutes les possibilités
-//   try{
-//     //! cas 1 : userId a liké (et n'avait pas liké ou disliké avant)//
-//     if (likeChange=== 1) {
-//       Sauce.updateOne({_id: sauceId},{ $inc: {likes : +1}, $push: {usersLiked : userId}})
-//         .then( () => res.status(200).json({message : " sauce likée"}))
-//         .catch((error) => res.status(400).json({error}) )
-//     }
-
-//     //! cas 2 : userId a disliké (et n'avait pas liké ou disliké avant)//
-//     if (likeChange=== (-1)) {
-//       Sauce.updateOne({_id: sauceId},{ $inc: {dislikes : +1}, $push: {usersDisliked : userId}})
-//         .then( () => res.status(200).json({message : " sauce dislikée"}))
-//         .catch((error) => res.status(400).json({error}) )
-//     }
-
-//     //! cas 3 : userId avait liké ou disliké avant et vient d'annuler son like/dislike précedent//
-//     if (likeChange=== 0) {
-//       Sauce.findOne({_id: sauceId})
-//         .then( (sauce) => {
-//           if (sauce.usersLiked.includes(userId)) {//si son vote précédent == like
-//             Sauce.updateOne({_id: sauceId},{ $inc: {likes : -1}, $pull: {usersLiked : userId}})
-//         .then( () => res.status(200).json({message : "like retiré"}))//on le retire
-//         .catch((error) => res.status(400).json({error}) )
-//           }
-//           if (sauce.usersDisliked.includes(userId)) {//si son vote précédent == dislike
-//             Sauce.updateOne({_id: sauceId},{ $inc: {dislikes : -1}, $pull: {usersDisliked : userId}})
-//             .then( () => res.status(200).json({message : "dislike retiré"}))//on le retire
-//             .catch((error) => res.status(400).json({error}) )
-//           }
-//         })
-//     }
-
-//   }
-//   catch{error =>{
-//     console.log(req.body);
-//     console.log("probleme avec les like/dislike");
-//     res.status(500).json({error});
-//   }}
-
-// }; // fin du exports.likeDislikeSauce
-
-// //pour voir le contenu de la requete//
-// /*exports.xxxSauce = (req, res, next) => {
-// console.log(req.body);
-// res.status(201).json({message: 'from xxxSauce!'});}*/
-
-// /*note
-//   const thing = new Thing({
-//     _id: req.params.id,
-//     title: req.body.title,
-//     description: req.body.description,
-//     imageUrl: req.body.imageUrl,
-//     price: req.body.price,
-//     userId: req.body.userId
-//   });
-
-//   =
-
-//     const thing = new Thing({
-//     ...req.body,
-//     _id: req.params.id
-//   });
-
-// */

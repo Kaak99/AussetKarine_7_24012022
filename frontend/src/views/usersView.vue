@@ -106,12 +106,14 @@ export default {
 
 .userContainer {
   padding: 10px;
-  border: solid 2px darkblue;
+  /* border: solid 2px darkblue; */
+  box-shadow: 0px 0px 5px 1px var(--primaryColor3);
 }
 
 .user {
   padding: 5px;
   border: solid 1px #fd2d01;
+  box-shadow: 0px 0px 0.2px 0.1px #ff0000;
   /* #fd2d01=var(--main-color1); */
 }
 </style>

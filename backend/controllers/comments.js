@@ -76,47 +76,71 @@ exports.getCommentsNumber4OnePost = (req, res, next) => {
 //!__ recoit : -                          __//
 //!__ renvoie { message: String }         __//
 
-exports.deleteComments = (req, res, next) => {
-  db.promise()
-    .query(" DELETE FROM groupomania.comments_table WHERE `idComments`=? ;", [
-      req.params.id,
-    ])
-    .then(([results2]) => {
+exports.deleteComments = async (req, res, next) => {
+  try {
+    const [RES_InfoComADelete] = await db
+      .promise()
+      .query(
+        " SELECT * FROM groupomania.comments_table WHERE `idComments`=? ;",
+        [req.params.id]
+      );
+    const idDuCom = req.params.id; //id du com à delete
+    const idDuPost = req.params.idpost; //id du post parent de ce com à delete
+    const useridDuCreateurDuCom = RES_InfoComADelete[0].id_Users; //createur du com à delete
+    const useridDuDemandeur = req.token.userId; //Demandeur de requete delete
+    console.log("idDuCom", idDuCom);
+    console.log("idDuPost", idDuPost);
+    console.log("useridDuCreateurDuCom", useridDuCreateurDuCom);
+    console.log("useridDuDemandeur", useridDuDemandeur);
+    const [RES_adminStatusDuDemandeur] = await db
+      .promise()
+      .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
+        useridDuDemandeur,
+      ]);
+    const adminStatusDuDemandeur = RES_adminStatusDuDemandeur[0].admin;
+    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+    //on vérifie légitimité du demandeur
+    if (
+      useridDuCreateurDuCom === useridDuDemandeur ||
+      adminStatusDuDemandeur === 1
+    ) {
+      console.log("admis");
+      await db
+        .promise()
+        .query(
+          "DELETE FROM groupomania.comments_table WHERE `idComments`=? ;",
+          [idDuCom]
+        );
       console.log("on a bien supprimé le commentaire");
-      //res.status(200).json(results);(=non, il faut le donner à la fin de tous les then)
       //il reste à mettre à jour le nombreComment dans tablePosts
-      console.log(req.params.idpost);
-      db.promise()
+      //console.log(idDuPost);
+      const [RES_nbCommentPourCePost] = await db
+        .promise()
         .query(
           " SELECT count(c.idComments) as nbComment from groupomania.comments_table as c WHERE id_Posts=? ;",
-          [req.params.idpost]
-        )
-        .then(([results]) => {
-          console.log("on a compté le nombre de com(nbComment) pour ce post:");
-          console.log(results[0].nbComment);
-          db.promise()
-            .query(
-              " UPDATE `groupomania`.`posts_table` SET `nombreComment`=?  WHERE `idPosts`=? ",
-              [results[0].nbComment, req.params.idpost]
-            )
-            .then(([results]) => {
-              console.log("on a bien ajusté le nombreComment dans tablePosts");
-              res.status(200).json(results);
-            })
-            .catch((error) => {
-              console.log("erreur update nombreComment");
-              res.status(400).json({ error: error });
-            });
-        })
-        .catch((error) => {
-          console.log("erreur dans compte de nbComment");
-          res.status(400).json({ error: error });
-        });
-    })
-    .catch((error) => {
-      console.log("probleme lors suppression du commentaire");
-      res.status(400).json({ error: error });
-    });
+          [idDuPost]
+        );
+      console.log("on a compté le nombre de com(nbComment) pour ce post:");
+      const nbCommentPourCePost = RES_nbCommentPourCePost[0].nbComment;
+      console.log(nbCommentPourCePost);
+      const [RES_DeleteComment] = await db
+        .promise()
+        .query(
+          " UPDATE `groupomania`.`posts_table` SET `nombreComment`=?  WHERE `idPosts`=? ",
+          [nbCommentPourCePost, idDuPost]
+        );
+      console.log("on a bien ajusté le nombreComment dans tablePosts");
+      res.status(200).json(RES_DeleteComment);
+    } else {
+      console.log("pas admis");
+      res.status(401).json({
+        error: "! pas autorisé (vous n'etes pas l'auteur ni admin) !",
+      });
+    }
+  } catch (error) {
+    console.log("probleme lors delete du commentaire");
+    res.status(400).json({ error: error });
+  }
 };
 
 //!__        CREATE COMMENTS (POST)              __//
@@ -192,56 +216,49 @@ exports.createComments = (req, res, next) => {
 //!__ recoit : raw-JSON                               __//
 //!__ renvoie : { message: String }                  __//
 
-exports.modifyComments = (req, res, next) => {
-  //console.log(req);
-  //console.log(req.body);
-  //db.promise().query(' SELECT * FROM groupomania.comments_table WHERE `idComments`=? ', [req.params.id])
-  //const commentsObject = { contenu: req.body.contenu, id_Posts: req.body.id_Posts, id_Users: req.body.id_Users };
-  //console.log(commentsObject);
-  //db.promise().query(' UPDATE `groupomania`.`comments_table` SET ?  WHERE `idComments`=? ', [commentsObject, req.params.id])
-
-  //fonctionne (mais juste contenu à changer donc inutile)//
-  //db.promise().query(' UPDATE `groupomania`.`comments_table` SET contenu=?,id_Posts=?,id_Users=?  WHERE `idComments`=? ', [req.body.contenu, req.body.id_Posts, req.body.id_Users, req.params.id])
-
-  //on a juste besoin de changer le contenu
-  db.promise()
-    .query(
-      " UPDATE `groupomania`.`comments_table` SET `contenu`=?  WHERE `idComments`=? ",
-      [req.body.contenu, req.params.id]
-    )
-    .then(([results]) => {
-      //console.log("---modifing...---");
-      res.status(200).json(results);
-    })
-    .catch((error) => {
-      //console.log("---catch (modify)---");
-      res.status(400).json({ error: error });
-    });
+exports.modifyComments = async (req, res, next) => {
+  try {
+    const [RES_InfoComAModifier] = await db
+      .promise()
+      .query(
+        " SELECT * FROM `groupomania`.`comments_table` WHERE `idComments`=? ;",
+        [req.params.id]
+      );
+    const idDuCom = req.params.id; //id du com à modif
+    const useridDuCreateurDuCom = RES_InfoComAModifier[0].id_Users; //createur du com à modifier
+    const useridDuDemandeur = req.token.userId; //Demandeur de requete modifier
+    console.log("idDuCom", idDuCom);
+    console.log("useridDuCreateurDuCom", useridDuCreateurDuCom);
+    console.log("useridDuDemandeur", useridDuDemandeur);
+    const [RES_adminStatusDuDemandeur] = await db
+      .promise()
+      .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
+        useridDuDemandeur,
+      ]);
+    const adminStatusDuDemandeur = RES_adminStatusDuDemandeur[0].admin;
+    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+    //on vérifie légitimité du demandeur
+    if (
+      useridDuCreateurDuCom === useridDuDemandeur ||
+      adminStatusDuDemandeur === 1
+    ) {
+      console.log("admis");
+      const [RES_updateDuCom] = await db
+        .promise()
+        .query(
+          " UPDATE `groupomania`.`comments_table` SET `contenu`=?  WHERE `idComments`=? ",
+          [req.body.contenu, req.params.id]
+        );
+      console.log("on a bien modifié le commentaire");
+      res.status(200).json(RES_updateDuCom);
+    } else {
+      console.log("pas admis");
+      res.status(401).json({
+        error: "! pas autorisé (vous n'etes pas l'auteur ni admin) !",
+      });
+    }
+  } catch (error) {
+    console.log("probleme lors modif du commentaire");
+    res.status(400).json({ error: error });
+  }
 };
-
-/*fonctionne (mais juste contenu à changer donc inutile)-----------------------------
-  db.promise().query(' UPDATE `groupomania`.`comments_table` SET contenu=?,id_Posts=?,id_Users=?  WHERE `idComments`=? ', [req.body.contenu, req.body.id_Posts, req.body.id_Users, req.params.id])
-//-------------------------------------*/
-
-// //pour voir le contenu de la requete//
-// /*exports.xxxSauce = (req, res, next) => {
-// console.log(req.body);
-// res.status(201).json({message: 'from xxxSauce!'});}*/
-
-// /*note
-//   const thing = new Thing({
-//     _id: req.params.id,
-//     title: req.body.title,
-//     description: req.body.description,
-//     imageUrl: req.body.imageUrl,
-//     price: req.body.price,
-//     userId: req.body.userId
-//   });
-
-//   =
-
-//     const thing = new Thing({
-//     ...req.body,
-//     _id: req.params.id
-//   });
-//
