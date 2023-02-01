@@ -245,7 +245,7 @@ exports.signup = (req, res, next) => {
         req.file.filename
       }`,
       email: req.body.email,
-      bio: req.body.bio,
+      // bio: req.body.bio,
       admin: req.body.admin,
       active: req.body.active,
     };

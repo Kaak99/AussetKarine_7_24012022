@@ -16,14 +16,12 @@
             <p class="user-bio">presentation</p>
           </div>
          </div> -->
-          <label for="userPseudo" title="au moins 5 lettres"
-            >Mon Pseudo :</label
-          >
+          <label for="userPseudo"></label>
           <input
             v-model="pseudo"
             type="text"
             size="10"
-            maxlength="20"
+            maxlength="25"
             class="centerTxt inputTxt"
             name="pseudo"
             id="pseudo"
@@ -37,18 +35,16 @@
             <i class="fas fa-check-circle"></i>Pseudo accepté
           </p> -->
 
-          <label for="userPassword" title="au moins 6 caractères"
-            >Mon mot de passe :</label
-          >
+          <label for="userPassword"></label>
           <input
             v-model="mdp"
             type="password"
             size="10"
-            maxlength="16"
-            class="centerTxt inputTxt"
+            maxlength="20"
+            class="centerTxt inputTxt userPassword"
             name="userPassword"
             id="userPassword"
-            placeholder="mot de passe"
+            placeholder="votre mot de passe"
             required
           />
           <!-- <p id="passwordAlert" class="userPasswordAlert">
@@ -57,7 +53,11 @@
           <p id="passwordOk" class="userPasswordValid">
             <i class="fas fa-check-circle"></i>mot de passe accepté
           </p> -->
-          <button class="buttonValid" v-on:click.prevent="envoi">
+          <button
+            class="buttonValid"
+            id="buttonValid"
+            v-on:click.prevent="envoi"
+          >
             Je me connecte !
           </button>
           <p class="messageRetour">{{ messageRetour }}</p>
@@ -250,15 +250,23 @@ export default {
   padding: 5px;
   width: 75%;
 }
+
+.userPassword {
+  margin: 10px auto 20px auto;
+}
 .buttonValid {
-  margin: 10px auto;
+  margin: 20px auto 10px auto;
   padding: 5px;
   width: 50%;
 }
 @media all and (max-width: 400px) /* <300w*/ {
-  .inputTxt,
-  .buttonValid {
+  .inputTxt {
     margin: 6px auto;
+    padding: 3px;
+    width: 100%;
+  }
+  .buttonValid {
+    margin: 16px auto 6px auto;
     padding: 3px;
     width: 100%;
   }
@@ -270,7 +278,7 @@ export default {
     width: 50%;
   }
   .buttonValid {
-    margin: 10px auto;
+    margin: 16px auto 10px auto;
     padding: 5px;
     width: 30%;
   }

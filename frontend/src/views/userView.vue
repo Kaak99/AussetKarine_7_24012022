@@ -23,7 +23,7 @@
           <img alt="avatar" class="avatar" v-bind:src="getApiResponse.avatar" />
           <p class="user-email">Adresse email : {{ getApiResponse.email }}</p>
 
-          <p class="user-bio">Bio : {{ getApiResponse.bio }}</p>
+          <p class="user-bio">{{ getApiResponse.bio }}</p>
           <p class="user-time">Profil créé le : {{ getApiResponse.time }}</p>
           <!-- <img href="http://localhost>" -->
         </div>
@@ -139,6 +139,11 @@ export default {
 .user-pseudo {
   font-weight: bold;
   text-transform: uppercase;
+}
+.user-bio {
+  /* white-space: pre; */
+  white-space: pre-wrap;
+  box-shadow: 0px 0px 2px 1px #ff0000;
 }
 .user-time {
   font-style: italic;

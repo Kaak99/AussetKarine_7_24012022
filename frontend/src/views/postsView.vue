@@ -21,18 +21,14 @@
               required
             />
             <p
-              id="titleAlert"
-              class="titleAlert"
-              v-if="testRegex(/^.{2,50}$/, this.inputTitle, 1) === false"
-            >
-              <i class="fas fa-times-circle"></i>Titre incorrect
-            </p>
-            <p
               id="titleOk"
               class="titleValid"
               v-if="testRegex(/^.{2,50}$/, this.inputTitle, 1)"
             >
-              <i class="fas fa-check-circle"></i>Titre accepté
+              <i class="fas fa-check-circle"></i>Correct
+            </p>
+            <p v-else id="titleAlert" class="titleAlert">
+              <i class="fas fa-times-circle"></i>Incorrect (2 à 50 caractères)
             </p>
 
             <label for="post-write" title="2 à 500 caractères">Contenu :</label>
@@ -45,21 +41,17 @@
               name="inputText"
               id="inputText"
               placeholder="2 à 500 caractères"
-              required
+              wrap="soft"
             ></textarea>
-            <p
-              id="inputTextAlert"
-              class="inputTextAlert"
-              v-if="testRegex(/^(.|\s){2,500}$/, this.inputText, 2) === false"
-            >
-              <i class="fas fa-times-circle"></i>Contenu incorrect
-            </p>
             <p
               id="inputTextOk"
               class="inputTextValid"
               v-if="testRegex(/^(.|\s){2,500}$/, this.inputText, 2)"
             >
-              <i class="fas fa-check-circle"></i>Contenu accepté
+              <i class="fas fa-check-circle"></i>Correct
+            </p>
+            <p v-else id="inputTextAlert" class="inputTextAlert">
+              <i class="fas fa-times-circle"></i>Incorrect (2 à 500 caractères)
             </p>
 
             <label for="post-image" title="fichier jpg/webp/gif/png <3mo"
@@ -711,6 +703,7 @@ export default {
 .post-text {
   width: 90%;
   margin: 10px auto;
+  white-space: pre-wrap;
 }
 
 .fa-solid {

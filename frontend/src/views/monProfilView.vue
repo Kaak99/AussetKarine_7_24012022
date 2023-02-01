@@ -53,18 +53,14 @@
             required
           />
           <p
-            id="pseudoAlert"
-            class="userPseudoAlert"
-            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo, 1) === false"
-          >
-            <i class="fas fa-times-circle"></i>Pseudo incorrect
-          </p>
-          <p
             id="pseudoOk"
             class="userPseudoOK"
             v-if="testRegex(/^\w{2,25}$/, this.inputPseudo, 1) === true"
           >
             <i class="fas fa-check-circle"></i>Pseudo accepté
+          </p>
+          <p v-else id="pseudoAlert" class="userPseudoAlert">
+            <i class="fas fa-times-circle"></i>Pseudo incorrect
           </p>
 
           <label for="userBio" title="0-200 caractères)">Bio</label>
@@ -76,20 +72,17 @@
             cols="30"
             maxlength="120"
             class="centerTxt"
+            wrap="soft"
           />
-          <p
-            id="bioAlert"
-            class="userBioAlert"
-            v-if="!testRegex(/^.{0,200}$/, this.inputBio)"
-          >
-            <i class="fas fa-times-circle"></i>Bio incorrecte
-          </p>
           <p
             id="bioOk"
             class="userBioValid"
-            v-if="testRegex(/^.{0,200}$/, this.inputBio)"
+            v-if="testRegex(/^(.|\s){2,500}$/, this.inputBio, 2)"
           >
             <i class="fas fa-check-circle"></i>Bio acceptée
+          </p>
+          <p v-else id="bioAlert" class="userBioAlert">
+            <i class="fas fa-times-circle"></i>Bio incorrecte
           </p>
 
           <label for="userAvatar" title="fichier jpg/webp/gif/png <3mo"
@@ -178,10 +171,19 @@ export default {
     testRegex(laRegex, varATester, testFlag) {
       //const regex = new RegExp(laRegex);
       const valeurTest = laRegex.test(varATester);
-      if (testFlag === 1) {
-        this.testInputPseudo = valeurTest;
+      // if (testFlag === 1) {
+      //   this.testInputPseudo = valeurTest;
+      // }
+      switch (testFlag) {
+        case 1:
+          this.testInputPseudo = valeurTest;
+          break;
+        case 2:
+          this.testInputBio = valeurTest;
+          break;
       }
       //console.log("valeurTest", valeurTest);
+      console.log("messageRetour", this.messageRetour);
       return valeurTest;
     },
     configAxios() {
@@ -245,8 +247,12 @@ export default {
 
     modifyUser: function () {
       // console.log("j'ai validé les modif");
-      if (this.testInputPseudo) {
+      console.log("messageRetour", this.messageRetour);
+      console.log("testInputPseudo", this.testInputPseudo);
+      console.log("testInputBio", this.testInputBio);
+      if (this.testInputPseudo && this.testInputBio) {
         this.messageRetour = "";
+
         // this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
         this.thisUrl = `${this.url}/users/${this.thisId}`;
         let formdata = new FormData();
@@ -284,6 +290,7 @@ export default {
           .then((response) => {
             this.postApiResponse = response.data;
             this.messageRetour = "profil modifié !";
+            console.log("messageRetour", this.messageRetour);
             //console.log(this.postApiResponse);
             //console.log(this.postApiResponse.userId);
             //console.log(this.postApiResponse.token);

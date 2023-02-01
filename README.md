@@ -11,7 +11,7 @@ Utilisation de NodeJs, npm, Express et Mysql pour le backend
 ## Pour installer le projet :
 
 Installer le Systême de gestion de base de données mySql
-installer node js , qui contieny le gestionnaire de paquets npm
+installer node js , qui contient le gestionnaire de paquets npm
 
 ### Frontend:
 AussetKarine_7_24012022 > frontend
@@ -66,7 +66,7 @@ L’évaluateur doit être capable de cloner l’application et de la lancer.
 > Tu devras t’assurer que l’utilisateur puisse requêter les données requises depuis SQL et puisse soumettre ces changements à la base de données SQL.
 > Les données de connexion doivent également être sécurisées. 
 
-Tu vas devoir :
+> Tu vas devoir :
 > * choisir la fonctionnalité que tu vas développer,
 > * estimer le temps que tu passeras sur le développement de chaque fonctionnalité,
 > * développer la première version de l'application.
@@ -87,10 +87,10 @@ Compétences évaluées :
 Spécifications fonctionnelles : 
 [Groupomania_Specs_FR_DWJ_VF.pdf](https://s3-eu-west-1.amazonaws.com/course.oc-static.com/projects/DWJ_FR_P7/Groupomania_Specs_FR_DWJ_VF.pdf)
 
-Le projet consiste à construire un réseau social interne pour les employés de Groupomania.
-Le but de cet outil est de faciliter les interactions entre collègues. 
+> Le projet consiste à construire un réseau social interne pour les employés de Groupomania.
+> Le but de cet outil est de faciliter les interactions entre collègues. 
 
-Voici les exigences émises par le comité de pilotage :
+> Voici les exigences émises par le comité de pilotage :
 > * la présentation des fonctionnalités doit être simple ;
 > * la création d’un compte doit être simple et possible depuis un téléphone mobile ;
 > * le profil doit contenir très peu d’informations pour que sa complétion soit rapide ;

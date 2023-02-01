@@ -6,7 +6,7 @@
       <!-- <div class="users" v-if="loading === true"> -->
       <form class="formSignup">
         <h1>Page d'inscription</h1>
-        <h2 class="centerTxt">Obligatoire: email, pseudo,mot de passe</h2>
+        <!-- <h2 class="centerTxt">Obligatoire: pseudo, email, mot de passe</h2> -->
         <div class="userContainer d-flex">
           <!--ici démarre la zone de création de posts-->
           <!-- <div class="usersCard">
@@ -16,66 +16,65 @@
           </div>
          </div> -->
 
-          <label for="userPseudo" title="chiffres et lettres (3-25)"
+          <label
+            for="userPseudo"
+            title="chiffres et lettres (2-25)"
+            class="inputLabel"
             >Pseudo :</label
           >
           <input
             v-model="inputPseudo"
             type="text"
             size="10"
-            maxlength="20"
-            class="centerTxt"
+            maxlength="25"
+            class="centerTxt inputBox"
             name="pseudo"
             id="pseudo"
-            placeholder="2+(lettre, chiffre,underscore)"
+            placeholder="2 à 25 caractères"
             pattern="\w*"
             required
           />
-          <p
-            id="pseudoAlert"
-            class="userPseudoAlert"
-            v-if="testRegex(/^\w{2,25}$/, this.inputPseudo, 1) === false"
-          >
-            <i class="fas fa-times-circle"></i>Pseudo incorrect
-          </p>
           <p
             id="pseudoOk"
             class="userPseudoValid"
             v-if="testRegex(/^\w{2,25}$/, this.inputPseudo, 1) === true"
           >
-            <i class="fas fa-check-circle"></i>Pseudo accepté
+            <i class="fas fa-check-circle"></i>Correct
+          </p>
+          <p v-else id="pseudoAlert" class="userPseudoAlert">
+            <i class="fas fa-times-circle"></i>lettre/chiffre/underscore
+            uniquement
           </p>
 
-          <label for="userEmail" title="identifiant@gpm.fr (30 caractères max)"
+          <label
+            for="userEmail"
+            title="identifiant@gpm.fr (40 caractères max)"
+            class="inputLabel"
             >Email :</label
           >
           <input
             v-model="inputEmail"
             type="text"
             size="20"
-            maxlength="30"
-            class="centerTxt"
+            maxlength="40"
+            class="centerTxt inputBox"
             name="email"
             id="email"
-            placeholder="votre email @gpm.fr"
+            placeholder="votre email d'entreprise gpm.fr"
             required
           />
-          <p
-            id="emailAlert"
-            class="userEmailAlert"
-            v-if="!testRegex(/^\w+([\.-]?\w+)*@gpm.fr$/, this.inputEmail, 2)"
-          >
-            <i class="fas fa-times-circle"></i>Email incorrect
-          </p>
           <p
             id="emailOk"
             class="userEmailValid"
             v-if="testRegex(/^\w+([\.-]?\w+)*@gpm.fr$/, this.inputEmail, 2)"
           >
-            <i class="fas fa-check-circle"></i>Email accepté
+            <i class="fas fa-check-circle"></i>Correct
+          </p>
+          <p v-else id="emailAlert" class="userEmailAlert">
+            <i class="fas fa-times-circle"></i>identifiant@gpm.fr
           </p>
 
-          <label for="userBio" title="chiffres et lettres (200 max)">Bio</label>
+          <!-- <label for="userBio" title="chiffres et lettres (200 max)">Bio</label>
           <textarea
             v-model="inputBio"
             name="bio"
@@ -85,14 +84,8 @@
             rows="3"
             cols="30"
             maxlength="120"
+            wrap="soft"
           />
-          <p
-            id="bioAlert"
-            class="userBioAlert"
-            v-if="!testRegex(/^.{0,200}$/, this.inputBio)"
-          >
-            <i class="fas fa-times-circle"></i>Bio incorrecte
-          </p>
           <p
             id="bioOk"
             class="userBioValid"
@@ -100,25 +93,28 @@
           >
             <i class="fas fa-check-circle"></i>Bio acceptée
           </p>
+          <p id="bioAlert" class="userBioAlert" v-else>
+            <i class="fas fa-times-circle"></i>Bio incorrecte
+          </p>
 
           <label for="userAvatar" title="fichier jpg/webp/gif/png <3mo"
             >Avatar</label
-          >
+          > -->
           <!-- <img src="../../../backend/images/default.gif" /> -->
-          <img
+          <!-- <img
             v-if="!image"
             class="avatar"
             src="../assets/default.gif"
             title="changez le maintenant ou plus tard"
-          />
-          <img
+          /> -->
+          <!-- <img
             v-if="image"
             alt="avatar"
             class="avatar"
             v-bind:src="image"
             :title="image"
-          />
-          <input
+          /> -->
+          <!-- <input
             type="file"
             class="fileButton"
             id="file"
@@ -126,54 +122,26 @@
             name="image"
             @change="selectFile()"
             accept=".jpg,.jpeg,.png,.gif,.webp"
-          />
-          <!-- <input
-            v-model="avatar"
-            type="text"
-            size="20"
-            maxlength="50"
-            class="centerTxt"
-            name="avatar"
-            id="avatar"
-            placeholder="votre avatar"
-            default="avatarAnonyme"
           /> -->
-          <!-- <p id="avatarAlert" class="userAvatarAlert">
-            <i class="fas fa-times-circle"></i>Avatar incorrect
-          </p>
-          <p id="avatarOk" class="userAvatarValid">
-            <i class="fas fa-check-circle"></i>Avatar accepté
-          </p> -->
 
           <label
             for="userPassword"
-            title="Au moins 8 caractères dont chiffre et lettre"
+            title="8 à 20 caractères dont maj/min/chiffre/special"
+            class="inputLabel"
             >Mot de passe :</label
           >
+
           <input
             v-model="inputPassword"
             type="password"
             size="10"
-            maxlength="16"
-            class="centerTxt cart"
+            maxlength="20"
+            class="centerTxt inputBox"
             name="userPassword"
             id="userPassword"
-            placeholder="8+caractères (maj,min,chiffre,special)"
+            placeholder="8 à 20 caractères"
             required
           />
-          <p
-            id="passwordAlert"
-            class="userPasswordAlert"
-            v-if="
-              !testRegex(
-                /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-z^A-Z^0-9]).{8,}$/,
-                this.inputPassword,
-                3
-              )
-            "
-          >
-            <i class="fas fa-times-circle"></i>mot de passe incorrect
-          </p>
           <p
             id="passwordOk"
             class="userPasswordValid"
@@ -185,7 +153,15 @@
               )
             "
           >
-            <i class="fas fa-check-circle"></i>mot de passe accepté
+            <i class="fas fa-check-circle"></i>Correct
+          </p>
+          <p v-else id="passwordAlert" class="userPasswordAlert">
+            <i class="fas fa-times-circle"></i>Avec:
+            majuscule,minuscule,chiffre,special
+          </p>
+          <p class="infoSignUp">
+            Vous pourrez ultérieurement changer votre pseudo, et rajouter un
+            avatar et une bio.
           </p>
           <button class="buttonValid" v-on:click.prevent="envoiInscription">
             Je m'inscris !
@@ -241,24 +217,24 @@ export default {
       image: "",
     };
   },
-  watch: {
-    inputPseudo: function (val) {
-      //console.log("watch", val);
-      this.messageRetour = "";
-    },
-    inputEmail: function (val) {
-      this.messageRetour = "";
-    },
-    inputPassword: function (val) {
-      this.messageRetour = "";
-    },
-    inputBio: function (val) {
-      this.messageRetour = "";
-    },
-    inputFile: function (val) {
-      this.messageRetour = "";
-    },
-  },
+  // watch: {
+  //   inputPseudo: function (val) {
+  //     //console.log("watch", val);
+  //     this.messageRetour = "";
+  //   },
+  //   inputEmail: function (val) {
+  //     this.messageRetour = "";
+  //   },
+  //   inputPassword: function (val) {
+  //     this.messageRetour = "";
+  //   },
+  //   inputBio: function (val) {
+  //     this.messageRetour = "";
+  //   },
+  //   inputFile: function (val) {
+  //     this.messageRetour = "";
+  //   },
+  // },
 
   methods: {
     testRegex(laRegex, varATester, testFlag) {
@@ -299,18 +275,16 @@ export default {
       //console.log(this.inputFile);
     },
     envoiInscription: function () {
-      // console.log("j'ai cliqué sur bouton inscription");
+      console.log("j'ai cliqué sur bouton inscription");
       // console.log("this.inputPseudo=", this.inputPseudo);
-      // console.log("this.testPseudo", this.testPseudo);
+      console.log("this.testPseudo", this.testPseudo);
       // console.log("this.inputPassword=", this.inputPassword);
-      // console.log("this.testPassword", this.testPassword);
-      // console.log("this.inputPseudo=", this.inputPseudo);
-      // console.log("this.testPseudo", this.testPseudo);
+      console.log("this.testPassword", this.testPassword);
       // console.log("this.inputEmail=", this.inputEmail);
-      // console.log("this.testEmail", this.testEmail);
+      console.log("this.testEmail", this.testEmail);
       //console.log("objet testFinal=", this.testFinal);
-      if (this.testPseudo || this.testPassword || this.testEmail) {
-        this.messageRetour = "";
+      if (this.testPseudo && this.testPassword && this.testEmail) {
+        //this.messageRetour = "";
         let formdata = new FormData();
         //console.log(this.inputPseudo);
         //console.log(this.inputPassword);
@@ -329,7 +303,8 @@ export default {
           //   );
         }
         //formdata.append("id_Users", localStorage.getItem("userId"));
-        formdata.append("bio", this.inputBio);
+        // formdata.append("bio", this.inputBio);
+        formdata.append("bio", "");
         formdata.append("admin", 0);
         formdata.append("active", 1);
 
@@ -368,7 +343,7 @@ export default {
               this.messageRetour = "fichier trop gros (3Mo max)!";
             } else {
               console.log(error.response.status);
-              //this.messageRetour = "une erreur est survenue";
+              this.messageRetour = "une erreur est survenue";
             }
             //this.messageRetour = this.postApiResponse.error;
             //this.loading = false;
@@ -393,11 +368,14 @@ export default {
 }
 
 .userContainer {
-  padding: 10px;
+  padding: 5px;
   /* border: solid 1px blue; */
   box-shadow: 0px 0px 5px 1px var(--primaryColor3);
 }
-
+.infoSignUp {
+  margin: 20px auto 15px auto;
+  font-style: italic;
+}
 .user {
   padding: 5px;
   border: solid 2px red;
@@ -407,5 +385,18 @@ export default {
   max-width: 600px;
   min-width: 80px;
   margin: 2px auto;
+}
+.inputLabel {
+  margin: 10px auto 5px auto;
+}
+/* .obligatoire {
+  border: solid 3px var(--primaryColor2);
+  text-decoration: underline overline red; 
+  border-style: groove;
+  border-style: inset;
+}*/
+.buttonValid {
+  margin: 15px 0 10px 0;
+  font-weight: bold;
 }
 </style>

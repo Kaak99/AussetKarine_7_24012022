@@ -12,9 +12,7 @@
         <h1>Modifiez votre message</h1>
         <div class="post-modifier d-flex">
           {{ postId }}
-          <label for="title-modify" title="maximum 50 caractères"
-            >Titre :</label
-          >
+          <label for="title-modify" title="2 à 50 caractères">Titre :</label>
           <input
             v-model="modifiedTitle"
             type="text"
@@ -25,19 +23,16 @@
             id="modifiedTitle"
             required
           />
-          <p
-            id="modifiedTitleAlert"
-            class="modifiedTitleAlert"
-            v-if="testRegex(/^.{2,50}$/, this.modifiedTitle, 1) === false"
-          >
-            <i class="fas fa-times-circle"></i>Titre incorrect
-          </p>
+
           <p
             id="modifiedTitleOk"
             class="modifiedTitleValid"
             v-if="testRegex(/^.{2,50}$/, this.modifiedTitle, 1)"
           >
-            <i class="fas fa-check-circle"></i>Titre accepté
+            <i class="fas fa-check-circle"></i>Correct
+          </p>
+          <p v-else id="modifiedTitleAlert" class="modifiedTitleAlert">
+            <i class="fas fa-times-circle"></i>Incorrect (2 à 50 caractères)
           </p>
           <!-- <img
             class="postMiniImage"
@@ -45,7 +40,7 @@
             v-bind:src="post.image"
             v-if="post.image"
           /> -->
-          <label for="postContent-modify" title="au moins 5 lettres"
+          <label for="postContent-modify" title="2 à 500 caractères"
             >Contenu :</label
           >
           <textarea
@@ -56,24 +51,18 @@
             cols="500"
             maxlength="500"
             class="centerTxt"
+            wrap="soft"
             required
           />
-          <p
-            id="modifiedText"
-            class="modifiedText"
-            v-if="
-              testRegex(/^(.|\s){2,500}$/, this.modifiedPostContent, 2) ===
-              false
-            "
-          >
-            <i class="fas fa-times-circle"></i>Contenu incorrect
-          </p>
           <p
             id="modifiedTextOk"
             class="modifiedTextValid"
             v-if="testRegex(/^(.|\s){2,500}$/, this.modifiedPostContent, 2)"
           >
-            <i class="fas fa-check-circle"></i>Contenu accepté
+            <i class="fas fa-check-circle"></i>Correct
+          </p>
+          <p v-else id="modifiedText" class="modifiedText">
+            <i class="fas fa-times-circle"></i>Incorrect (2 à 500 caractères)
           </p>
 
           <label for="postImage" title="fichier jpg/webp/gif/png <3mo"

@@ -5,7 +5,7 @@
   <!-- notre bloc-comments aura aussi comme identifiant de classe l'id du post qui l'a appelé(idFromPost) -->
   <div :class="`bloc-comments ${idFromPost}`">
     <div class="newComment d-flex">
-      <label for="comment-write" title="maximum 500 caractères"></label>
+      <label for="comment-write" title="1 à 256 caractères"></label>
       <textarea
         v-model="inputComment"
         rows="5"
@@ -18,19 +18,16 @@
         required
       ></textarea>
       <p
-        id="commentAlert"
-        class="inputCommentAlert"
-        v-if="!testRegex(/^.{1,256}$/, this.inputComment)"
-      >
-        1 à 256 caractères
-      </p>
-      <p
         id="commentOk"
         class="inputCommentValid"
         v-if="testRegex(/^.{1,256}$/, this.inputComment)"
       >
-        Taille OK(2-256car)
+        Correct
       </p>
+      <p v-else id="commentAlert" class="inputCommentAlert">
+        Incorrect (1à256 caractères)
+      </p>
+
       <i
         class="fa-solid fa-paper-plane envoiComment"
         title="envoyer!"
@@ -241,9 +238,11 @@ export default {
     //! on ✍️ modifie un commentaire
     modifyComment(idComment, textComment) {
       //console.log(idComment);
-      //console.log("hello");
-      let modif = prompt("Modifiez votre commentaire:", textComment);
-      if (modif) {
+      const modif = prompt("Modifiez votre commentaire:", textComment);
+      console.log("modif", modif);
+      //console.log("test regexComment", regexComment.test(modif));
+      console.log("test regexComment", this.testRegex(/^.{1,256}$/, modif));
+      if (modif && this.testRegex(/^.{1,256}$/, modif)) {
         axios
           .put(
             this.url + "/" + idComment,
@@ -253,6 +252,7 @@ export default {
           .then((res) => {
             //console.log(res);
             //alert("Votre message " + idPosts + " a bien été supprimé");
+            this.messageRetour = "Commentaire modifié";
             this.getAllComments4OnePost();
           })
           .catch((error) => {
@@ -260,6 +260,7 @@ export default {
             this.messageRetour = error.message;
           });
       } else {
+        this.messageRetour = "champs mal rentrés";
         this.getAllComments4OnePost();
       }
     },

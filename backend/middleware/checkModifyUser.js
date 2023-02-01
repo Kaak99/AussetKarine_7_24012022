@@ -5,7 +5,9 @@ console.log(` --------> checkModifyUser`);
 
 module.exports = (req, res, next) => {
   const regexPseudo = /^\w{2,25}$/;
-  const regexBio = /^.{0,200}$/;
+  // const regexBio = /^.{0,200}$/;
+  const regexBio = /^(.|\s){2,200}$/;
+
   //console.log("req.body", req.body);
   if (regexPseudo.test(req.body.pseudo)) {
     console.log("pseudo match");
@@ -14,12 +16,12 @@ module.exports = (req, res, next) => {
       next(); //ok si password&email ok
     } else {
       console.log("bio match pas");
-      res.status(400).json({ message: "bio trop longue(>200)" });
+      res.status(400).json({ message: "bio: 2 à 200 caractères)" });
     }
   } else {
     console.log("pseudo match pas");
     res.status(400).json({
-      message: "pseudo invalide (2 à 25 caracteres=lettres,chiffre,underscore)",
+      message: "pseudo: 2 à 25 caracteres parmi lettre,chiffre,underscore",
     });
   }
 };
