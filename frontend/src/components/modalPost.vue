@@ -53,7 +53,7 @@
             class="centerTxt"
             wrap="soft"
             required
-          />
+          ></textarea>
           <p
             id="modifiedTextOk"
             class="modifiedTextValid"

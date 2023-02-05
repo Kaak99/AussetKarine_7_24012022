@@ -73,7 +73,7 @@
             maxlength="120"
             class="centerTxt"
             wrap="soft"
-          />
+          ></textarea>
           <p
             id="bioOk"
             class="userBioValid"
