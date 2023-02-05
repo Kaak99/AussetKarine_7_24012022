@@ -1,8 +1,6 @@
 //! ............................... TEMPLATE ............................... //
 
 <template>
-  <!-- <div class="container">  </div> -->
-  <!-- notre bloc-comments aura aussi comme identifiant de classe l'id du post qui l'a appelé(idFromPost) -->
   <div :class="`bloc-comments ${idFromPost}`">
     <div class="newComment d-flex">
       <label for="comment-write" title="1 à 256 caractères"></label>
@@ -40,13 +38,12 @@
     <!-- <div class="commentsList"> -->
     <div class="commentsList">
       <div
-        v-for="(comment, index) in getApiResponse"
+        v-for="comment in getApiResponse"
         :key="comment.idComments"
         class="commentsCard"
       >
+        <!-- v-for="(comment, index) in getApiResponse" -->
         <div class="comment">
-          <!-- <router-link to="/posts">Posts</router-link> -->
-          <!-- <p>Ecrit par {{ post.id_Users }} le {{ post.time }}</p> -->
           <div class="d-flex2c commentOrigin">
             <p>Commenté par {{ comment.pseudo }}</p>
             <img
@@ -74,15 +71,12 @@
               v-on:click="deleteComment(comment.idComments, comment.id_Posts)"
             ></i>
           </p>
-          {{ idFromPost }}
-
-          {{ comCount - index }}sur {{ comCount }}
-
-          <!-- {{ localStorage.getItem("postId2comment") }} -->
+          <!-- {{ idFromPost }} -->
+          <!-- {{ comCount - index }}sur {{ comCount }} -->
         </div>
       </div>
     </div>
-    <!-- {{ text }} -->
+    <!-- ........💬 fin de zone d'affichage des commentaires 💬...&VFOR.... -->
   </div>
 </template>
 
@@ -118,23 +112,13 @@ export default {
   },
   watch: {
     inputComment: function (val) {
-      //console.log("watch", val);
       this.messageRetour = "";
     },
   },
-  //created() {
   mounted() {
-    // axios.get(this.url).then((response) => (this.commentApiResponse = response.data));
     this.getAllComments4OnePost();
   },
-  // updated() {
-  //   // axios.get(this.url).then((response) => (this.commentApiResponse = response.data));
-  //   this.getAllComments4OnePost();
-  // },
-  // beforeUpdate() {
-  //   // axios.get(this.url).then((response) => (this.commentApiResponse = response.data));
-  //   this.getAllComments4OnePost();
-  // },
+
   methods: {
     testRegex(laRegex, varATester) {
       //const regex = new RegExp(laRegex);
@@ -156,22 +140,16 @@ export default {
     },
     format(maDate) {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
-      // console.log();
     },
 
     //! on récupère tous les commentaires from backend
     getAllComments4OnePost: function () {
-      //console.log(this.commentApiResponse);
-      //console.log(this.getApiResponse);
-      //console.log("recup Commentaires");
       axios
         .get(this.url + "/" + this.idFromPost, this.configAxios())
         .then((response) => {
           this.getApiResponse = response.data;
-          //car renvoi un objet data qui contient les differentes clés/valeur (cf postman)
           this.comCount = response.data.length;
           //console.log(this.getApiResponse);
-          //console.log("test", this.comCount);
           for (let index = 0; index < this.getApiResponse.length; index++) {
             if (
               this.getApiResponse[index].idUsers ==
@@ -198,8 +176,6 @@ export default {
         axios
           .delete(this.url + "/" + idComment + "/" + idPost, this.configAxios())
           .then((res) => {
-            //console.log(res);
-            //alert("Votre message " + idComment + " a bien été supprimé");
             //on met à jour la liste des idpost commentés par ce user
             let allCommentedPostTab = JSON.parse(
               localStorage.getItem("allCommentedPost")
@@ -216,15 +192,10 @@ export default {
               //si cet idpost etait stocké, on retire la 1ere occurence
               //(car on peut avoir commenté pls fois un post et donc avoir pls fois son idpost ds sa liste)
               allCommentedPostTab.splice(test, 1);
-              // allCommentedPostTab = allCommentedPostTab.filter(
-              //   (element) => element !== this.idFromPost
-              // );//non car retire touets les occurences
-              //on remet dans le localstorage la liste actualisée des post commentés par ce userId
               localStorage.setItem(
                 "allCommentedPost",
                 JSON.stringify(allCommentedPostTab)
               );
-              //puis on "refresh"
               this.getAllComments4OnePost();
             }
           })
@@ -239,9 +210,8 @@ export default {
     modifyComment(idComment, textComment) {
       //console.log(idComment);
       const modif = prompt("Modifiez votre commentaire:", textComment);
-      console.log("modif", modif);
-      //console.log("test regexComment", regexComment.test(modif));
-      console.log("test regexComment", this.testRegex(/^.{1,256}$/, modif));
+      // console.log("modif", modif);
+      // console.log("test regexComment", this.testRegex(/^.{1,256}$/, modif));
       if (modif && this.testRegex(/^.{1,256}$/, modif)) {
         axios
           .put(
@@ -250,8 +220,6 @@ export default {
             this.configAxios()
           )
           .then((res) => {
-            //console.log(res);
-            //alert("Votre message " + idPosts + " a bien été supprimé");
             this.messageRetour = "Commentaire modifié";
             this.getAllComments4OnePost();
           })
@@ -268,30 +236,17 @@ export default {
     //! Création d'un commentaire (envoi au backend)
     envoiComment: function () {
       if (this.testInputComment) {
-        //mais d'abord on rajoute l'idpost du commentaire à la liste des post commentés par ce user et
+        //mais d'abord on rajoute l'idpost du commentaire à la liste des post commentés par ce user
         let allCommentedPostTab = JSON.parse(
           localStorage.getItem("allCommentedPost")
         );
         const test = allCommentedPostTab.indexOf(this.idFromPost);
-        // if (test == -1) {
-        //   //pas de valeur retournée=cet idPost n'est pas stocké
-        //   //alors on l'ajoute au tableau (s'il y etait déjà, rien à afire par contre)
-        //   allCommentedPostTab.push(this.idFromPost);
-        // }
-        allCommentedPostTab.push(this.idFromPost); //on push toujours (si deja un com pour ce post, pas grave, on met autant d'idPost commenté qu'il y a de com de ce user)
-
-        //on remet dans le localstorage la liste actualisée des post commentés par ce userId
+        allCommentedPostTab.push(this.idFromPost); //on push toujours, meme si cet idpost est déja stocké, car on veut autant d'idpost stocké que de com par ce user(important pour le delete)
         localStorage.setItem(
           "allCommentedPost",
           JSON.stringify(allCommentedPostTab)
         );
-        //puis on envoi le commentaire au backend (plutot envoyer d'abord et si reussi mettre à jour localstorage?)
-        const config = null;
-        // let id_Posts = "";
-        // let id_Users = "";
-        //console.log(this.inputComment);
-        //console.log(this.idFromPost);
-        //console.log(this.idConnected);
+        //puis on envoi le commentaire au backend
         let bodyParameters = {
           contenu: this.inputComment,
           id_Posts: this.idFromPost,
@@ -299,37 +254,20 @@ export default {
         };
         //console.log(bodyParameters);
         axios
-          // .post(this.url, {
-          //   contenu: this.inputComment,
-          //   id_Posts: this.idFromPost,
-          //   id_Users: this.idConnected,
-          // })
-          .post(
-            this.url,
-            bodyParameters,
-            this.configAxios()
-            // { headers: { Authorization: "Bearer " + token } }
-            // { headers: { Authorization: `Bearer ${token}` } }
-          )
-          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .post(this.url, bodyParameters, this.configAxios())
           .then((response) => {
             this.postApiResponse = response.data;
             this.messageRetour = "Commentaire envoyé !";
-            // console.log(this.postApiResponse);
-            // console.log(this.postApiResponse.userId);
-            // console.log(this.postApiResponse.token);
             this.loading = true;
-            //remettre els champs à zero
+            //remettre les champs à zero
             this.inputComment = "";
             this.getAllComments4OnePost();
             //this.$router.push("/");
           })
           .catch((error) => {
             console.log(error);
-            //this.messageRetour = error.response.data.erreur;
             this.messageRetour = error.response.data.message;
             console.log(error.response.data.message);
-            //this.messageRetour = this.getApi.error;
             //this.loading = false;
           });
       } else {

@@ -74,56 +74,6 @@
             <i class="fas fa-times-circle"></i>identifiant@gpm.fr
           </p>
 
-          <!-- <label for="userBio" title="chiffres et lettres (200 max)">Bio</label>
-          <textarea
-            v-model="inputBio"
-            name="bio"
-            id="bio"
-            placeholder="parlez de vous..."
-            class="centerTxt"
-            rows="3"
-            cols="30"
-            maxlength="120"
-            wrap="soft"
-          />
-          <p
-            id="bioOk"
-            class="userBioValid"
-            v-if="testRegex(/^.{0,200}$/, this.inputBio)"
-          >
-            <i class="fas fa-check-circle"></i>Bio acceptée
-          </p>
-          <p id="bioAlert" class="userBioAlert" v-else>
-            <i class="fas fa-times-circle"></i>Bio incorrecte
-          </p>
-
-          <label for="userAvatar" title="fichier jpg/webp/gif/png <3mo"
-            >Avatar</label
-          > -->
-          <!-- <img src="../../../backend/images/default.gif" /> -->
-          <!-- <img
-            v-if="!image"
-            class="avatar"
-            src="../assets/default.gif"
-            title="changez le maintenant ou plus tard"
-          /> -->
-          <!-- <img
-            v-if="image"
-            alt="avatar"
-            class="avatar"
-            v-bind:src="image"
-            :title="image"
-          /> -->
-          <!-- <input
-            type="file"
-            class="fileButton"
-            id="file"
-            ref="file"
-            name="image"
-            @change="selectFile()"
-            accept=".jpg,.jpeg,.png,.gif,.webp"
-          /> -->
-
           <label
             for="userPassword"
             title="8 à 20 caractères dont maj/min/chiffre/special"
@@ -217,57 +167,43 @@ export default {
       image: "",
     };
   },
-  // watch: {
-  //   inputPseudo: function (val) {
-  //     //console.log("watch", val);
-  //     this.messageRetour = "";
-  //   },
-  //   inputEmail: function (val) {
-  //     this.messageRetour = "";
-  //   },
-  //   inputPassword: function (val) {
-  //     this.messageRetour = "";
-  //   },
-  //   inputBio: function (val) {
-  //     this.messageRetour = "";
-  //   },
-  //   inputFile: function (val) {
-  //     this.messageRetour = "";
-  //   },
-  // },
+  watch: {
+    inputPseudo: function (val) {
+      //console.log("watch", val);
+      this.messageRetour = "";
+    },
+    inputEmail: function (val) {
+      this.messageRetour = "";
+    },
+    inputPassword: function (val) {
+      this.messageRetour = "";
+    },
+    inputBio: function (val) {
+      this.messageRetour = "";
+    },
+    inputFile: function (val) {
+      this.messageRetour = "";
+    },
+  },
 
   methods: {
     testRegex(laRegex, varATester, testFlag) {
-      //const regex = new RegExp(laRegex);
       const valeurTest = laRegex.test(varATester);
       //testFlag = valeurTest;
       switch (testFlag) {
         case 1:
           this.testPseudo = valeurTest;
-          // this.testFinal.testPseudo = valeurTest;
-          // console.log("testFlag", testFlag);
-          // console.log("testPseudo", this.testPseudo);
-          // console.log("testFinal", this.testFinal);
           break;
         case 2:
           this.testEmail = valeurTest;
-          // this.testFinal.testEmail = valeurTest;
-          // console.log("testFlag", testFlag);
-          // console.log("testFinal", this.testFinal);
           break;
         case 3:
           this.testPassword = valeurTest;
-          // this.testFinal.testPassword = valeurTest;
-          // console.log("testFlag", testFlag);
-          // console.log("testFinal", this.testFinal);
           break;
       }
-      //console.log("valeurTest", valeurTest);
-      //console.log("testFlag", testFlag);
       return valeurTest;
     },
     selectFile() {
-      // console.log("j'ai cliqué sur selecteur de fichier");
       this.messageRetour = "";
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
@@ -275,64 +211,28 @@ export default {
       //console.log(this.inputFile);
     },
     envoiInscription: function () {
-      console.log("j'ai cliqué sur bouton inscription");
-      // console.log("this.inputPseudo=", this.inputPseudo);
-      console.log("this.testPseudo", this.testPseudo);
-      // console.log("this.inputPassword=", this.inputPassword);
-      console.log("this.testPassword", this.testPassword);
-      // console.log("this.inputEmail=", this.inputEmail);
-      console.log("this.testEmail", this.testEmail);
-      //console.log("objet testFinal=", this.testFinal);
       if (this.testPseudo && this.testPassword && this.testEmail) {
         //this.messageRetour = "";
         let formdata = new FormData();
-        //console.log(this.inputPseudo);
-        //console.log(this.inputPassword);
-        //console.log(this.inputEmail);
         formdata.append("pseudo", this.inputPseudo);
         formdata.append("password", this.inputPassword);
         formdata.append("email", this.inputEmail);
         //console.log(formdata);
         if (this.inputFile) {
           formdata.append("image", this.inputFile, this.inputFile.name);
-          // } else {
-          //   formdata.append(
-          //     "image",
-          //     "http://localhost:3000/images/default.jpg",
-          //     "default.jpg"
-          //   );
         }
-        //formdata.append("id_Users", localStorage.getItem("userId"));
-        // formdata.append("bio", this.inputBio);
         formdata.append("bio", "");
         formdata.append("admin", 0);
         formdata.append("active", 1);
-
         //console.log(formdata);
         axios
-          // .post(this.url, {
-          //   pseudo: this.pseudo,
-          //   password: this.mdp,
-          //   image: this.avatar,
-          //   email: this.email,
-          //   bio: this.bio,
-          //   admin: 0,
-          //   active: 1,
-          // })
           .post(this.url, formdata)
-          // .post(this.url, { pseudo: "user60", password: "mdp" })
           .then((response) => {
             this.postApiResponse = response.data;
             this.messageRetour = "inscription...";
             //console.log(this.postApiResponse);
-            //console.log(this.postApiResponse.userId);
-            //console.log(this.postApiResponse.token);
             this.loading = true;
             this.$router.push("/connection"); //redirection vers /connection
-            // localStorage.setItem(
-            //   JSON.stringify(this.postApiResponse.userId),
-            //   JSON.stringify(this.postApiResponse.token)
-            // );
           })
           .catch((error) => {
             console.log(error);
@@ -389,12 +289,7 @@ export default {
 .inputLabel {
   margin: 10px auto 5px auto;
 }
-/* .obligatoire {
-  border: solid 3px var(--primaryColor2);
-  text-decoration: underline overline red; 
-  border-style: groove;
-  border-style: inset;
-}*/
+
 .buttonValid {
   margin: 15px 0 10px 0;
   font-weight: bold;

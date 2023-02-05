@@ -16,18 +16,11 @@
         <p class="user-email" title="identifiant@gpm.fr (30 caractères max)">
           Email : {{ getApiResponse.email }}
         </p>
-
-        <!-- <p class="user-bio">Bio : {{ getApiResponse.bio }}</p> -->
         <p class="user-time">
           Profil créé le : {{ format(getApiResponse.time) }}
         </p>
 
         <div class="profil-card-icons d-flex2c">
-          <!-- <i
-            class="fa-solid fa-pen-to-square modifyUser"
-            title="modifier le profil"
-            v-on:click="modifyUser"
-          ></i> -->
           <p class="deleteProfil-text">Supprimer le profil :</p>
           <i
             class="fa-solid fa-trash-can deleteUser"
@@ -89,7 +82,6 @@
             >Avatar</label
           >
 
-          <!-- <p class="user-avatar">{{ inputAvatar }}</p> -->
           <input
             type="file"
             class="fileButton"
@@ -99,13 +91,6 @@
             @change="selectFile()"
             accept=".jpg,.jpeg,.png,.gif,.webp"
           />
-
-          <!-- <p id="avatarAlert" class="userAvatarAlert">
-            <i class="fas fa-times-circle"></i>Avatar incorrect
-          </p>
-          <p id="avatarOk" class="userAvatarValid">
-            <i class="fas fa-check-circle"></i>Avatar accepté
-          </p> -->
 
           <button
             class="buttonValid envoiProfil"
@@ -122,7 +107,6 @@
 
 //! ............................... SCRIPT ............................... //
 <script>
-// @ is an alias to /src
 import axios from "axios";
 import dayjs from "dayjs";
 
@@ -149,15 +133,11 @@ export default {
     };
   },
   created() {
-    //console.log("hook created");
     this.showUser();
   },
-  mounted() {
-    //console.log("hook mounted");
-  },
+  mounted() {},
   watch: {
     inputPseudo: function (val) {
-      //console.log("watch", val);
       this.messageRetour = "";
     },
     inputBio: function (val) {
@@ -169,11 +149,7 @@ export default {
   },
   methods: {
     testRegex(laRegex, varATester, testFlag) {
-      //const regex = new RegExp(laRegex);
       const valeurTest = laRegex.test(varATester);
-      // if (testFlag === 1) {
-      //   this.testInputPseudo = valeurTest;
-      // }
       switch (testFlag) {
         case 1:
           this.testInputPseudo = valeurTest;
@@ -182,8 +158,8 @@ export default {
           this.testInputBio = valeurTest;
           break;
       }
-      //console.log("valeurTest", valeurTest);
-      console.log("messageRetour", this.messageRetour);
+      // //console.log("valeurTest", valeurTest);
+      // console.log("messageRetour", this.messageRetour);
       return valeurTest;
     },
     configAxios() {
@@ -199,101 +175,53 @@ export default {
     },
     format(maDate) {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
-      // console.log();
     },
     selectFile() {
-      // console.log("j'ai cliqué sur selecteur de fichier");
       this.messageRetour = "";
       this.inputFile = this.$refs.file.files[0];
       //console.log(this.$refs.file.files[0].name);
       //console.log("$refs.file", this.$refs.file);
       this.inputAvatar = URL.createObjectURL(this.inputFile);
-      //console.log("file", this.inputFile);
-      //this.inputAvatar = this.inputFile;
     },
 
     showUser() {
-      //console.log("affiche");
-      //this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
-      // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
-      //this.thisId = localStorage.getItem("userId");
-      //console.log(this.thisId);
-      //console.log(this.thisUrl);
-      //console.log(this.url + `/users/` + this.thisId);
       axios
         .get(this.url + `/users/` + this.thisId, this.configAxios())
         .then((response) => {
-          // axios.get(this.thisUrl).then((response) => {
-          // axios.get(`${this.url}/4`).then((response) => {
           this.getApiResponse = response.data[0];
           this.inputPseudo = this.getApiResponse.pseudo;
           this.inputBio = this.getApiResponse.bio;
           this.inputAvatar = this.getApiResponse.avatar;
-          // this.$refs.file.value = "123456";
-          //console.log(response);
-          //console.log(this.getApiResponse);
-          //console.log(this.getApiResponse);
-          //console.log(this.inputPseudo, this.inputBio, this.inputFile);
           this.loading = true;
         })
         .catch((error) => {
           console.log(error);
           this.messageRetour = error.response.data.erreur;
-          //console.log(error.response.data);
-          //this.messageRetour = this.getApi.error;
           //this.loading = false;
         });
     },
 
     modifyUser: function () {
-      // console.log("j'ai validé les modif");
-      console.log("messageRetour", this.messageRetour);
-      console.log("testInputPseudo", this.testInputPseudo);
-      console.log("testInputBio", this.testInputBio);
       if (this.testInputPseudo && this.testInputBio) {
         this.messageRetour = "";
-
         // this.thisUrl = `http://localhost:3000/api/users/${this.thisId}`;
         this.thisUrl = `${this.url}/users/${this.thisId}`;
         let formdata = new FormData();
-        //console.log(this.inputPseudo);
-        //console.log(this.inputPassword);
-        //console.log(this.inputEmail);
         formdata.append("pseudo", this.inputPseudo);
         //console.log(formdata);
         if (this.inputFile) {
           //console.log(this.inputFile);
           formdata.append("image", this.inputFile, this.inputFile.name);
-          // } else {
-          //   formdata.append(
-          //     "image",
-          //     "http://localhost:3000/images/default.jpg",
-          //     "default.jpg"
-          //   );
         }
 
         formdata.append("bio", this.inputBio);
-
-        // console.log(formdata);
         axios
-          // .post(this.url, {
-          //   pseudo: this.pseudo,
-          //   password: this.mdp,
-          //   image: this.avatar,
-          //   email: this.email,
-          //   bio: this.bio,
-          //   admin: 0,
-          //   active: 1,
-          // })
           .put(this.thisUrl, formdata, this.configAxios())
           // .post(this.url, { pseudo: "user60", password: "mdp" })
           .then((response) => {
             this.postApiResponse = response.data;
             this.messageRetour = "profil modifié !";
-            console.log("messageRetour", this.messageRetour);
             //console.log(this.postApiResponse);
-            //console.log(this.postApiResponse.userId);
-            //console.log(this.postApiResponse.token);
             this.loading = true;
             this.showUser();
           })
@@ -305,9 +233,6 @@ export default {
             } else {
               this.messageRetour = "une erreur est survenue";
             }
-            //this.messageRetour = error.response.data.erreur;
-            // console.log(error.response.data);
-            //this.messageRetour = this.postApiResponse.error;
             //this.loading = false;
           });
       } else {
@@ -316,7 +241,6 @@ export default {
     },
 
     deleteUser() {
-      //console.log("j'ai clické bouton effacer user");
       //console.log(this.thisId);
       this.messageRetour = "";
       let confirmDelete = prompt(
@@ -355,12 +279,7 @@ export default {
 .main {
   padding-bottom: 10px;
 }
-/* .userPseudoAlert {
-  display: none;
-}
-.userPseudoOK {
-  display: none;
-} */
+
 .post {
   padding: 5px;
   /* border: solid 1px cyan; */

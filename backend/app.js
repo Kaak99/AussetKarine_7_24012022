@@ -14,39 +14,8 @@ const postsRoutes = require("./routes/posts"); //routes post (ex stuffRoutes)
 const commentsRoutes = require("./routes/comments"); //routes commentaires
 const likesRoutes = require("./routes/likes"); //routes likes
 
-// //bdd
-// const db = mysql.createConnection({
-//   host: 'localhost',
-//   user : 'root',
-//   password : process.env.DB_MDP,
-//   database : process.env.DB_NAME
-//   //database : `${process.env.DB_NAME}`
-// });
-
 const app = express();
-
 //app.use(helmet());//lance helmet
-
-// db.query(
-//   'SELECT * FROM groupomania.posts_table;',
-//   function(err, results) {
-//   console.log(results);
-//   }
-//   );
-
-// db.query(
-//   'SELECT * FROM groupomania.users_table;',
-//   function(err, results) {
-//   console.log(results);
-//   }
-//   );
-
-// db.query(
-// 'SELECT * FROM `posts_table` WHERE `userid` = 6',
-// function(err, results) {
-// console.log(results);
-// }
-// );
 
 // -----------route générale : ---------------//
 

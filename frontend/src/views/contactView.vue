@@ -35,9 +35,6 @@ export default {
 <style></style>
 
 <style scoped>
-/* .main {
-  padding-bottom: 10px;
-} */
 * {
   padding: 8px 4px;
 }

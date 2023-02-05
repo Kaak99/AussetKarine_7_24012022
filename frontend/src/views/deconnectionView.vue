@@ -6,9 +6,6 @@
       <h1>Pour vous déconnecter</h1>
       <p class="centerTxt">Cliquez ci-dessous</p>
       <div class="d-flex">
-        <!-- <button class="buttonValid" v-on:click.prevent="localStorage.clear()">
-          Je me déconnecte !
-        </button> -->
         <button class="buttonValid" v-on:click.prevent="envoi">
           Je me déconnecte !
         </button>
@@ -30,9 +27,6 @@
 //! ............................... SCRIPT ............................... //
 
 <script>
-// @ is an alias to /src
-//import axios from "axios";
-
 export default {
   name: "deconnectionView",
   data() {

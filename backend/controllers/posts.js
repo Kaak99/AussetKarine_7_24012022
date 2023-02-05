@@ -9,50 +9,21 @@ const fs = require("fs"); //package fs de node
 //!__ renvoie : tableau de toutes les posts  __//
 
 exports.getAllPosts = (req, res, next) => {
-  /*db.query(
-    'SELECT * FROM groupomania.posts_table;',
-    function(err, results) {
-      res.status(200).json(results);
-    //console.log(results);
-    })
-  */
-
-  // db.promise()
-  // .query("SELECT * FROM groupomania.posts_table")
-  // .then(([results]) => {res.status(200).json(results);})
-  // .catch((error) => {res.status(400).json(error);});
-
   db.promise()
     .query(
       "SELECT p.idPosts, p.titre, p.contenu, p.image, p.time, p.nombreComment, p.nombreLike, p.id_Users, u.pseudo, u.avatar, u.admin FROM groupomania.posts_table as p left join groupomania.users_table as u on p.id_Users=u.idUsers ORDER BY p.time DESC;"
     )
-
     .then(([results]) => {
-      //renvoi un tableau d'objets results
-      //console.log(results);
-      // results = results.map((element) => {
-      //   element.commentCount = 0;
-      //   return element;
-      // });
       res.status(200).json(results);
     })
     .catch((error) => {
       res.status(400).json(error);
     });
-  //.then( () => db.end());
 };
 
 //!__     GET ONE POSTS (GET+id posts)      __//
 //!__ recoit : -                            __//
 //!__ renvoie : le posts avec l’_id fourni  __//
-
-// exports.getOneSauce = (req, res, next) => {
-//   //Sauce.findOne({_id: req.params.id})
-//   console.log("Sauce choisie : "+req.params.id);
-//   Sauce.findById(req.params.id)
-//   .then((sauce) => { res.status(200).json(sauce)})
-//   .catch((error) => {res.status(404).json({error: error})});
-// };
 
 exports.getOnePosts = (req, res, next) => {
   db.promise()
@@ -60,16 +31,11 @@ exports.getOnePosts = (req, res, next) => {
       req.params.id,
     ])
     .then(([results]) => {
-      //renvoi un tableau d'objets
-      //console.log(results); //mais contenant un seul objet
-      //console.log(results[0].idPosts); //(à l'index zéro)
-      //console.log(results[0].idPosts);
       res.status(200).json(results[0]);
     })
     .catch((error) => {
       res.status(400).json({ error: error });
     });
-  //.then( () => db.end());
 };
 
 /* pour ne plus sortir un tableau
@@ -101,14 +67,14 @@ exports.deletePosts = async (req, res, next) => {
         useridDuDemandeur,
       ]);
     const adminStatusDuDemandeur = RES_adminStatusDuDemandeur[0].admin;
-    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+    // console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
     //on vérifie légitimité du demandeur
     if (
       useridDuCreateurDuPost === useridDuDemandeur ||
       adminStatusDuDemandeur === 1
     ) {
       console.log("admis");
-      //cas 1 = avec une image (il va falloir la supprimer diu serveur)
+      //cas 1 = avec une image (il va falloir supprimer ce fichier image du serveur)
       if (RES_InfoPostADelete[0].image) {
         const filename = RES_InfoPostADelete[0].image.split("/images/")[1];
         fs.unlink(`images/${filename}`, async () => {
@@ -148,30 +114,12 @@ exports.deletePosts = async (req, res, next) => {
 //!__ renvoie : { message: String }           __//
 
 exports.createPosts = (req, res, next) => {
-  //console.log(req);
-  //console.log(req.body);
-  //console.log(req.route);
-  //console.log(req.file);//si fichier presente
-  // console.log(req.body.titre);
-  // console.log(req.body.contenu);
-  // console.log(req.body.id_Users);
-
-  // const postObject = JSON.parse(req.body.post);
-
-  // const postObject = req.body.post;
   const postObject = req.body;
-  //console.log(req.body);
-  //const postImage = JSON.parse(req.body.image);
-  //console.log("postObject");
-  //console.log(postObject);
-  //console.log("userId de demande");
-  //console.log(postObject.id_Users);
-  //console.log(postObject.image);
+  //console.log("postObject",postObject);
   let newPost = {};
   //console.log({ monImage: req.file.originalname });
   //console.log(req.file);
   if (!req.file) {
-    // if (!postObject.image) {//existe pas, c req.file
     //cas ou pas d'image
     newPost = {
       titre: postObject.titre,
@@ -180,30 +128,23 @@ exports.createPosts = (req, res, next) => {
       id_Users: postObject.id_Users,
     };
     //si pas d'image, rawjson(ou formdata3/3) avec titre/contenu/id_Users
-    //console.log({ cas1noImag: newPost });
   } else {
     //sinon (image présente)
-    //alors req= formdata4/4) avec titre/contenu/id_Users/image
+    //alors req= formdata(4/4) avec titre/contenu/id_Users/image
     newPost = {
       titre: postObject.titre,
       contenu: postObject.contenu,
       image: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
       id_Users: postObject.id_Users,
     };
-    //console.log({ cas2Imag: newPost });
   }
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
   db.promise()
     .query(" INSERT INTO `groupomania`.`posts_table` SET ? ", newPost)
 
     .then(([results]) => {
-      //console.log(results);
-      //console.log(req.body);
       // console.log(req.body.post);
       // console.log(JSON.parse(req.body.post));
-      // console.log(req.protocol);
-      // console.log(req.get("host"));
-      // console.log(req.file.filename);
       // console.log(
       //   req.protocol + "://" + req.get("host") + "/images/" + req.file.filename
       // );
@@ -214,7 +155,6 @@ exports.createPosts = (req, res, next) => {
     .catch((error) => {
       res.status(400).json({ error: error });
     });
-  //.then( () => db.end());
 };
 
 //!__         MODIFY POSTS  (PUT+id post)                    __//
@@ -231,9 +171,9 @@ exports.modifyPosts = async (req, res, next) => {
     const idDuPost = req.params.id; //id du post à modifier
     const useridDuCreateurDuPost = RES_InfoPostAModifier[0].id_Users; //createur du post à modifier
     const useridDuDemandeur = req.token.userId; //Demandeur de requete modifier
-    console.log("idDuPost", idDuPost);
-    console.log("useridDuCreateurDuPost.body", useridDuCreateurDuPost);
-    console.log("useridDuDemandeur", useridDuDemandeur);
+    // console.log("idDuPost", idDuPost);
+    // console.log("useridDuCreateurDuPost.body", useridDuCreateurDuPost);
+    // console.log("useridDuDemandeur", useridDuDemandeur);
 
     const [RES_adminStatusDemandeur] = await db
       .promise()
@@ -241,7 +181,7 @@ exports.modifyPosts = async (req, res, next) => {
         useridDuDemandeur,
       ]);
     const adminStatusDuDemandeur = RES_adminStatusDemandeur[0].admin;
-    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+    // console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
 
     if (
       useridDuCreateurDuPost === useridDuDemandeur ||
@@ -253,7 +193,7 @@ exports.modifyPosts = async (req, res, next) => {
       let oldfilename = "rien";
       if (RES_InfoPostAModifier[0].image) {
         oldfilename = RES_InfoPostAModifier[0].image.split("/images/")[1];
-        console.log("oldfilename=", oldfilename);
+        // console.log("oldfilename=", oldfilename);
       }
       //maintenant filename contient le nom du fichier initial de l'image (ou "rien" si pas d'image")
       let postObject = {};
@@ -266,34 +206,34 @@ exports.modifyPosts = async (req, res, next) => {
             req.file.filename
           }`,
         };
-        console.log("postObject", postObject);
+        // console.log("postObject", postObject);
         //console.log("fichier de l'image précédente à effacer");
         if (oldfilename !== "rien") {
           fs.unlink(`images/${oldfilename}`, (error) => {
             if (error) {
               console.log(error);
             } else {
-              console.log("old image effacée");
+              console.log("ancienne image effacée");
             }
           });
         }
       } else if (req.body.noImg === "") {
-        console.log("cas2:virer toute image"); //on na pas envoyé d'image mais en + on veut supprimer l'ancienne
+        console.log("cas2: zero image"); //on n'a pas envoyé d'image mais en + on veut supprimer l'ancienne
         postObject = {
           titre: req.body.titre,
           contenu: req.body.contenu,
           id_Users: req.body.id_Users,
           image: req.body.noImg,
         };
-        console.log("postObject", postObject);
-        console.log("fichier de l'image précédente à effacer");
+        //console.log("postObject", postObject);
+        //console.log("fichier de l'image précédente à effacer");
         if (oldfilename !== "rien") {
-          console.log("oldfilename", oldfilename);
+          //console.log("oldfilename", oldfilename);
           fs.unlink(`images/${oldfilename}`, (error) => {
             if (error) {
               console.log(error);
             } else {
-              console.log("old image effacée");
+              console.log("ancienne image effacée");
             }
           });
         }
@@ -305,7 +245,7 @@ exports.modifyPosts = async (req, res, next) => {
           contenu: req.body.contenu,
           id_Users: req.body.id_Users,
         };
-        console.log("postObject", postObject);
+        //console.log("postObject", postObject);
       }
       delete postObject.id_Users;
       //on ne veut pas inscrire id_users car si moderation, on veut garder nom auteur post, pas l'écraser par celui du moderateur

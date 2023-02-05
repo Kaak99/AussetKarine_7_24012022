@@ -10,23 +10,13 @@
       </p>
       <div class="userContainer d-flex">
         <!--ici démarre la zone de users-->
-        <!-- <div class="usersCard">
-        <div class="user">
-          <p class="user-pseudo">pseudo</p>
-          <p class="user-bio">presentation</p>
-        </div>
-        </div> -->
         <div v-for="user in getApi" :key="user.idUsers" class="usersCard">
           <div class="user">
             <router-link :to="{ name: 'user', params: { id: user.idUsers } }">{{
               user.pseudo
             }}</router-link>
-            <!-- <router-link to="`/users/${user.idUsers}`" class="user-pseudo">{{
-              user.pseudo
-            }}</router-link> -->
           </div>
         </div>
-        <!-- <p>{{ getApi }}</p> -->
       </div>
     </div>
 
@@ -114,6 +104,5 @@ export default {
   padding: 5px;
   border: solid 1px #fd2d01;
   box-shadow: 0px 0px 0.2px 0.1px #ff0000;
-  /* #fd2d01=var(--main-color1); */
 }
 </style>

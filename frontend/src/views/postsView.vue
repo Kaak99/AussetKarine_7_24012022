@@ -58,7 +58,6 @@
               >Image :</label
             >
             <div class="input-button d-flex">
-              <!-- <i class="fa-solid fa-image"></i> -->
               <input
                 type="file"
                 class="fileButton"
@@ -77,9 +76,9 @@
             </div>
           </div>
         </div>
-        {{ idConnected }}{{ isAdmin }}{{ typeof idConnected }}
+        <!-- {{ idConnected }}{{ isAdmin }}{{ typeof idConnected }} -->
 
-        <!-- .................. modale .................. -->
+        <!-- ................📋 modale (modify post)📋................ -->
         <modal-post
           v-bind:revele="revele"
           v-bind:toggleModale="toggleModale"
@@ -87,9 +86,11 @@
           modalString="Welcome here"
           @retourModalPost="refreshAll()"
         ></modal-post>
-        <!-- <modalPost toggleModal="Welcome here" v-bind:revele="revele" /> -->
+        <!-- ..............📋 fin modale (modify post)📋.............. -->
 
-        <!-- ................📩 ici démarre la zone d'affichage des posts 📩......VFOR.......... -->
+        <!-- ..............📩 ici démarre la zone d'affichage des posts 📩...... -->
+
+        <!-- ....... ➰VFOR➰ .......... -->
         <div
           v-for="post in getApiResponse"
           :key="post.idPosts"
@@ -97,22 +98,16 @@
           class="postsCard"
         >
           <div class="post">
-            <!-- <router-link to="/posts">Posts</router-link> -->
-            <!-- <p>Ecrit par {{ post.id_Users }} le {{ post.time }}</p> -->
             <div class="d-flex2c postOrigin">
               <p>Par {{ post.pseudo }}</p>
               <img alt="avatar" class="postAvatar" v-bind:src="post.avatar" />
-              <!-- <p>le {{ dayjs(post.time).format("DD/MM/YYYY") }}</p> 
-              -->
               <p>
                 le
                 {{ format(post.time) }}
               </p>
             </div>
             <p class="post-title">{{ post.titre }}</p>
-            <!-- {{ post.idLikes[0] }} -->
             <div class="post-image">
-              <!-- <img alt="imag" src="../assets/imag.jpg" /> -->
               <img
                 class="postImage"
                 alt="image d'illustration "
@@ -135,14 +130,7 @@
                   {{ post.nombreComment }}
                 </p>
               </div>
-              <!-- <i
-                class="fa-solid fa-thumbs-up thumbUp"
-                title="liker le message"
-              ></i>
-              <i
-                class="fa-solid fa-thumbs-down thumbDown"
-                title="disliker le message"
-              ></i> -->
+
               <div class="likeContainer">
                 <i
                   class="fa-solid fa-heart like"
@@ -150,7 +138,6 @@
                   :style="[checkLike(post.idPosts) && { color: 'blue' }]"
                   v-on:click="likeNolike(post.idPosts)"
                 ></i>
-                <!-- <p class="likeNumber">{{ post.like }}</p> ----------------------- -->
                 <p class="likeNumber" title="nombre de likes">
                   {{ post.nombreLike }}
                 </p>
@@ -170,17 +157,8 @@
             </div>
 
             <!-- ........💬 ici démarre la zone d'affichage des commentaires 💬........ -->
-            <!-- <comment-view
-              v-show="showCommentsBoolean"
-              text="props!"
-              :idFromPost="post.idPosts"
-              @combiendecomment="
-                (comCount) => {
-                  commentCount = comCount;
-                }
-              :style="[true && { display: 'none' }]"
-            ></comment-view> -->
-            {{ post.idPosts }}:{{ post.nombreComment }}/{{ post.nombreLike }}
+
+            <!-- {{ post.idPosts }}:{{ post.nombreComment }}/{{ post.nombreLike }} -->
 
             <comment-view
               v-show="commentShowTab.indexOf(post.idPosts) !== -1"
@@ -190,9 +168,11 @@
             ></comment-view>
             <!-- on aurait pu utiliser 
               :style="[true && { display: 'none' }]" à la place de vshow -->
+
+            <!-- ........💬 fin de la zone d'affichage des commentaires 💬........ -->
           </div>
-          <!-- <p>{{ getApiResponse }}</p> -->
         </div>
+        <!-- ....... ➰fin du VFOR➰ .......... -->
       </div>
     </div>
 
@@ -214,7 +194,6 @@
 //! ............................... SCRIPT ............................... //
 
 <script>
-// @ is an alias to /src
 import axios from "axios";
 import modalPost from "@/components/modalPost.vue";
 import commentView from "@/components/commentView.vue";
@@ -226,7 +205,6 @@ export default {
     "comment-view": commentView,
     "modal-post": modalPost,
   },
-  // components: { "modal-post": modalPost },
 
   data() {
     return {
@@ -277,16 +255,14 @@ export default {
   },
   // created() {},
   mounted() {
-    // console.log("hook mounted");
     // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
-    this.getAllPost(true); //recup tout (likes aussi)
+    this.getAllPost(true); //recupere tout (likes aussi)
   },
 
   computed: {},
 
   methods: {
     testRegex(laRegex, varATester, testFlag) {
-      //const regex = new RegExp(laRegex);
       const valeurTest = laRegex.test(varATester);
       switch (testFlag) {
         case 1:
@@ -300,6 +276,7 @@ export default {
     },
 
     configAxios() {
+      //pour creer les headers avant envoi requete
       let jwtoken = localStorage.getItem("userToken");
       //console.log(jwtoken);
       const config = {
@@ -320,7 +297,6 @@ export default {
 
     format(maDate) {
       return dayjs(maDate).format("DD/MM/YYYY HH:mm");
-      // console.log();
     },
     selectFile() {
       //console.log(this.$refs.file.files[0].name);
@@ -366,19 +342,16 @@ export default {
     showCommentsFunction(idpost) {
       //Fonction qui ne fait que OUVRIR/FERMER la liste des commentaires pour x posts
       //this.getAllPost(); //pour maj du nbre com
-      //on va stocker dans tableau commentShowTab les idpost ou on a cliqué sur bulle des commentaires pour dire: voilza liste des post ou on deroule les com
-      //mais si bulle recliquée, il faut virer cet idpost (puisque utilisateur referme la liste des com quand reclic, donc faut plus dérouler les com de cet idpost)
+      //on va stocker dans tableau commentShowTab les idpost ou user a cliqué sur bulle pour dérouler les commentaires
+      //mais si bulle recliquée, il faut virer cet idpost (puisque utilisateur referme=ne déroule plus la liste des com de ce post quand reclic
       //donc dans le else, on retire les idpost qui sont reclickés
       const test = this.commentShowTab.indexOf(idpost);
-      //console.log("start");
-      //console.log(this.commentShowTab);
       //console.log(this.commentShowTab.indexOf(idpost));
       if (test == -1) {
         //pas de valeur retournée=cet idPost n'est pas stocké
         //alors on l'ajoute au tableau
         this.commentShowTab.push(idpost);
         //console.log("ifmoins1");
-        //console.log(this.commentShowTab);
         //console.log(this.commentShowTab.indexOf(idpost));
       } else {
         //si cet idpost etait stocké, on le retire
@@ -386,21 +359,15 @@ export default {
         this.commentShowTab = this.commentShowTab.filter(
           (element) => element !== idpost
         );
-        //console.log("sinon");
-        //console.log(this.commentShowTab);
-        //console.log(this.commentShowTab.indexOf(idpost));
       }
     },
 
     //! on like (ou retire le like)
     likeNolike(idPosts) {
       // console.log(idPosts);
-      //si n'existe pas dans tableau des like allLikedPostTab , on le push, sinon on vire
+      //si n'existe pas dans tableau allLikedPostTab (post likés par ce user), on le push, sinon on vire
       if (this.allLikedPostTab) {
         const test = this.allLikedPostTab.indexOf(idPosts);
-        //console.log("start");
-        //console.log(this.commentShowTab);
-        //console.log(this.commentShowTab.indexOf(idpost));
         let likeValueToSend;
         if (test == -1) {
           //pas de valeur retournée=cet idPost n'est pas stocké
@@ -416,15 +383,11 @@ export default {
           );
           likeValueToSend = 0; //quand a retiré le like
         }
-        //on ajuste local storage allLikedPostTab: JSON.parse(localStorage.getItem("allLikedPost"))
         localStorage.setItem(
           "allLikedPost",
           JSON.stringify(this.allLikedPostTab)
         );
-
         //maintenant on envoi au back
-        const config = null;
-
         let newLike = {
           like: likeValueToSend, //sera forcément 0(retire le like) ou 1(ajoute le like)
           id_Posts: idPosts,
@@ -432,37 +395,12 @@ export default {
         };
         // console.log("newLike", newLike);
         axios
-          .post(
-            this.urlLikes,
-            newLike,
-            this.configAxios()
-            // { headers: { Authorization: "Bearer " + token } }
-          )
-          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .post(this.urlLikes, newLike, this.configAxios())
+
           .then((response) => {
             this.postApiResponse = response.data;
-            //this.messageRetour = "Message envoyé !";
-            //console.log(this.postApiResponse);
-            // console.log("getApiResponse", this.getApiResponse);
-
-            // console.log(this.getApiResponse.find((elt) => elt.idPosts == idPosts));
-            // console.log("likeValueToSend", likeValueToSend);
-            //likeValueToSend == 0 ? -1 : 1;
-            // if (likeValueToSend == 0) {
-            //   likeValueToSend = -1;
-            // }
-            // console.log("likeValueToSend", likeValueToSend);
-            // this.getApiResponse.find((elt) => elt.idPosts == idPosts).nbLike +=
-            //   likeValueToSend;
-
-            //this.getApiResponse.find((elt) => elt.idPosts == idPosts)[0].nbLike = response.data.nbLike;
-            //like n'existe pas, juste nblike pour un post donné
-
-            // console.log(this.postApiResponse.userId);
-            // console.log(this.postApiResponse.token);
             this.loading = true;
             // console.log("j'ai liké !");
-
             this.getAllPost();
             //this.$router.push("/");
           })
@@ -470,7 +408,6 @@ export default {
             console.log(error);
             this.messageRetour = error.response.data.erreur;
             //console.log(error.response.data);
-            //this.messageRetour = this.getApi.error;
             //this.loading = false;
           });
       }
@@ -478,8 +415,6 @@ export default {
 
     //! on montre les commentaires
     showComments(idPosts) {
-      // console.log(idPosts);
-      // this.showCommentsBoolean = true;
       this.showCommentsBoolean = !this.showCommentsBoolean;
       //console.log(this.showCommentsBoolean);
     },
@@ -499,7 +434,6 @@ export default {
         };
         axios
           .delete(this.url + "/" + idPosts, this.configAxios())
-          //url: http://localhost:3000/api/posts
           .then((res) => {
             //console.log(res);
             //alert("Votre message " + idPosts + " a bien été supprimé");
@@ -513,39 +447,24 @@ export default {
       }
     },
 
-    //fait apparaitre/disparaitre la modale onclick
+    //fait apparaitre/disparaitre la modale(modify post) onclick
     toggleModale: function () {
       this.revele = !this.revele;
       !this.revele ? (this.idPosttoModify = 0) : null;
     },
     // //! on ✍️ modifie un post
     modifyPost(idPosts) {
-      // console.log(idPosts);
-      // localStorage.setItem("modifyPost", JSON.stringify(idPosts));
-      // alert("Voulez vous vraiment modifier le message " + idPosts + " ?");
-      // localStorage.setItem("modifyPostId", idPosts);
       this.idPosttoModify = idPosts;
       this.toggleModale();
     },
 
     //! on 📦 récupère tous les posts from backend
     getAllPost(premierChargement = false) {
-      // let jwtoken = localStorage.getItem("userToken");
-      // //console.log(jwtoken);
-      // const config = {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${jwtoken}`,
-      //   },
-      // };
-      // //console.log(config);
       axios
         .get(this.url, this.configAxios())
         .then((response) => {
-          // this.getApiResponse = null;
           this.getApiResponse = response.data;
           // console.log("getApiResponse", this.getApiResponse);
-
           this.timeDayjs = dayjs(this.getApiResponse.time).format(
             "DD/MM/YYYY HH:mm"
           );
@@ -559,13 +478,6 @@ export default {
 
     //! on ✉️ envoie un post au backend
     envoiPost: function () {
-      // let bodyParameters = {
-      //   titre: this.inputTitle,
-      //   contenu: this.inputText,
-      //   image: this.inputFile,
-      //   //id_Users: JSON.parse(localStorage.getItem("userId")).toString(),
-      //   id_Users: localStorage.getItem("userId"),
-      // };
       if (this.testInputTitle && this.testInputText) {
         const formdata = new FormData();
         formdata.append("titre", this.inputTitle);
@@ -578,48 +490,34 @@ export default {
         //const config = null;
 
         axios
-          .post(
-            this.url,
-            formdata,
-            this.configAxios()
-            // { headers: { Authorization: "Bearer " + token } }
-            // { headers: { Authorization: `Bearer ${token}` } }
-          )
-          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .post(this.url, formdata, this.configAxios())
           .then((response) => {
             this.postApiResponse = response.data;
             this.messageRetour = "Message envoyé !";
-            // console.log(this.postApiResponse);
             // console.log(this.postApiResponse.userId);
             // console.log(this.postApiResponse.token);
             this.loading = true;
-            //remettre els champs à zero
+            //remettre les champs à zero
             this.inputTitle = "";
             this.inputText = "";
             this.$refs.file.value = "";
-
             this.getAllPost();
             //this.$router.push("/");
           })
           .catch((error) => {
-            //console.log(error);
             this.messageRetour = error.response.data.erreur;
-            console.log("error.response.status", error.response.status);
-            console.log(
-              "error.response.data.erreur",
-              error.response.data.erreur
-            );
+            // console.log("error.response.status", error.response.status);
+            // console.log(
+            //   "error.response.data.erreur",
+            //   error.response.data.erreur
+            // );
             if (error.response.status == 500) {
               this.messageRetour = "fichier trop gros (3Mo max)!";
             } else if (error.response.status == 400) {
-              this.messageRetour =
-                "titre&contenu à remplir (>2caractères chacun)";
+              this.messageRetour = "titre&contenu à remplir)";
             } else {
               this.messageRetour = "une erreur est survenue";
             }
-            //console.log(error.response.data);
-            //this.messageRetour = this.getApi.error;
-            //this.loading = false;
           });
       } else {
         this.messageRetour = "champs mal remplis";
@@ -641,14 +539,10 @@ export default {
   padding-bottom: 10px;
 }
 .inputContainer {
-  /* background-color: var(--main-color2); */
-  /* background-color: #919ba7; */
   background-color: #fbeded;
   /* box-shadow: 1px 1px 2px 1px rgb(250, 102, 102); */
   border-radius: 10px;
-  /* margin: 1vw 6vw; */
   width: 100%;
-  /* margin: 10px auto; */
 }
 .writeBox {
   padding: 5%;
@@ -666,15 +560,11 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  /* color: blue; */
   color: var(--primaryColor3);
-  /* font-size: 5vw; */
 }
 
 .postContainer {
   padding: 10px;
-  /* border: solid 1px blue; */
-  /* box-shadow: 0px 0px 2px 1px blue; */
 }
 
 .post-icon {
@@ -683,7 +573,6 @@ export default {
   margin-bottom: 1.6vw;
 }
 .post {
-  /* border: solid 1px red; */
   margin: 1.4vw 0;
   box-shadow: 0px 0px 5px 1px #ff0000;
 }
@@ -691,9 +580,6 @@ export default {
   margin: 5px 0;
 }
 
-.forme {
-  color: green;
-}
 .post-title {
   background-color: #ffd7d7;
   font-weight: bold;
@@ -709,7 +595,6 @@ export default {
 .fa-solid {
   cursor: pointer;
   margin: 5px;
-  /* color: #3b46eb; */
 }
 .fa-solid:hover {
   /*box-shadow: 10px 5px 5px black;*/
@@ -741,11 +626,9 @@ export default {
 }
 .likeNumber,
 .commentNumber {
-  /* position: absolute; */
   left: 24px;
   top: 14px;
   cursor: default;
-  /* width: 30px; */
 }
 
 .blue {

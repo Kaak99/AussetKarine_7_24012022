@@ -9,13 +9,6 @@
           Veuillez rentrer votre pseudo et votre mot de passe
         </p>
         <div class="userContainer d-flex">
-          <!--ici démarre la zone de création de posts-->
-          <!-- <div class="usersCard">
-          <div class="user">
-            <p class="user-pseudo">pseudo</p>
-            <p class="user-bio">presentation</p>
-          </div>
-         </div> -->
           <label for="userPseudo"></label>
           <input
             v-model="pseudo"
@@ -28,12 +21,6 @@
             placeholder="votre pseudo"
             required
           />
-          <!-- <p id="pseudoAlert" class="userPseudoAlert">
-            <i class="fas fa-times-circle"></i>Pseudo incorrect
-          </p>
-          <p id="pseudoOk" class="userPseudoValid">
-            <i class="fas fa-check-circle"></i>Pseudo accepté
-          </p> -->
 
           <label for="userPassword"></label>
           <input
@@ -47,12 +34,6 @@
             placeholder="votre mot de passe"
             required
           />
-          <!-- <p id="passwordAlert" class="userPasswordAlert">
-            <i class="fas fa-times-circle"></i>mot de passe incorrect
-          </p>
-          <p id="passwordOk" class="userPasswordValid">
-            <i class="fas fa-check-circle"></i>mot de passe accepté
-          </p> -->
           <button
             class="buttonValid"
             id="buttonValid"
@@ -80,7 +61,6 @@
 //! ............................... SCRIPT ............................... //
 
 <script>
-// @ is an alias to /src
 import axios from "axios";
 
 export default {
@@ -106,7 +86,7 @@ export default {
       userId: "",
     };
   },
-  // emits: ["update:isConnected"],
+
   watch: {
     pseudo: function (val) {
       //console.log("watch", val);
@@ -133,28 +113,15 @@ export default {
     async envoi() {
       await axios
         .post(this.url, { pseudo: this.pseudo, password: this.mdp })
-        // .post(this.url, { pseudo: "user60", password: "mdp" })
         .then(async (response) => {
           this.postApiResponse = response.data;
           this.userId = this.postApiResponse.userId;
           this.messageRetour = "Connexion";
           //console.log(this.postApiResponse);
-          //console.log(this.postApiResponse.userId);
-          //console.log(this.postApiResponse.token);
-          //console.log(this.postApiResponse.admin);
           this.loading = true;
           localStorage.setItem("userId", this.postApiResponse.userId);
           localStorage.setItem("userToken", this.postApiResponse.token);
           localStorage.setItem("admin", this.postApiResponse.admin);
-          //stringify inutile? token est une chaine mais userId??
-          // localStorage.setItem(
-          //   "userId",
-          //   JSON.stringify(this.postApiResponse.userId)
-          // );
-          // localStorage.setItem(
-          //   "userToken",
-          //   JSON.stringify(this.postApiResponse.token)
-          // );
           this.$emit("connection", true); //fait remonter à app.vue l'action connection avec le parametre true
 
           //on stocke dans le storage un tableau avec tous les idpost likés par cet userId

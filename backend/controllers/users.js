@@ -3,10 +3,9 @@ console.log(` --------> user-ctrl`);
 
 //-----imports-----//
 
-//const User = require('../models/User');//importe le modele
 const fs = require("fs"); //package fs de node(fichiers)
 const bcrypt = require("bcrypt"); //(hash mdp)
-const cryptojs = require("crypto-js"); //(chiffrage pour emails)
+//const cryptojs = require("crypto-js"); //(chiffrage pour emails)
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config(); //import variables d'environnement
 
@@ -16,7 +15,6 @@ const db = require("../db/db");
 
 // ! --------- getAllUsers ----------- ! //
 exports.getAllUsers = (req, res, next) => {
-  //pour admin
   db.promise()
     .query("SELECT * FROM groupomania.users_table;")
     .then(([results]) => {
@@ -37,7 +35,6 @@ exports.getOneUsers = (req, res, next) => {
     .then(([results]) => {
       //console.log(results);
       //console.log(results[0].pseudo);
-
       res.status(200).json(results);
     })
     .catch((error) => {
@@ -57,17 +54,17 @@ exports.modifyUser = async (req, res, next) => {
       ]);
     const idUser = req.params.id; //id du user à delete
     const useridDuDemandeur = req.token.userId; //Demandeur de requete modifier
-    console.log("idUser", idUser);
-    console.log("typeof idUser", typeof idUser);
-    console.log("useridDuDemandeur", useridDuDemandeur);
-    console.log("typeof useridDuDemandeur", typeof useridDuDemandeur);
+    // console.log("idUser", idUser);
+    // console.log("typeof idUser", typeof idUser);
+    // console.log("useridDuDemandeur", useridDuDemandeur);
+    // console.log("typeof useridDuDemandeur", typeof useridDuDemandeur);
     const [RES_adminStatusDemandeur] = await db
       .promise()
       .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
         useridDuDemandeur,
       ]);
     const adminStatusDuDemandeur = RES_adminStatusDemandeur[0].admin;
-    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+    // console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
 
     if (idUser == useridDuDemandeur || adminStatusDuDemandeur === 1) {
       console.log(
@@ -75,11 +72,11 @@ exports.modifyUser = async (req, res, next) => {
       );
 
       const bddAvatarUserAModifier = RES_InfoUserAModifier[0].avatar;
-      console.log("avatar ds bdd", bddAvatarUserAModifier);
+      // console.log("avatar ds bdd", bddAvatarUserAModifier);
       let oldfilename = "rien";
       if (bddAvatarUserAModifier) {
         oldfilename = bddAvatarUserAModifier.split("/images/")[1];
-        console.log("oldfilename=", oldfilename);
+        // console.log("oldfilename=", oldfilename);
       }
       //maintenant filename contient le nom du fichier de l'avatar ou "rien" s'il n'y en avait pas pas
 
@@ -88,15 +85,15 @@ exports.modifyUser = async (req, res, next) => {
 
       if (req.file) {
         console.log("cas1=user a changé son avatar (+/-texte)");
-        console.log("new avatar path(dsrequete):", req.file.path);
-        console.log("new avatar(dsrequete):", req.file.filename);
+        // console.log("new avatar path(dsrequete):", req.file.path);
+        // console.log("new avatar(dsrequete):", req.file.filename);
         postObject = {
           ...req.body,
           avatar: `${req.protocol}://${req.get("host")}/images/${
             req.file.filename
           }`,
         };
-        console.log("postObject(cas1)", postObject);
+        // console.log("postObject(cas1)", postObject);
 
         if (oldfilename === "rien" || oldfilename === "default.gif") {
           console.log("pas de fichier à effacer");
@@ -148,10 +145,6 @@ exports.deleteUsers = async (req, res, next) => {
       ]);
     const idUser = req.params.id; //id du user à delete
     const useridDuDemandeur = req.token.userId; //Demandeur de requete modifier
-    console.log("idUser", idUser);
-    console.log("typeof idUser", typeof idUser);
-    console.log("useridDuDemandeur", useridDuDemandeur);
-    console.log("typeof useridDuDemandeur", typeof useridDuDemandeur);
     const [RES_adminStatusDuDemandeur] = await db
       .promise()
       .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
@@ -328,13 +321,9 @@ exports.deleteUsers = async (req, res, next) => {
 // ! SIGNUP (inscription) ! //
 // ! ---------------------! //
 exports.signup = (req, res, next) => {
-  console.log(" =============== début =============== ");
-  //console.log(req);
-  console.log("body=");
-  console.log(req.body);
-  console.log(req.body.pseudo);
-  console.log(req.body.password);
-  console.log(" =============== pause =============== ");
+  // console.log("body=",req.body);
+  // console.log(req.body.pseudo);
+  // console.log(req.body.password);
   let newUser;
   //pour createUser(=signUp), requete tout en formdata
   // avec pseudo/password/email/bio/active/admin/image
@@ -383,14 +372,11 @@ exports.signup = (req, res, next) => {
       newUser.password = hash;
       //console.log(newUser.password);
       console.log(newUser);
-
-      // INSERT INTO `groupomania`.`users_table` (`pseudo`, `password`, `avatar`, `email`, `bio`, `admin`, `active`) VALUES ('u3', 'mdp', 'https://upload.wikimedia.org/wikipedia/commons/9/98/OOjs_UI_icon_userAvatar.svg', 'u3@mail.fr', 'inconnu!', '0', '1');
       db.promise()
         .query(" INSERT INTO `groupomania`.`users_table` SET ? ", newUser)
         .then(([results]) => {
           //console.log(results);
           console.log("utilisateur " + newUser.pseudo + " créé !");
-          console.log(" =============== réponse:(et fin) =============== ");
           res.status(201).json(results);
         })
         .catch((error) => {
@@ -408,24 +394,16 @@ exports.login = (req, res, next) => {
     .query(" SELECT * FROM groupomania.users_table WHERE `pseudo`=? ", [
       req.body.pseudo,
     ])
-    // INSERT INTO `groupomania`.`users_table` (`pseudo`, `password`, `avatar`, `email`, `bio`, `admin`, `active`) VALUES ('u3', 'mdp', 'https://upload.wikimedia.org/wikipedia/commons/9/98/OOjs_UI_icon_userAvatar.svg', 'u3@mail.fr', 'inconnu!', '0', '1');
-    //db.promise().query(' INSERT INTO `groupomania`.`users_table` SET ? ', newUser)
-
     .then(([results]) => {
-      console.log({ results });
-      console.log(req.body.pseudo);
+      // console.log({ results });
+      // console.log(req.body.pseudo);
       if (results.length === 0) {
-        //if(!results)if(results==[])if(results===[])
-        // = pas reconnu(passe dans else) et fini dans catch500(car utilise var inexistantes sans doute?)
-        console.log("dans le if");
         console.log("utilisateur " + req.body.pseudo + " inconnu !");
         return res.status(401).json({ erreur: "utilisateur inconnu !" });
       } else {
-        console.log("dans le else");
-        //àvirerreturn res.status(400).json({ error: 'utilisateur inconnu !' });
-        console.log(req.body.password);
-        console.log(results[0].password);
-        console.log(results[0].admin);
+        // console.log(req.body.password);
+        // console.log(results[0].password);
+        // console.log(results[0].admin);
         bcrypt.compare(req.body.password, results[0].password).then((valid) => {
           if (!valid) {
             //si mdp pas valide
@@ -470,14 +448,6 @@ exports.getAllLikes4OneUser = (req, res, next) => {
       " SELECT id_Posts FROM groupomania.likes_table WHERE `id_Users`=? AND `like`=1 ;",
       [req.params.id]
     )
-    // .query(
-    //   " SELECT idPosts FROM groupomania.posts_table as p left join groupomania.likes_table as l on p.id_Users=l.id_Users WHERE `id_Users`=? AND `like`=1 ;",
-    //   [req.params.id]
-    // )
-    // .query(
-    //   "SELECT * FROM groupomania.likes_table as l left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
-    //   [req.params.id]
-    // )
     .then(([results]) => {
       console.log(
         "nombre allLike for user " + req.params.id + "=" + results.length
@@ -485,7 +455,6 @@ exports.getAllLikes4OneUser = (req, res, next) => {
       res.status(200).json(results);
     })
     .catch((error) => {
-      console.log("---catch(getAllLikes4OneUsers)---");
       res.status(400).json({ error: error });
     });
 };
@@ -502,17 +471,8 @@ exports.getAllComments4OneUser = (req, res, next) => {
       " SELECT id_Posts FROM groupomania.comments_table WHERE `id_Users`=?;",
       [req.params.id]
     )
-    // .query(
-    //   " SELECT idPosts FROM groupomania.posts_table as p left join groupomania.likes_table as l on p.id_Users=l.id_Users WHERE `id_Users`=? AND `like`=1 ;",
-    //   [req.params.id]
-    // )
-    // .query(
-    //   "SELECT * FROM groupomania.likes_table as l left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
-    //   [req.params.id]
-    // )
     .then(([results]) => {
-      console.log("allcomments for user " + req.params.id + "=");
-      console.log(results);
+      console.log("allcomments for user " + req.params.id + "=", results);
       console.log(
         "nombre allcomments for user " + req.params.id + "=" + results.length
       );
@@ -521,156 +481,18 @@ exports.getAllComments4OneUser = (req, res, next) => {
         JSON.parse
       );
       console.log("---puis sans doublon---");
-      console.log("allcomments for user " + req.params.id + "=");
-      console.log(results);
+      console.log("allcomments for user " + req.params.id + "=", results);
       console.log(
         "nombre allcomments for user " + req.params.id + "=" + results.length
       );
       res.status(200).json(results);
     })
     .catch((error) => {
-      console.log("---catch(getAllComments4OneUser)---");
       res.status(400).json({ error: error });
     });
 };
 
 /* ---------------fin-----------------*/
-// ! --------- test ----------- ! //
-//fonction test (en rap^port avec fonction dlete, pour supprimer like+/-com):
-//on donne un iduser, en delete
-//avant de supprimer un user, on met tous les id de  ses posts likés dans un tableau
-//ensuite, soit on retire un et on restoke nouveau chiffre (puis on delete user)(pb com si pls com)
-//soit on delete user et apres suppression on refait les sommes(mieux)
-exports.test = async (req, res, next) => {
-  try {
-    console.log("try1");
-    const idUser = req.params.id; //id du user envoyé
-    //recuperons l'idpost des post likés par ce users
-    const [RES_idPostLikedBy1User] = await db
-      .promise()
-      .query(
-        " SELECT id_Posts FROM groupomania.likes_table WHERE `id_Users`=? AND `like`=1 ;",
-        [idUser]
-      );
-
-    console.log("RES_idPostLikedBy1User", RES_idPostLikedBy1User);
-    // //donne un tableau d objet id_posts [ { id_Posts: 290 }, { id_Posts: 291 }, { id_Posts: 277 } ]
-    // console.log("RES_idPostLikedBy1User[0]", RES_idPostLikedBy1User[0]);
-    // //donne  { id_Posts: 290 }
-    // console.log(
-    //   "RES_idPostLikedBy1User[0].id_Posts1",
-    //   RES_idPostLikedBy1User[0].id_Posts
-    // );
-    // //donne   290
-    // console.log("length", RES_idPostLikedBy1User.length);
-    // console.log(
-    //   "RES_idPostLikedBy1User[RES_idPostLikedBy1User.length-1]",
-    //   RES_idPostLikedBy1User[RES_idPostLikedBy1User.length - 1]
-    // );
-    // RES_idPostLikedBy1User = JSON.stringify([
-    //   { id_Posts: 291 },
-    //   { id_Posts: 290 },
-    //   { id_Posts: 277 },
-    // ]);
-    // RES_idPostLikedBy1User = [
-    //   { id_Posts: 291 },
-    //   { id_Posts: 290 },
-    //   { id_Posts: 277 },
-    // ];
-    console.log("RES_idPostLikedBy1User", RES_idPostLikedBy1User);
-    //pouir chacun de ces idpost, je dois refaire la somme nombre like APRES DELETE USER
-    for (let index = 0; index < RES_idPostLikedBy1User.length; index++) {
-      let idPostI = RES_idPostLikedBy1User[index].id_Posts;
-      console.log("bouclefor", idPostI);
-      //dabord on fait la somme des likes pour chaque post
-      let [additionDesLikesPourChaquePost] = await db
-        .promise()
-        .query(
-          " select sum(l.like) as nbLike from groupomania.likes_table as l WHERE id_Posts=?;",
-          [idPostI]
-        );
-      console.log(
-        "additionDesLikesPourChaquePost" + idPostI,
-        additionDesLikesPourChaquePost
-      );
-      let nbLikePourChaquePostI = additionDesLikesPourChaquePost[0].nbLike;
-      console.log("nbLikePourChaquePostI", nbLikePourChaquePostI);
-      //ensuite on update bdd avec cette somme pour chaque post
-      let [RES_updateSumLike] = await db
-        .promise()
-        .query(
-          " UPDATE groupomania.posts_table SET nombreLike=? WHERE `idPosts`=? ",
-          [nbLikePourChaquePostI, idPostI]
-        );
-      console.log("RES_updateSumLike", RES_updateSumLike);
-    }
-
-    // res.status(200).json({ message: "testOK" });
-    res.status(200).json(RES_idPostLikedBy1User);
-    //--catch--
-  } catch (error) {
-    console.log("probleme dans mon test");
-    res.status(400).json({ error: error });
-  }
-};
-
-// ! --------- test2 ----------- ! //
-//fonction test (en rap^port avec fonction dlete, pour supprimer like+/-com):
-//on donne un iduser, en delete
-//avant de supprimer un user, on met tous les id de  ses posts commentés dans un tableau
-//ensuite, soit on retire un et on restoke nouveau chiffre (puis on delete user)(pb com si pls com)
-//soit on delete user et apres suppression on refait les sommes/comptages(mieux)
-exports.test2 = async (req, res, next) => {
-  try {
-    console.log("try1");
-    const idUser = req.params.id; //id du user envoyé
-    //recuperons l'idpost des post likés par ce users
-    const [RES_idPostCommentedBy1User] = await db
-      .promise()
-      .query(
-        " SELECT id_Posts FROM groupomania.comments_table WHERE `id_Users`=? ;",
-        [idUser]
-      );
-
-    console.log("RES_idPostCommentedBy1User", RES_idPostCommentedBy1User);
-
-    //pouir chacun de ces idpost, je dois recompter nombre comments APRES DELETE USER
-    for (let index = 0; index < RES_idPostCommentedBy1User.length; index++) {
-      let idPostI = RES_idPostCommentedBy1User[index].id_Posts;
-      console.log("bouclefor", idPostI);
-      //dabord on fait la somme des likes pour chaque post
-      let [comptageDesCommentsPourChaquePost] = await db
-        .promise()
-        .query(
-          " SELECT count(c.idComments) as nbComment from groupomania.comments_table as c WHERE id_Posts=?;",
-          [idPostI]
-        );
-      console.log(
-        "comptageDesCommentsPourChaquePost" + idPostI,
-        comptageDesCommentsPourChaquePost
-      );
-      let nbCommentPourChaquePostI =
-        comptageDesCommentsPourChaquePost[0].nbComment;
-      console.log("nbCommentPourChaquePostI", nbCommentPourChaquePostI);
-
-      //ensuite on update bdd avec ce comptage pour chaque post
-      let [RES_updateNbComment] = await db
-        .promise()
-        .query(
-          " UPDATE groupomania.posts_table SET nombreComment=?  WHERE idPosts=? ",
-          [nbCommentPourChaquePostI, idPostI]
-        );
-      console.log("RES_updateNbComment", RES_updateNbComment);
-    }
-    console.log("avant reponse200");
-    // res.status(200).json({ message: "testOK" });
-    res.status(200).json(RES_idPostCommentedBy1User);
-    //--catch--
-  } catch (error) {
-    console.log("probleme dans mon test");
-    res.status(400).json({ error: error });
-  }
-};
 
 /* --- user: changer droits/actif (non implémenté) ---*/
 

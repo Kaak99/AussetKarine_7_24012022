@@ -5,30 +5,18 @@
     <div class="users container" v-show="loading === true">
       <h1>La fiche du membre :</h1>
       <div class="OneUserContainer d-flex">
-        <!--ici démarre la zone de users-->
-        <!-- <div class="usersCard">
-        <div class="user">
-          <p class="user-pseudo">pseudo</p>
-          <p class="user-bio">presentation</p>
-        </div>
-      </div> -->
-        <!-- <div v-for="user in getApiResponse" :key="user.idUsers" class="usersCard"> -->
-        <!-- <div v-for="user in getApiResponse" :key="user.idUsers" class="usersCard"> -->
-        <div class="user">
-          <!-- <div class="user" :href="npmjs.com"> -->
-          <!-- <div class="user" :href="html/product.html?${data[i]._id}"> -->
-          <!-- <router-link to="/posts">Posts</router-link> -->
-          <p class="user-pseudo">{{ getApiResponse.pseudo }}</p>
+        <!--ici démarre la zone de user-->
 
+        <div class="user">
+          <p class="user-pseudo">{{ getApiResponse.pseudo }}</p>
           <img alt="avatar" class="avatar" v-bind:src="getApiResponse.avatar" />
           <p class="user-email">Adresse email : {{ getApiResponse.email }}</p>
 
           <p class="user-bio">{{ getApiResponse.bio }}</p>
-          <p class="user-time">Profil créé le : {{ getApiResponse.time }}</p>
-          <!-- <img href="http://localhost>" -->
+          <p class="user-time">
+            Profil créé le : {{ format(getApiResponse.time) }}
+          </p>
         </div>
-
-        <!-- <p>{{ getApi }}</p> -->
       </div>
     </div>
 
@@ -50,6 +38,7 @@
 // @ is an alias to /src
 
 import axios from "axios";
+import dayjs from "dayjs";
 export default {
   name: "usersView",
   data() {
@@ -61,6 +50,7 @@ export default {
       urlVue2: "https://fr.vuejs.org/v2/guide/installation.html",
       //oneUrl: "http://localhost:3000/api/user/{{getApiResponse.idUsers}}",
       oneUrl: `${process.env.VUE_APP_URL_SERVEUR}/api/user/{{getApiResponse.idUsers}}`,
+      timeDayjs: [],
     };
   },
   created() {
@@ -78,42 +68,25 @@ export default {
       };
       return config;
     },
+    format(maDate) {
+      return dayjs(maDate).format("DD/MM/YYYY HH:mm");
+    },
     getOneUser() {
       //console.log(this.$route.params.id);
       axios
+        // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
         .get(this.url + `/users/` + this.$route.params.id, this.configAxios())
         .then((response) => {
           this.getApiResponse = response.data[0];
-          // this.getApiResponse = response.data;
           //console.log(this.getApiResponse);
+          this.timeDayjs = dayjs(this.getApiResponse.time).format(
+            "DD/MM/YYYY HH:mm"
+          );
           this.loading = true;
         });
-      // axios.get(this.url).then((response) => (this.getApiResponse = response.data));
     },
   },
 };
-
-// fetch(url)
-//   .then((res) => {
-//     if (res.ok) {
-//       console.log("success(fetch url)!");
-//       return res.json();
-//     } else {
-//       console.log("failed (fetch url)!"); //si bad url ou ...
-//       console.error("erreur : ", status.code); //affiche message d'erreur
-//       //warning();
-//     }
-//   })
-//   .then((data) => {
-//     console.log(data); //affiche les data de l'api (tableau d'objet)
-//     let usersString = ""; // Création de la variable qui concatenera tous éléments
-//   // Message d'erreur //
-//   .catch((error) => {
-//     console.log("error(du catch de fetch url)"); //+quand pas connexion server,bad url,erreur dans then
-//     console.error("erreur : ", error); //affiche message d'erreur
-//     //warning();
-//   });
-//
 </script>
 
 //! ............................... STYLE ............................... //

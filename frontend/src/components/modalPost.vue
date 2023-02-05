@@ -1,13 +1,10 @@
 //! ............................... TEMPLATE ............................... //
 
 <template>
-  <!-- <div class="container">  </div> -->
-
   <div class="bloc-modale" v-if="revele">
     <div class="overlay" v-on:click="toggleModale"></div>
 
     <div class="modaleCard">
-      <!-- <div class="btn-modale">cliquez pour fermer</div> -->
       <div class="content-modale">
         <h1>Modifiez votre message</h1>
         <div class="post-modifier d-flex">
@@ -34,12 +31,6 @@
           <p v-else id="modifiedTitleAlert" class="modifiedTitleAlert">
             <i class="fas fa-times-circle"></i>Incorrect (2 à 50 caractères)
           </p>
-          <!-- <img
-            class="postMiniImage"
-            alt="image d'illustration "
-            v-bind:src="post.image"
-            v-if="post.image"
-          /> -->
           <label for="postContent-modify" title="2 à 500 caractères"
             >Contenu :</label
           >
@@ -86,12 +77,7 @@
               Aucune image
             </button>
           </div>
-          <!-- <i
-            class="fa-sharp fa-solid fa-circle-xmark delImg"
-            title="Aucune image (delete)"
-            v-on:click="deleteImage()"
-          ></i
-          >{{ deleteImageBoolean }} -->
+
           <div class="imgSelectContainer d-flex2c">
             <input
               type="file"
@@ -149,10 +135,7 @@ export default {
       deleteImageBoolean: false,
     };
   },
-  // created() {
-  //   console.log("created modalPost");
-  //   this.getOnePost();
-  // },
+
   watch: {
     idPosttoModify: function (val) {
       this.getOnePost(val);
@@ -197,29 +180,21 @@ export default {
       return config;
     },
     selectFile() {
-      console.log("passe dans methode selectFile()");
       //console.log(this.$refs.file.files[0].name);
       this.inputFile = this.$refs.file.files[0];
       //console.log("this.inputFile", this.inputFile);
       this.image = URL.createObjectURL(this.inputFile);
-      //this.inputFile = URL.createObjectURL(this.inputFile);
       // console.log(this.image);
     },
     deleteImage() {
-      // this.inputFile = "";
-      console.log("passe dans methode deleteImage()");
       this.deleteImageBoolean = true;
       this.image = ""; //suppr affichage image initiale
       this.inputFile = null; //suppr envoi image choisie
       this.$refs.file.value = ""; //suppr texte de image choisie
-      //effacer image et selection fichier?
+      //effacer image et selection fichier
     },
     getOnePost(postId) {
-      console.log("passe dans methode getOnePost");
       this.messageRetour = "";
-      // console.log(this.postId);
-      // let postId2 = localStorage.getItem("modifyPostId");
-      // console.log(postId2);
       axios
         .get(this.url + `/posts/` + postId, this.configAxios())
         .then((response) => {
@@ -229,8 +204,6 @@ export default {
           this.modifiedTitle = this.getApiResponse.titre;
           this.modifiedPostContent = this.getApiResponse.contenu;
           this.image = this.getApiResponse.image;
-          //console.log("image", this.getApiResponse.image);
-          // console.log(this.modifiedTitle);
           this.loading = true;
         })
         .catch((error) => {
@@ -244,7 +217,6 @@ export default {
 
     modifyPost() {
       if (this.testModifiedTitle && this.testModifiedPostContent) {
-        console.log("passe dans methode modifyPost()");
         //quand on valide la modif
         // console.log("modifyPost");
         const formdata = new FormData();
@@ -253,57 +225,26 @@ export default {
         //console.log("inputFile", this.inputFile);
         //console.log("type inputFile", typeof this.inputFile);
         if (this.inputFile) {
-          console.log("dans if this.inputFile");
           formdata.append("image", this.inputFile, this.inputFile.name);
         }
         if (this.deleteImageBoolean) {
-          console.log("dans if this.deleteImageBoolean");
           formdata.append("noImg", ""); //pour dire d'effacer le fichier image d'avant
           this.deleteImageBoolean = false;
           //console.log(this.deleteImageBoolean);
           this.$refs.file.value = "";
         }
         formdata.append("id_Users", this.idConnected);
-        //console.log("formdata");
-        //console.log(formdata);
+        //console.log("formdata",formdata);
         let modifyUrl = this.url + `/posts/` + this.idPosttoModify;
-        //console.log(modifyUrl);
-        // const config = {
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     Authorization: `Bearer ${token}`,
-        //   },
-        // };
-        // console.log(config);
-        const config = null;
-
         axios
-          .put(
-            modifyUrl,
-            formdata,
-            this.configAxios()
-            // { headers: { Authorization: "Bearer " + token } }
-            // { headers: { Authorization: `Bearer ${token}` } }
-          )
-          // .post(this.url, { pseudo: "user60", password: "mdp" })
+          .put(modifyUrl, formdata, this.configAxios())
           .then((response) => {
             this.putApiResponse = response.data;
             //console.log(this.putApiResponse);
             this.messageRetour = "Message envoyé !";
             this.inputFile = null;
-            //this.$emit("retourModalPost", this.revele);
-            //this.$emit("retourModalPost", this.toggleModale());
             this.toggleModale();
             this.$emit("retourModalPost", true);
-            //modifier idPosttoModify à -1 pour forcer getOnePost si reclic sur meme post?
-            //pas possible dans component? faire dans parent?
-            // console.log(this.postApiResponse.userId);
-            // console.log(this.postApiResponse.token);
-            // this.loading = true;
-            // this.inputTitle = "";
-            // this.inputText = "";
-            // this.$refs.file.value = "";
-            //this.$router.push("/");
           })
           .catch((error) => {
             console.log(error);

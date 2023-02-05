@@ -79,7 +79,6 @@ export default {
   },
   props: {
     token: String,
-    // connected: Boolean,
   },
   created() {
     if (localStorage.getItem("userId")) {
@@ -125,8 +124,6 @@ nav {
   justify-content: center;
   flex-direction: row;
   flex-wrap: wrap;
-  /* margin: 20px;
-  justify-content: space-around; */
 }
 
 a {
@@ -180,10 +177,6 @@ p {
   margin: 0px auto;
   max-width: 1400px;
 }
-/* .logoContainer {
-  width: 100%;
-  height: 300px;
-} */
 
 .logo {
   width: 30%;

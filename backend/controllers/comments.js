@@ -17,7 +17,6 @@ exports.getAllComments = (req, res, next) => {
       res.status(200).json(results);
     })
     .catch((error) => {
-      //console.log("---catch(getAllComments)---");
       res.status(400).json({ error: error });
     });
 };
@@ -28,20 +27,14 @@ exports.getAllComments = (req, res, next) => {
 
 exports.getAllComments4OnePost = (req, res, next) => {
   db.promise()
-    // .query(
-    //   " SELECT * FROM groupomania.comments_table  WHERE `id_Posts`=?  ORDER BY time DESC;",
-    //   [req.params.id]
-    // )
     .query(
       "SELECT * FROM groupomania.comments_table as c left join groupomania.users_table as u on c.id_Users=u.idUsers WHERE `id_Posts`=? ORDER BY c.time DESC;",
       [req.params.id]
     )
     .then(([results]) => {
-      //console.log("affiche...");
       res.status(200).json(results);
     })
     .catch((error) => {
-      //console.log("---catch(getAllComments4OnePost)---");
       res.status(400).json({ error: error });
     });
 };
@@ -54,20 +47,14 @@ exports.getAllComments4OnePost = (req, res, next) => {
 
 exports.getCommentsNumber4OnePost = (req, res, next) => {
   db.promise()
-    // .query(
-    //   " SELECT * FROM groupomania.comments_table  WHERE `id_Posts`=?  ORDER BY time DESC;",
-    //   [req.params.id]
-    // )
     .query(
       "SELECT COUNT(*) FROM groupomania.comments_table WHERE `id_Posts`=?;",
       [req.params.id]
     )
     .then(([results]) => {
-      //console.log("affiche...");
       res.status(200).json(results);
     })
     .catch((error) => {
-      //console.log("---catch(getAllComments4OnePost)---");
       res.status(400).json({ error: error });
     });
 };
@@ -88,17 +75,17 @@ exports.deleteComments = async (req, res, next) => {
     const idDuPost = req.params.idpost; //id du post parent de ce com à delete
     const useridDuCreateurDuCom = RES_InfoComADelete[0].id_Users; //createur du com à delete
     const useridDuDemandeur = req.token.userId; //Demandeur de requete delete
-    console.log("idDuCom", idDuCom);
-    console.log("idDuPost", idDuPost);
-    console.log("useridDuCreateurDuCom", useridDuCreateurDuCom);
-    console.log("useridDuDemandeur", useridDuDemandeur);
+    // console.log("idDuCom", idDuCom);
+    // console.log("idDuPost", idDuPost);
+    // console.log("useridDuCreateurDuCom", useridDuCreateurDuCom);
+    // console.log("useridDuDemandeur", useridDuDemandeur);
     const [RES_adminStatusDuDemandeur] = await db
       .promise()
       .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
         useridDuDemandeur,
       ]);
     const adminStatusDuDemandeur = RES_adminStatusDuDemandeur[0].admin;
-    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+    // console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
     //on vérifie légitimité du demandeur
     if (
       useridDuCreateurDuCom === useridDuDemandeur ||
@@ -120,9 +107,11 @@ exports.deleteComments = async (req, res, next) => {
           " SELECT count(c.idComments) as nbComment from groupomania.comments_table as c WHERE id_Posts=? ;",
           [idDuPost]
         );
-      console.log("on a compté le nombre de com(nbComment) pour ce post:");
       const nbCommentPourCePost = RES_nbCommentPourCePost[0].nbComment;
-      console.log(nbCommentPourCePost);
+      console.log(
+        "nombre de com(nbComment) pour ce post:",
+        nbCommentPourCePost
+      );
       const [RES_DeleteComment] = await db
         .promise()
         .query(
@@ -148,18 +137,6 @@ exports.deleteComments = async (req, res, next) => {
 //!__ renvoie : { message: String }           __//
 
 exports.createComments = (req, res, next) => {
-  //console.log(req);
-  //console.log(req.body.contenu);
-  //console.log(req.body.id_Posts);
-  //console.log(req.body.id_Users);
-
-  // const commentObject = JSON.parse(req.body.post);
-  // console.log("commentObject");
-  // console.log(commentObject);
-  // console.log("userId de demande");
-  // console.log(commentObject.id_Users);
-  // console.log("Id du post commenté");
-  // console.log(commentObject.id_Posts);
   let newComment = {
     contenu: req.body.contenu,
     id_Posts: req.body.id_Posts,
@@ -171,13 +148,8 @@ exports.createComments = (req, res, next) => {
   // db.promise().query(' INSERT INTO `groupomania`.`posts_table` (`titre`, `contenu`, `image`, `userid`) VALUES (req.body.titre, req.body.contenu, req.body.image, req.body.userid) ;')
   db.promise()
     .query(" INSERT INTO `groupomania`.`comments_table` SET ? ", newComment)
-
     .then(([results]) => {
-      //console.log(results);
-      //mettre à jour le nombreComment
-      console.log(idPosts);
       db.promise()
-        //on compte combien il y a de commentaires(idComments)
         .query(
           " SELECT count(c.idComments) as nbComment from groupomania.comments_table as c WHERE id_Posts=?;",
           [idPosts]
@@ -227,16 +199,16 @@ exports.modifyComments = async (req, res, next) => {
     const idDuCom = req.params.id; //id du com à modif
     const useridDuCreateurDuCom = RES_InfoComAModifier[0].id_Users; //createur du com à modifier
     const useridDuDemandeur = req.token.userId; //Demandeur de requete modifier
-    console.log("idDuCom", idDuCom);
-    console.log("useridDuCreateurDuCom", useridDuCreateurDuCom);
-    console.log("useridDuDemandeur", useridDuDemandeur);
+    // console.log("idDuCom", idDuCom);
+    // console.log("useridDuCreateurDuCom", useridDuCreateurDuCom);
+    // console.log("useridDuDemandeur", useridDuDemandeur);
     const [RES_adminStatusDuDemandeur] = await db
       .promise()
       .query("SELECT admin FROM groupomania.users_table WHERE `idUsers`=? ", [
         useridDuDemandeur,
       ]);
     const adminStatusDuDemandeur = RES_adminStatusDuDemandeur[0].admin;
-    console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
+    // console.log("adminStatusDuDemandeur", adminStatusDuDemandeur);
     //on vérifie légitimité du demandeur
     if (
       useridDuCreateurDuCom === useridDuDemandeur ||
